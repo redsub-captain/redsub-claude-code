@@ -1,18 +1,48 @@
+[English](README.en.md) | **한국어**
+
 # redsub-claude-code
 
-1인 개발자를 위한 Claude Code 워크플로우 플러그인.
+기획부터 배포까지, 1인 개발자의 전체 개발 워크플로우를 자동화하는 [Claude Code](https://claude.com/claude-code) 플러그인입니다.
+
+계획 수립 → 브랜치 생성 → 코딩 → TDD → 코드 리뷰 → 출시 → 배포까지의 과정을 스킬, 에이전트, 훅으로 구조화하고, 규칙 위반을 물리적으로 차단합니다.
+
+## 전제 조건
+
+- [Claude Code](https://claude.com/claude-code) v1.0.33 이상
+- Node.js (MCP 서버용 `npx` 실행에 필요)
 
 ## 설치
 
-```bash
-claude plugin install ./redsub-claude-code
+### 1. 마켓플레이스 등록
+
+Claude Code 안에서 실행합니다:
+
+```
+/plugin marketplace add redsub-captain/redsub-claude-code
 ```
 
-설치 후 초기 설정:
+### 2. 플러그인 설치
+
+```
+/plugin install redsub-claude-code@redsub-plugins
+```
+
+### 3. 초기 설정
 
 ```
 /redsub-claude-code:setup
 ```
+
+이 스킬이 하는 일:
+- Rules 5개를 `~/.claude/rules/`에 배포
+- CLAUDE.md 템플릿을 프로젝트 루트에 생성
+- TypeScript LSP 의존성 확인
+- 환경변수 확인 (`STITCH_API_KEY`)
+
+> **개발 모드**: 마켓플레이스 없이 빠르게 테스트하려면:
+> ```bash
+> claude --plugin-dir ./redsub-claude-code
+> ```
 
 ## 워크플로우
 
@@ -20,46 +50,77 @@ claude plugin install ./redsub-claude-code
 Plan → Start → Code → Test → Review → Ship → Deploy
 ```
 
+> 모든 스킬은 `/redsub-claude-code:` 접두사를 사용합니다.
+> 예: `/redsub-claude-code:plan`, `/redsub-claude-code:validate`
+
 | 단계 | 스킬 | 설명 |
 |------|------|------|
-| 관리 | `/setup` | 초기 설정 (rules 배포, CLAUDE.md 생성) |
-| 계획 | `/plan` | 작업 계획 수립 |
-| 시작 | `/start-work` | feature 브랜치 생성 |
-| 개발 | `/save`, `/explore`, `/fix-all` | WIP 커밋, 코드베이스 탐색, 패턴 일괄 수정 |
-| 디자인 | `/design` | Stitch MCP로 UI/UX 화면 설계 |
-| 테스트 | `/test` | TDD 자동화 |
-| 검증 | `/validate` | lint + type check + unit test |
-| 리뷰 | `/review` | 코드 리뷰 (보안/타입/성능/DB/테스트) |
-| 출시 | `/ship` | Save → Validate → Merge |
-| 배포 | `/deploy` | 개발계/운영계 배포 |
-| 상태 | `/status` | 프로젝트 현황 |
-| 세션 | `/session-save` | 컨텍스트 저장 |
-| 유지 | `/update-check` | Claude Code 업데이트 호환성 확인 |
+| 관리 | `:setup` | 초기 설정 (rules 배포, CLAUDE.md 생성) |
+| 계획 | `:plan` | 코드베이스 탐색 후 작업 계획 수립 (planner 에이전트) |
+| 시작 | `:start-work` | feature 브랜치 생성 |
+| 개발 | `:save` | WIP 커밋 |
+| | `:explore` | 코드베이스 아키텍처 탐색 (planner 에이전트) |
+| | `:fix-all` | 패턴을 코드베이스 전체에서 검색하여 일괄 수정 |
+| 디자인 | `:design` | Stitch MCP로 UI/UX 화면 설계 (designer 에이전트) |
+| 테스트 | `:test` | TDD: 테스트 작성 → 실패 확인 → 구현 → 통과 (developer 에이전트) |
+| 검증 | `:validate` | `npm run lint && npm run check && npm run test:unit` |
+| 리뷰 | `:review` | 보안/타입/성능/DB/테스트 관점 코드 리뷰 (reviewer 에이전트) |
+| 출시 | `:ship` | Save → Validate → Merge 순서 강제 |
+| 배포 | `:deploy` | 개발계 → 동작 확인 → 사용자 승인 → 운영계 |
+| 상태 | `:status` | git 상태, 최근 커밋, 미완료 작업 요약 |
+| 세션 | `:session-save` | CLAUDE.md에 진행 상황 저장 + WIP 커밋 |
+| 유지 | `:update-check` | Claude Code 업데이트 시 플러그인 호환성 분석 |
 
-## MECE 자동화
+## 구성 요소
 
-3단계 방어로 워크플로우를 물리적으로 강제합니다:
+| 종류 | 수량 | 내용 |
+|------|------|------|
+| Skills | 15개 | 위 워크플로우 테이블 참조 |
+| Agents | 5개 | developer (Opus), reviewer (Sonnet, 읽기 전용), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
+| Hooks | 7개 | main 커밋 차단, merge 전 validate 검증, 자동 포맷, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
+| Rules | 5개 | 코드 품질, 데이터베이스, 보안, 워크플로우, 테스트 |
+| MCP | 3개 | context7 (라이브러리 문서), stitch (UI/UX 설계), sveltekit (공식 문서) |
+| LSP | 1개 | TypeScript (실시간 타입 에러 진단) |
 
-1. **Rules** — 파일 패턴별 규칙 자동 주입 (`paths:` 조건부 로드)
-2. **Hooks** — 위험 행동 물리적 차단 (`exit 2` + LLM 기반 검증)
-3. **Skills** — 서브에이전트로 격리 실행, 절차 강제
+## 3단계 방어 (MECE 자동화)
+
+MECE(Mutually Exclusive, Collectively Exhaustive) — 빠짐없이, 겹침 없이 모든 케이스를 커버하는 원칙.
+
+CLAUDE.md에 "~하지 마세요"라고 써놓는 것만으로는 Claude가 규칙을 어길 수 있습니다. 이 플러그인은 3단계로 **물리적으로** 강제합니다:
+
+| 단계 | 수단 | 역할 | 예시 |
+|------|------|------|------|
+| 1. 예방 | **Rules** | 파일 패턴별 규칙 자동 주입 | `.ts` 파일 수정 시 TypeScript strict 규칙 자동 로드 |
+| 2. 차단 | **Hooks** | 위험 행동 물리적 차단 | main 브랜치 직접 커밋 시 `exit 2`로 차단 |
+| 3. 절차 | **Skills** | 서브에이전트로 격리 실행 | `/ship`이 Save→Validate→Merge 순서 강제 |
 
 ## 기술 스택
 
+이 플러그인은 아래 기술 스택을 전제로 설계되었습니다:
+
 SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS 4
+
+다른 스택에서 사용하려면 rules, agents, skills의 내용을 수정하세요.
 
 ## 환경 변수
 
-| 변수 | 용도 |
-|------|------|
-| `STITCH_API_KEY` | Google Stitch MCP (UI/UX 디자인) |
+| 변수 | 용도 | 필수 여부 |
+|------|------|----------|
+| `STITCH_API_KEY` | Google Stitch MCP (`:design` 스킬에서 UI/UX 화면 설계) | 선택 (없으면 `:design` 스킬만 사용 불가) |
 
 ## 디바이스 간 동기화
 
+이 플러그인을 여러 디바이스에서 사용하는 경우:
+
 ```bash
-# 변경 후: git commit && git push
-# 다른 디바이스: git pull
+# 변경 후
+git commit && git push
+
+# 다른 디바이스에서
+git pull
 ```
+
+rules나 CLAUDE.md 템플릿이 변경된 경우에만 `/redsub-claude-code:setup`을 재실행하세요.
 
 ## 라이선스
 
