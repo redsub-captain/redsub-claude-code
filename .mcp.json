@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "stitch": {
+      "type": "http",
+      "url": "https://stitch.googleapis.com/mcp",
+      "headers": {
+        "x-goog-api-key": "${STITCH_API_KEY}"
+      }
+    },
+    "sveltekit": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-remote@latest", "https://mcp.svelte.dev/mcp"]
+    }
+  }
+}

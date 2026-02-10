@@ -1,0 +1,19 @@
+{
+  "name": "redsub-claude-code",
+  "version": "1.0.0",
+  "description": "1인 개발자를 위한 Claude Code 워크플로우 플러그인",
+  "license": "MIT",
+  "author": "redsub",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redsub/redsub-claude-code"
+  },
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "workflow",
+    "sveltekit",
+    "firebase",
+    "tdd"
+  ]
+}

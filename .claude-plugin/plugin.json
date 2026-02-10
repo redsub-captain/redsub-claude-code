@@ -1,0 +1,5 @@
+{
+  "name": "redsub-claude-code",
+  "version": "1.0.0",
+  "description": "1인 개발자를 위한 Claude Code 워크플로우 플러그인. Plan → Start → Code → Test → Review → Ship → Deploy."
+}
