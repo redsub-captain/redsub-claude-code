@@ -1,6 +1,6 @@
 {
   "name": "redsub-claude-code",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "1인 개발자를 위한 Claude Code 워크플로우 플러그인. Plan → Start → Code → Test → Review → Ship → Deploy.",
   "author": {
     "name": "RED SUB Inc.",
@@ -8,16 +8,5 @@
   },
   "repository": "https://github.com/redsub-captain/redsub-claude-code",
   "license": "MIT",
-  "keywords": ["claude-code", "workflow", "tdd", "sveltekit", "firebase", "1인개발"],
-  "skills": ["./skills/"],
-  "agents": [
-    "./agents/developer.md",
-    "./agents/reviewer.md",
-    "./agents/planner.md",
-    "./agents/devops.md",
-    "./agents/designer.md"
-  ],
-  "hooks": "./hooks/hooks.json",
-  "mcpServers": "./.mcp.json",
-  "lspServers": "./.lsp.json"
+  "keywords": ["claude-code", "workflow", "tdd", "sveltekit", "firebase", "1인개발"]
 }
