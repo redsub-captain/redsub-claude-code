@@ -90,6 +90,28 @@
           }
         ]
       }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "팀원이 유휴 상태입니다. 팀원 정보: $TEAMMATE_NAME\n\n공유 태스크 목록에 아직 미완료 태스크가 있는지 확인하세요.\n미완료 태스크가 남아있다면 {\"decision\": \"block\", \"reason\": \"아직 미완료 태스크가 있습니다. 계속 작업하세요.\"}를 반환하세요.\n모든 태스크가 완료되었다면 {\"decision\": \"approve\"}를 반환하세요.",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "팀원이 태스크를 완료했습니다. 태스크: $TASK_NAME\n\n완료된 작업의 품질을 확인하세요:\n1. 변경된 파일이 실제로 저장되었는가?\n2. 명백한 오류가 없는가?\n\n문제가 없으면 {\"decision\": \"approve\"}를 반환하세요.\n문제가 있으면 {\"decision\": \"block\", \"reason\": \"[문제 설명]\"}을 반환하세요.",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

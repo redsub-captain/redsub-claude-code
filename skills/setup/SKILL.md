@@ -58,17 +58,36 @@ command -v typescript-language-server
 npm install -g typescript-language-server typescript
 ```
 
-### 5. 완료 마커 생성
+### 5. Agent Teams (실험적 기능)
+
+사용자에게 Agent Teams 활성화 여부를 확인합니다:
+```
+Agent Teams 실험적 기능을 활성화하시겠습니까?
+- /review, /fix-all 스킬에서 --team 옵션으로 병렬 에이전트 팀을 사용할 수 있습니다.
+- --team 옵션 사용 시 토큰 사용량이 크게 증가합니다.
+(y/n)
+```
+
+사용자가 승인하면 settings.json에 추가합니다:
+```bash
+# ~/.claude/settings.json의 env에 추가
+CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+```
+
+거부하면 건너뜁니다.
+
+### 6. 완료 마커 생성
 
 ```bash
 mkdir -p ~/.claude-redsub
 date > ~/.claude-redsub/.setup-done
 ```
 
-### 6. 결과 요약
+### 7. 결과 요약
 
 설정 결과를 요약하여 출력합니다:
 - Rules 배포 완료 (5개)
 - CLAUDE.md 상태 (생성/이미 존재)
 - 환경변수 상태
 - LSP 상태
+- Agent Teams 상태 (활성화/비활성화)

@@ -1,7 +1,7 @@
 ---
 name: fix-all
 description: 특정 패턴을 코드베이스 전체에서 검색하여 일괄 수정.
-argument-hint: "[pattern-description]"
+argument-hint: "[--team] [pattern-description]"
 ---
 
 # 패턴 전수조사 일괄 수정
@@ -10,7 +10,25 @@ argument-hint: "[pattern-description]"
 
 `$ARGUMENTS`로 수정할 패턴 설명을 받습니다.
 
-## 절차
+## 모드 선택
+
+### 기본 모드 (순차 수정)
+
+`--team` 없이 실행하면 단일 세션에서 순차적으로 수정합니다.
+
+### 팀 모드 (`--team`)
+
+`--team` 인수가 포함되어 있으면 Agent Teams를 사용하여 **병렬 수정**을 실행합니다.
+
+> Agent Teams가 활성화되어 있어야 합니다 (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
+> 활성화되지 않은 경우 "Agent Teams가 비활성화 상태입니다. `/setup --force`로 활성화하세요."라고 안내합니다.
+
+1. 전수 검색 후 발견된 파일을 팀원 수만큼 분할합니다.
+2. 각 팀원이 담당 파일을 병렬로 수정합니다.
+3. **중요: 같은 파일을 여러 팀원이 동시에 수정하지 않습니다.** (파일 충돌 방지)
+4. 모든 팀원 완료 후 리드가 validate를 실행합니다.
+
+## 절차 (기본 모드)
 
 ### 1. 전수 검색
 

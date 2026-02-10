@@ -3,14 +3,34 @@ name: review
 description: 보안, 타입, 성능, DB, 테스트 관점에서 코드 리뷰.
 context: fork
 agent: reviewer
-argument-hint: "[target-path]"
+argument-hint: "[--team] [target-path]"
 ---
 
 # 코드 리뷰
 
 ## 입력
 
-`$ARGUMENTS`로 리뷰 대상 경로를 받습니다. 생략 시 최근 변경 파일을 대상으로 합니다.
+`$ARGUMENTS`로 리뷰 대상 경로를 받습니다. 생략 시 최근 변경 파일(`git diff --name-only main..HEAD`)을 대상으로 합니다.
+
+## 모드 선택
+
+### 기본 모드 (단일 리뷰어)
+
+`--team` 없이 실행하면 reviewer 서브에이전트가 모든 관점을 순차 리뷰합니다.
+
+### 팀 모드 (`--team`)
+
+`--team` 인수가 포함되어 있으면 Agent Teams를 사용하여 **병렬 리뷰**를 실행합니다.
+
+> Agent Teams가 활성화되어 있어야 합니다 (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
+> 활성화되지 않은 경우 "Agent Teams가 비활성화 상태입니다. `/setup --force`로 활성화하세요."라고 안내합니다.
+
+3명의 리뷰어를 동시에 생성합니다:
+- **보안 리뷰어**: API 키 노출, 입력 검증, 인증/인가, RLS/Security Rules
+- **성능 리뷰어**: 리렌더링, N+1 쿼리, 메모리 누수, 인덱스
+- **테스트 리뷰어**: 커버리지, 경계값, 테스트 품질, i18n
+
+리드가 3명의 결과를 종합하여 최종 리뷰 보고서를 생성합니다.
 
 ## 리뷰 체크리스트
 
