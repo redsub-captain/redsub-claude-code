@@ -7,6 +7,8 @@ agent: planner
 
 # Claude Code 업데이트 확인
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 절차
 
 ### 1. 버전 확인
@@ -37,20 +39,22 @@ WebSearch로 Claude Code 릴리즈 노트를 검색합니다:
 ### 4. 영향 보고서 생성
 
 ```markdown
-## 업데이트 보고: Claude Code [이전] → [현재]
+## Update Report: Claude Code [prev] → [current]
 
-### 요약
-- 호환성: ✅ 문제 없음 / ⚠️ 변경 필요
+### Summary
+- Compatibility: ✅ No issues / ⚠️ Changes needed
 
-### 새로운 기능 (활용 가능)
-- [기능]: [플러그인에서 활용 방안]
+### New features (applicable)
+- [feature]: [how to leverage in plugin]
 
-### 변경 필요 항목
-- `[파일:라인]` — [변경 내용] → [수정 방안]
+### Changes needed
+- `[file:line]` — [change] → [fix]
 
-### 제거된 기능
-- [영향 분석]
+### Removed features
+- [impact analysis]
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 헤더와 내용을 작성하세요.
 
 ### 5. COMPATIBILITY.md 갱신
 

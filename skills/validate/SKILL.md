@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # 코드 검증
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 절차
 
 ### 1. 린트
@@ -32,10 +34,10 @@ npm run test:unit -- --run
 
 **전체 성공 시:**
 ```
-✅ 검증 통과
-- lint: 통과
-- type check: 통과
-- unit test: 통과
+✅ Validation passed
+- lint: pass
+- type check: pass
+- unit test: pass
 ```
 
 마커 파일이 PostToolUse 훅에 의해 자동 생성됩니다 (`/tmp/.claude-redsub-validated`).
@@ -43,7 +45,9 @@ npm run test:unit -- --run
 
 **실패 시:**
 ```
-❌ 검증 실패
-- [실패한 단계]: [오류 내용]
-- 수정 방안: [제안]
+❌ Validation failed
+- [failed step]: [error]
+- Fix: [suggestion]
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 작성하세요.

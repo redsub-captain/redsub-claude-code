@@ -7,6 +7,8 @@ agent: planner
 
 # 코드베이스 탐색
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 입력
 
 `$ARGUMENTS`로 탐색 대상/질문을 받습니다.
@@ -31,20 +33,22 @@ agent: planner
 ### 3. 출력
 
 ```markdown
-## 탐색: [대상]
+## Explore: [target]
 
-### 핵심 파일
-- `path/file.ts` — [역할]
+### Key files
+- `path/file.ts` — [role]
 
-### 아키텍처
-[구조 설명]
+### Architecture
+[description]
 
-### 데이터 흐름
-[흐름 설명]
+### Data flow
+[description]
 
-### 패턴/컨벤션
-[패턴 설명]
+### Patterns
+[description]
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 헤더와 내용을 작성하세요.
 
 ## 주의사항
 

@@ -8,6 +8,8 @@ argument-hint: "[screen-description]"
 
 # UI/UX 화면 설계
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 입력
 
 `$ARGUMENTS`로 화면 설명을 받습니다.
@@ -35,17 +37,19 @@ Stitch 프로젝트가 있는지 확인합니다. 없으면 새로 생성합니�
 ### 4. 출력
 
 ```markdown
-## 디자인: [화면 설명]
+## Design: [screen]
 
-### Stitch 결과
-- 프로젝트: [이름]
-- 화면: [URL/ID]
+### Stitch result
+- Project: [name]
+- Screen: [URL/ID]
 
-### SvelteKit 구현 가이드
-- 라우트: `src/routes/[path]/+page.svelte`
-- 컴포넌트: [분리 방안]
-- 스타일: [Tailwind 클래스]
+### SvelteKit implementation guide
+- Route: `src/routes/[path]/+page.svelte`
+- Components: [breakdown]
+- Styles: [Tailwind classes]
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 헤더와 내용을 작성하세요.
 
 ## 주의사항
 

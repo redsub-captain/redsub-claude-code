@@ -7,6 +7,8 @@ agent: planner
 
 # 작업 계획 수립
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 입력
 
 `$ARGUMENTS`로 작업 목표를 받습니다.
@@ -33,22 +35,23 @@ agent: planner
 ### 3. 출력 형식
 
 ```markdown
-## 계획: [작업 목표]
+## Plan: [target]
 
-### 수정 대상
-- `src/path/to/file.ts` — [변경 내용]
-- ...
+### Files to modify
+- `src/path/to/file.ts` — [description]
 
-### 테스트 전략
-- 단위 테스트: [대상]
-- E2E 테스트: [시나리오]
+### Test strategy
+- Unit: [target]
+- E2E: [scenario]
 
-### 예상 영향
-- [영향 범위]
+### Impact
+- [scope]
 
-### 위험 요소
-- [주의 사항]
+### Risks
+- [notes]
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 헤더와 내용을 작성하세요.
 
 ## 주의사항
 

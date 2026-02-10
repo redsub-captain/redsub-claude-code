@@ -5,6 +5,8 @@ description: git 상태, 최근 커밋, 미완료 작업 요약.
 
 # 프로젝트 현황
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 현재 git 상태:
 ```
 !`git status --short`
@@ -22,12 +24,12 @@ description: git 상태, 최근 커밋, 미완료 작업 요약.
 
 ## 출력
 
-위 정보를 간결하게 정리하여 보여주세요:
+위 정보를 사용자 언어에 맞춰 간결하게 정리하여 보여주세요:
 
 ```
-📌 브랜치: [현재 브랜치]
-📝 변경: [미커밋 파일 수]개 파일
-📋 최근 커밋:
+📌 Branch: [current branch]
+📝 Changes: [N] files
+📋 Recent commits:
   - [hash] [message]
   - ...
 ```

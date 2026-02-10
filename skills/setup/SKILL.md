@@ -13,7 +13,22 @@ disable-model-invocation: true
 
 ## 설정 순서
 
-### 1. Rules 배포
+### 1. 언어 선택
+
+사용자에게 언어를 선택하게 합니다:
+```
+Select language / 언어를 선택하세요:
+1. 한국어
+2. English
+```
+
+선택한 언어를 저장합니다:
+```bash
+mkdir -p ~/.claude-redsub
+echo "[ko 또는 en]" > ~/.claude-redsub/language
+```
+
+### 2. Rules 배포
 
 플러그인의 `rules/` 디렉토리에 있는 5개 규칙 파일을 `~/.claude/rules/`에 복사합니다:
 - `code-quality.md`
@@ -27,7 +42,7 @@ mkdir -p ~/.claude/rules
 cp ${CLAUDE_PLUGIN_ROOT}/rules/*.md ~/.claude/rules/
 ```
 
-### 2. CLAUDE.md 생성
+### 3. CLAUDE.md 생성
 
 프로젝트 루트에 `CLAUDE.md`가 없는 경우에만 템플릿에서 생성합니다:
 
@@ -40,12 +55,12 @@ fi
 **중요: 기존 CLAUDE.md가 있으면 절대 덮어쓰지 않습니다.**
 이미 존재하는 경우 "CLAUDE.md가 이미 존재합니다. 템플릿을 참고하려면 `cat ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`를 확인하세요."라고 안내합니다.
 
-### 3. 환경변수 확인
+### 4. 환경변수 확인
 
 다음 환경변수가 설정되어 있는지 확인하고, 없으면 경고합니다:
 - `STITCH_API_KEY` — Google Stitch MCP에 필요
 
-### 4. LSP 의존성 확인
+### 5. LSP 의존성 확인
 
 `typescript-language-server`가 설치되어 있는지 확인합니다:
 
@@ -58,7 +73,7 @@ command -v typescript-language-server
 npm install -g typescript-language-server typescript
 ```
 
-### 5. Agent Teams (실험적 기능)
+### 6. Agent Teams (실험적 기능)
 
 사용자에게 Agent Teams 활성화 여부를 확인합니다:
 ```
@@ -76,18 +91,21 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 거부하면 건너뜁니다.
 
-### 6. 완료 마커 생성
+### 7. 완료 마커 생성
 
 ```bash
 mkdir -p ~/.claude-redsub
 date > ~/.claude-redsub/.setup-done
 ```
 
-### 7. 결과 요약
+### 8. 결과 요약
 
 설정 결과를 요약하여 출력합니다:
+- 언어 설정 (한국어/English)
 - Rules 배포 완료 (5개)
 - CLAUDE.md 상태 (생성/이미 존재)
 - 환경변수 상태
 - LSP 상태
 - Agent Teams 상태 (활성화/비활성화)
+
+> **모든 출력 메시지는 `~/.claude-redsub/language` 설정에 맞춰 작성하세요.**

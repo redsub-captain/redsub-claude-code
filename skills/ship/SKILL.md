@@ -7,6 +7,8 @@ argument-hint: "[patch|minor|major] [description]"
 
 # 출시 파이프라인
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 입력
 
 `$ARGUMENTS`로 버전 타입과 출시 설명을 받습니다.
@@ -56,9 +58,9 @@ git commit -m "chore: bump version to [새 버전]"
 
 ### 4. Merge
 
-사용자에게 확인을 받은 후에만 merge합니다:
+사용자에게 확인을 받은 후에만 merge합니다. 사용자 언어에 맞춰 확인 메시지를 작성합니다:
 ```
-validate 통과, 버전 [새 버전]. main에 merge하시겠습니까? (y/n)
+Validation passed, version [new version]. Merge to main? (y/n)
 ```
 
 사용자가 승인하면:
@@ -75,9 +77,9 @@ git tag -a v[새 버전] -m "v[새 버전] [설명]"
 
 ### 6. Push
 
-사용자에게 push 확인을 받습니다:
+사용자에게 push 확인을 받습니다 (사용자 언어에 맞춰):
 ```
-main + 태그를 push하시겠습니까? (y/n)
+Push main + tags? (y/n)
 ```
 
 승인 시:
@@ -87,9 +89,9 @@ git push origin main --tags
 
 ### 7. Release (선택)
 
-GitHub 릴리즈 생성 여부를 확인합니다:
+GitHub 릴리즈 생성 여부를 확인합니다 (사용자 언어에 맞춰):
 ```
-GitHub 릴리즈를 생성하시겠습니까? (y/n)
+Create GitHub release? (y/n)
 ```
 
 승인 시:

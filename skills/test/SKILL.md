@@ -8,6 +8,8 @@ argument-hint: "[test-target]"
 
 # TDD 자동화
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 입력
 
 `$ARGUMENTS`로 테스트 대상을 받습니다.
@@ -70,18 +72,20 @@ npx playwright test [test-file]
 ## 결과 요약
 
 ```markdown
-## TDD 완료: [대상]
+## TDD complete: [target]
 
-### 작성된 테스트
-- `tests/[file].test.ts` — N개 테스트 케이스
-  - 경계값: N개
-  - 정상값: N개
-  - 에러: N개
+### Tests written
+- `tests/[file].test.ts` — N test cases
+  - Boundary: N
+  - Normal: N
+  - Error: N
 
-### 구현
-- `src/[file].ts` — [변경 내용]
+### Implementation
+- `src/[file].ts` — [changes]
 
-### 결과
-- 단위 테스트: 통과
-- 타입 체크: 통과
+### Result
+- Unit test: pass
+- Type check: pass
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 헤더와 내용을 작성하세요.

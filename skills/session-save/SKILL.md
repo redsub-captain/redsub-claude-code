@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # 세션 컨텍스트 저장
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 절차
 
 ### 1. 진행 중 작업 기록
@@ -13,12 +15,14 @@ disable-model-invocation: true
 CLAUDE.md의 "진행 중" 섹션을 현재 작업 상태로 갱신합니다:
 
 ```markdown
-## 진행 중
-- 브랜치: [현재 브랜치]
-- 작업: [현재 진행 중인 작업 설명]
-- 다음 단계: [이어서 해야 할 것]
-- 마지막 저장: [날짜/시간]
+## In progress
+- Branch: [current branch]
+- Task: [current task description]
+- Next: [what to do next]
+- Last saved: [date/time]
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 헤더와 내용을 작성하세요.
 
 ### 2. 미커밋 변경 처리
 
@@ -33,11 +37,13 @@ git commit -m "wip: session save"
 ### 3. 확인
 
 ```
-✅ 세션 저장 완료
-- CLAUDE.md 갱신: [갱신 여부]
-- WIP 커밋: [생성 여부]
-- 브랜치: [현재 브랜치]
+✅ Session saved
+- CLAUDE.md updated: [yes/no]
+- WIP commit: [yes/no]
+- Branch: [current branch]
 ```
+
+> 사용자 언어 설정에 맞춰 작성하세요.
 
 ## 다음 세션에서
 

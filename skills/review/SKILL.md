@@ -8,6 +8,8 @@ argument-hint: "[--team] [target-path]"
 
 # 코드 리뷰
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 입력
 
 `$ARGUMENTS`로 리뷰 대상 경로를 받습니다. 생략 시 최근 변경 파일(`git diff --name-only main..HEAD`)을 대상으로 합니다.
@@ -23,7 +25,7 @@ argument-hint: "[--team] [target-path]"
 `--team` 인수가 포함되어 있으면 Agent Teams를 사용하여 **병렬 리뷰**를 실행합니다.
 
 > Agent Teams가 활성화되어 있어야 합니다 (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
-> 활성화되지 않은 경우 "Agent Teams가 비활성화 상태입니다. `/setup --force`로 활성화하세요."라고 안내합니다.
+> 활성화되지 않은 경우 Agent Teams가 비활성화 상태이며 `/setup --force`로 활성화할 수 있다고 사용자 언어에 맞춰 안내합니다.
 
 3명의 리뷰어를 동시에 생성합니다:
 - **보안 리뷰어**: API 키 노출, 입력 검증, 인증/인가, RLS/Security Rules
@@ -73,20 +75,22 @@ argument-hint: "[--team] [target-path]"
 ## 출력 형식
 
 ```markdown
-## 코드 리뷰: [대상]
+## Code Review: [target]
 
 ### Critical
-- `file.ts:42` — [문제 설명] → [수정 방안]
+- `file.ts:42` — [issue] → [fix]
 
 ### Warning
-- `file.ts:15` — [문제 설명] → [수정 방안]
+- `file.ts:15` — [issue] → [fix]
 
 ### Info
-- `file.ts:8` — [제안]
+- `file.ts:8` — [suggestion]
 
-### 요약
-- Critical: N건, Warning: N건, Info: N건
+### Summary
+- Critical: N, Warning: N, Info: N
 ```
+
+> 위 구조를 유지하되, 사용자 언어 설정에 맞춰 헤더와 내용을 작성하세요.
 
 ## 주의사항
 

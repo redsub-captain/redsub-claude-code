@@ -7,6 +7,8 @@ argument-hint: "[branch-name]"
 
 # 브랜치 생성
 
+> **언어**: `~/.claude-redsub/language` 파일의 설정(ko/en)에 맞춰 모든 출력을 해당 언어로 작성하세요. 파일이 없으면 `en`을 기본값으로 사용합니다.
+
 ## 입력
 
 `$ARGUMENTS`로 브랜치 이름을 받습니다.
@@ -31,8 +33,7 @@ git checkout -b feature/$ARGUMENTS
 
 ### 3. 확인
 
-브랜치 생성 결과를 출력합니다:
+브랜치 생성 결과를 사용자 언어에 맞춰 출력합니다:
 ```
-✅ 브랜치 feature/$ARGUMENTS 생성 완료.
-   작업을 시작하세요.
+✅ Branch feature/$ARGUMENTS created. Ready to work.
 ```
