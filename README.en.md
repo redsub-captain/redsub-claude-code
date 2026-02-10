@@ -103,29 +103,6 @@ To use with a different stack, modify the rules, agents, and skills accordingly.
 |----------|---------|----------|
 | `STITCH_API_KEY` | Google Stitch MCP (UI/UX design in `:design` skill) | Optional (only `:design` skill is unavailable without it) |
 
-## Cross-device Sync
-
-If you use this plugin across multiple devices:
-
-```bash
-# After changes
-git commit && git push
-
-# On another device
-git pull
-```
-
-Re-run `/redsub-claude-code:setup` only when rules or the CLAUDE.md template have changed.
-
-## Contributing
-
-To modify or contribute to this plugin, you can load it locally without a marketplace:
-
-```bash
-git clone https://github.com/redsub-captain/redsub-claude-code.git
-claude --plugin-dir ./redsub-claude-code
-```
-
 ## License
 
 MIT

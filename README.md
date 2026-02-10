@@ -103,29 +103,6 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 |------|------|----------|
 | `STITCH_API_KEY` | Google Stitch MCP (`:design` 스킬에서 UI/UX 화면 설계) | 선택 (없으면 `:design` 스킬만 사용 불가) |
 
-## 디바이스 간 동기화
-
-이 플러그인을 여러 디바이스에서 사용하는 경우:
-
-```bash
-# 변경 후
-git commit && git push
-
-# 다른 디바이스에서
-git pull
-```
-
-rules나 CLAUDE.md 템플릿이 변경된 경우에만 `/redsub-claude-code:setup`을 재실행하세요.
-
-## 개발 참여
-
-이 플러그인을 수정하거나 기여하려면, 마켓플레이스 없이 로컬에서 직접 로드할 수 있습니다:
-
-```bash
-git clone https://github.com/redsub-captain/redsub-claude-code.git
-claude --plugin-dir ./redsub-claude-code
-```
-
 ## 라이선스
 
 MIT
