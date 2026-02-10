@@ -29,7 +29,7 @@ cp ${CLAUDE_PLUGIN_ROOT}/rules/*.md ~/.claude/rules/
 
 ### 2. CLAUDE.md 생성
 
-프로젝트 루트에 `CLAUDE.md`가 없으면 템플릿에서 생성합니다:
+프로젝트 루트에 `CLAUDE.md`가 없는 경우에만 템플릿에서 생성합니다:
 
 ```bash
 if [ ! -f CLAUDE.md ]; then
@@ -37,7 +37,8 @@ if [ ! -f CLAUDE.md ]; then
 fi
 ```
 
-이미 존재하면 덮어쓰지 않습니다. 사용자에게 알립니다.
+**중요: 기존 CLAUDE.md가 있으면 절대 덮어쓰지 않습니다.**
+이미 존재하는 경우 "CLAUDE.md가 이미 존재합니다. 템플릿을 참고하려면 `cat ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`를 확인하세요."라고 안내합니다.
 
 ### 3. 환경변수 확인
 

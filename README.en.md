@@ -39,11 +39,6 @@ This skill will:
 - Check TypeScript LSP dependencies
 - Verify environment variables (`STITCH_API_KEY`)
 
-> **Dev mode**: For quick testing without a marketplace:
-> ```bash
-> claude --plugin-dir ./redsub-claude-code
-> ```
-
 ## Workflow
 
 ```
@@ -121,6 +116,15 @@ git pull
 ```
 
 Re-run `/redsub-claude-code:setup` only when rules or the CLAUDE.md template have changed.
+
+## Contributing
+
+To modify or contribute to this plugin, you can load it locally without a marketplace:
+
+```bash
+git clone https://github.com/redsub-captain/redsub-claude-code.git
+claude --plugin-dir ./redsub-claude-code
+```
 
 ## License
 

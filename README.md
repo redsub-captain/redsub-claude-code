@@ -39,11 +39,6 @@ Claude Code 안에서 실행합니다:
 - TypeScript LSP 의존성 확인
 - 환경변수 확인 (`STITCH_API_KEY`)
 
-> **개발 모드**: 마켓플레이스 없이 빠르게 테스트하려면:
-> ```bash
-> claude --plugin-dir ./redsub-claude-code
-> ```
-
 ## 워크플로우
 
 ```
@@ -121,6 +116,15 @@ git pull
 ```
 
 rules나 CLAUDE.md 템플릿이 변경된 경우에만 `/redsub-claude-code:setup`을 재실행하세요.
+
+## 개발 참여
+
+이 플러그인을 수정하거나 기여하려면, 마켓플레이스 없이 로컬에서 직접 로드할 수 있습니다:
+
+```bash
+git clone https://github.com/redsub-captain/redsub-claude-code.git
+claude --plugin-dir ./redsub-claude-code
+```
 
 ## 라이선스
 

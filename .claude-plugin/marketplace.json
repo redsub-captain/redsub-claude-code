@@ -6,7 +6,10 @@
   "plugins": [
     {
       "name": "redsub-claude-code",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "redsub-captain/redsub-claude-code"
+      },
       "description": "1인 개발자를 위한 Claude Code 워크플로우 플러그인",
       "version": "1.0.0"
     }
