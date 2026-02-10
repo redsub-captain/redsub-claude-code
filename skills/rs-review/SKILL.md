@@ -1,5 +1,5 @@
 ---
-name: review
+name: rs-review
 description: 보안, 타입, 성능, DB, 테스트 관점에서 코드 리뷰.
 context: fork
 agent: reviewer
@@ -25,7 +25,7 @@ argument-hint: "[--team] [target-path]"
 `--team` 인수가 포함되어 있으면 Agent Teams를 사용하여 **병렬 리뷰**를 실행합니다.
 
 > Agent Teams가 활성화되어 있어야 합니다 (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
-> 활성화되지 않은 경우 Agent Teams가 비활성화 상태이며 `/setup --force`로 활성화할 수 있다고 사용자 언어에 맞춰 안내합니다.
+> 활성화되지 않은 경우 Agent Teams가 비활성화 상태이며 `/rs-setup --force`로 활성화할 수 있다고 사용자 언어에 맞춰 안내합니다.
 
 3명의 리뷰어를 동시에 생성합니다:
 - **보안 리뷰어**: API 키 노출, 입력 검증, 인증/인가, RLS/Security Rules

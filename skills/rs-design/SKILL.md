@@ -1,5 +1,5 @@
 ---
-name: design
+name: rs-design
 description: Stitch MCP로 UI/UX 화면을 설계하고 프로토타이핑.
 context: fork
 agent: designer

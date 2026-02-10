@@ -30,7 +30,7 @@ Run inside Claude Code:
 ### 3. Initial setup
 
 ```
-/redsub-claude-code:setup
+/redsub-claude-code:rs-setup
 ```
 
 This skill will:
@@ -45,26 +45,26 @@ This skill will:
 Plan → Start → Code → Test → Review → Ship → Deploy
 ```
 
-> All skills use the `/redsub-claude-code:` prefix.
-> Example: `/redsub-claude-code:plan`, `/redsub-claude-code:validate`
+> All skills use the `rs-` prefix to avoid conflicts with built-in commands.
+> Example: `/rs-plan`, `/rs-validate` (full name: `/redsub-claude-code:rs-plan`)
 
 | Phase | Skill | Description |
 |-------|-------|-------------|
-| Admin | `:setup` | Initial setup (deploy rules, create CLAUDE.md) |
-| Plan | `:plan` | Explore codebase and create work plan (planner agent) |
-| Start | `:start-work` | Create feature branch |
-| Dev | `:save` | WIP commit |
-| | `:explore` | Explore codebase architecture (planner agent) |
-| | `:fix-all` | Search and bulk-fix a pattern across the entire codebase |
-| Design | `:design` | UI/UX design via Stitch MCP (designer agent) |
-| Test | `:test` | TDD: write test → verify fail → implement → pass (developer agent) |
-| Validate | `:validate` | `npm run lint && npm run check && npm run test:unit` |
-| Review | `:review` | Code review: security/types/perf/DB/tests (reviewer agent) |
-| Ship | `:ship` | Enforced Save → Validate → Merge pipeline |
-| Deploy | `:deploy` | Dev → verify → user approval → prod |
-| Status | `:status` | Git status, recent commits, pending work summary |
-| Session | `:session-save` | Save progress to CLAUDE.md + WIP commit |
-| Maintain | `:update-check` | Analyze Claude Code updates for plugin compatibility |
+| Admin | `/rs-setup` | Initial setup (deploy rules, create CLAUDE.md) |
+| Plan | `/rs-plan` | Explore codebase and create work plan (planner agent) |
+| Start | `/rs-start-work` | Create feature branch |
+| Dev | `/rs-save` | WIP commit |
+| | `/rs-explore` | Explore codebase architecture (planner agent) |
+| | `/rs-fix-all` | Search and bulk-fix a pattern across the entire codebase |
+| Design | `/rs-design` | UI/UX design via Stitch MCP (designer agent) |
+| Test | `/rs-test` | TDD: write test → verify fail → implement → pass (developer agent) |
+| Validate | `/rs-validate` | `npm run lint && npm run check && npm run test:unit` |
+| Review | `/rs-review` | Code review: security/types/perf/DB/tests (reviewer agent) |
+| Ship | `/rs-ship` | Enforced Save → Validate → Merge pipeline |
+| Deploy | `/rs-deploy` | Dev → verify → user approval → prod |
+| Status | `/rs-status` | Git status, recent commits, pending work summary |
+| Session | `/rs-session-save` | Save progress to CLAUDE.md + WIP commit |
+| Maintain | `/rs-update-check` | Analyze Claude Code updates for plugin compatibility |
 
 ## Components
 
@@ -87,7 +87,7 @@ Writing "don't do X" in CLAUDE.md alone can't guarantee Claude will follow the r
 |-------|-----------|------|---------|
 | 1. Prevention | **Rules** | Auto-inject rules by file pattern | TypeScript strict rules auto-load when editing `.ts` files |
 | 2. Blocking | **Hooks** | Physically block risky actions | `exit 2` blocks direct commits to main branch |
-| 3. Procedure | **Skills** | Isolated execution via subagents | `:ship` enforces Save → Validate → Merge order |
+| 3. Procedure | **Skills** | Isolated execution via subagents | `/rs-ship` enforces Save → Validate → Merge order |
 
 ## Tech Stack
 

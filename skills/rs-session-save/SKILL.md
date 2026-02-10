@@ -1,5 +1,5 @@
 ---
-name: session-save
+name: rs-session-save
 description: 세션 컨텍스트를 저장하여 다음 세션에서 이어서 작업.
 disable-model-invocation: true
 ---

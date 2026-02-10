@@ -1,5 +1,5 @@
 ---
-name: plan
+name: rs-plan
 description: 작업 계획 수립. 코드베이스 탐색 후 수정 대상, 변경 내용, 테스트 전략 제시.
 context: fork
 agent: planner

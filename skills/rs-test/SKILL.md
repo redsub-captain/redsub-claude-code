@@ -1,5 +1,5 @@
 ---
-name: test
+name: rs-test
 description: TDD 프로세스. 테스트 데이터 생성부터 E2E까지 자동화.
 context: fork
 agent: developer

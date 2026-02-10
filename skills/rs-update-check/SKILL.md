@@ -1,5 +1,5 @@
 ---
-name: update-check
+name: rs-update-check
 description: Claude Code 버전 변경 시 릴리즈 노트 분석 및 플러그인 호환성 확인.
 context: fork
 agent: planner

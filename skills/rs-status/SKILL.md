@@ -1,5 +1,5 @@
 ---
-name: status
+name: rs-status
 description: git 상태, 최근 커밋, 미완료 작업 요약.
 ---
 

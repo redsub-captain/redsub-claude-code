@@ -1,5 +1,5 @@
 ---
-name: setup
+name: rs-setup
 description: 플러그인 초기 설정. rules 배포, CLAUDE.md 생성, 환경변수 확인.
 disable-model-invocation: true
 ---
@@ -78,7 +78,7 @@ npm install -g typescript-language-server typescript
 사용자에게 Agent Teams 활성화 여부를 확인합니다:
 ```
 Agent Teams 실험적 기능을 활성화하시겠습니까?
-- /review, /fix-all 스킬에서 --team 옵션으로 병렬 에이전트 팀을 사용할 수 있습니다.
+- /rs-review, /rs-fix-all 스킬에서 --team 옵션으로 병렬 에이전트 팀을 사용할 수 있습니다.
 - --team 옵션 사용 시 토큰 사용량이 크게 증가합니다.
 (y/n)
 ```

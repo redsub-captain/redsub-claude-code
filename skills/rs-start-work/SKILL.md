@@ -1,5 +1,5 @@
 ---
-name: start-work
+name: rs-start-work
 description: feature 브랜치 생성 후 작업 시작.
 disable-model-invocation: true
 argument-hint: "[branch-name]"

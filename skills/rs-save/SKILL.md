@@ -1,5 +1,5 @@
 ---
-name: save
+name: rs-save
 description: 변경사항 WIP 커밋.
 disable-model-invocation: true
 argument-hint: "[description]"

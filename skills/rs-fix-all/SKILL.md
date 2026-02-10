@@ -1,5 +1,5 @@
 ---
-name: fix-all
+name: rs-fix-all
 description: 특정 패턴을 코드베이스 전체에서 검색하여 일괄 수정.
 argument-hint: "[--team] [pattern-description]"
 ---
@@ -23,7 +23,7 @@ argument-hint: "[--team] [pattern-description]"
 `--team` 인수가 포함되어 있으면 Agent Teams를 사용하여 **병렬 수정**을 실행합니다.
 
 > Agent Teams가 활성화되어 있어야 합니다 (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
-> 활성화되지 않은 경우 Agent Teams가 비활성화 상태이며 `/setup --force`로 활성화할 수 있다고 사용자 언어에 맞춰 안내합니다.
+> 활성화되지 않은 경우 Agent Teams가 비활성화 상태이며 `/rs-setup --force`로 활성화할 수 있다고 사용자 언어에 맞춰 안내합니다.
 
 1. 전수 검색 후 발견된 파일을 팀원 수만큼 분할합니다.
 2. 각 팀원이 담당 파일을 병렬로 수정합니다.
@@ -51,7 +51,7 @@ TodoWrite로 발견된 모든 케이스를 추적합니다:
 
 ### 4. 검증
 
-모든 수정 완료 후 `/validate` 실행:
+모든 수정 완료 후 `/rs-validate` 실행:
 ```bash
 npm run lint && npm run check && npm run test:unit -- --run
 ```

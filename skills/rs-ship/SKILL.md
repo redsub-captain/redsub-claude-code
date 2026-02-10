@@ -1,5 +1,5 @@
 ---
-name: ship
+name: rs-ship
 description: Save → Validate → Version → Merge → Tag → Push → Release 순서 실행.
 disable-model-invocation: true
 argument-hint: "[patch|minor|major] [description]"

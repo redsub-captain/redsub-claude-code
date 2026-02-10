@@ -1,5 +1,5 @@
 ---
-name: deploy
+name: rs-deploy
 description: 개발계/운영계 배포. 필수 흐름 강제.
 disable-model-invocation: true
 context: fork

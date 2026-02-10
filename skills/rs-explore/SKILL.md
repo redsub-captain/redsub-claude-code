@@ -1,5 +1,5 @@
 ---
-name: explore
+name: rs-explore
 description: 코드베이스의 파일, 타입, 데이터 흐름을 조사하여 아키텍처를 파악.
 context: fork
 agent: planner

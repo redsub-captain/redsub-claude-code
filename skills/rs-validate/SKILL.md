@@ -1,5 +1,5 @@
 ---
-name: validate
+name: rs-validate
 description: lint, type check, unit test 실행.
 disable-model-invocation: true
 ---
@@ -41,7 +41,7 @@ npm run test:unit -- --run
 ```
 
 마커 파일이 PostToolUse 훅에 의해 자동 생성됩니다 (`/tmp/.claude-redsub-validated`).
-이 마커는 `/ship` 스킬의 merge 단계에서 참조됩니다.
+이 마커는 `/rs-ship` 스킬의 merge 단계에서 참조됩니다.
 
 **실패 시:**
 ```
