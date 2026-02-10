@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# [PostToolUse:Bash] validate 스킬 성공 시 마커 파일 생성
-# merge 전 validate 실행 여부를 확인하기 위한 마커
+# [PostToolUse:Bash] Create validate marker when lint+check pass
+# Used by guard-main.sh to verify validation before merge
 
 set -euo pipefail
 
-# stdin에서 JSON 입력 읽기
+# Read JSON input from stdin
 INPUT=$(cat)
 
-# 실행된 명령어 추출
+# Extract executed command
 COMMAND=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('input',{}).get('command',''))" 2>/dev/null || echo "")
 
-# npm run lint, npm run check, npm run test:unit 모두 포함된 경우 마커 생성
+# Create marker if both lint and check were in the command
 if echo "$COMMAND" | grep -q "npm run lint" && echo "$COMMAND" | grep -q "npm run check"; then
-  # 실행 결과가 성공인지 확인
+  # Verify command succeeded
   EXIT_CODE=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('output',{}).get('exitCode',1))" 2>/dev/null || echo "1")
   if [ "$EXIT_CODE" = "0" ]; then
     touch /tmp/.claude-redsub-validated

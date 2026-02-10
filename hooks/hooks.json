@@ -1,5 +1,5 @@
 {
-  "description": "redsub-claude-code workflow hooks",
+  "description": "redsub-claude-code workflow hooks (command-only, no prompt hooks)",
   "hooks": {
     "SessionStart": [
       {
@@ -21,16 +21,6 @@
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/scripts/guard-main.sh",
             "timeout": 3
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "사용자가 Bash 명령을 실행하려 합니다. 입력: $ARGUMENTS\n\n다음을 확인하세요:\n1. 명령어에 'git merge'가 포함되어 있는가?\n2. 만약 포함되어 있다면, /tmp/.claude-redsub-validated 마커 파일이 존재해야 merge가 허용됩니다.\n\ngit merge가 아닌 경우 {\"decision\": \"approve\"}를 반환하세요.\ngit merge인 경우 {\"decision\": \"block\", \"reason\": \"먼저 /validate를 실행하세요\"}를 반환하세요.",
-            "timeout": 10
           }
         ]
       }
@@ -87,28 +77,6 @@
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/scripts/completion-check.sh",
             "timeout": 5
-          }
-        ]
-      }
-    ],
-    "TeammateIdle": [
-      {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "팀원이 유휴 상태입니다. 팀원 정보: $TEAMMATE_NAME\n\n공유 태스크 목록에 아직 미완료 태스크가 있는지 확인하세요.\n미완료 태스크가 남아있다면 {\"decision\": \"block\", \"reason\": \"아직 미완료 태스크가 있습니다. 계속 작업하세요.\"}를 반환하세요.\n모든 태스크가 완료되었다면 {\"decision\": \"approve\"}를 반환하세요.",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "TaskCompleted": [
-      {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "팀원이 태스크를 완료했습니다. 태스크: $TASK_NAME\n\n완료된 작업의 품질을 확인하세요:\n1. 변경된 파일이 실제로 저장되었는가?\n2. 명백한 오류가 없는가?\n\n문제가 없으면 {\"decision\": \"approve\"}를 반환하세요.\n문제가 있으면 {\"decision\": \"block\", \"reason\": \"[문제 설명]\"}을 반환하세요.",
-            "timeout": 10
           }
         ]
       }

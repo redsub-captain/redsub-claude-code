@@ -2,9 +2,9 @@
 
 # redsub-claude-code
 
-기획부터 배포까지, 1인 개발자의 전체 개발 워크플로우를 자동화하는 [Claude Code](https://claude.com/claude-code) 플러그인입니다.
+1인 개발자를 위한 Claude Code **워크플로우 오케스트레이터** 플러그인.
 
-계획 수립 → 브랜치 생성 → 코딩 → TDD → 코드 리뷰 → 출시 → 배포까지의 과정을 스킬, 에이전트, 훅으로 구조화하고, 규칙 위반을 물리적으로 차단합니다.
+공식 플러그인(superpowers, code-review, pr-review-toolkit, ralph-loop 등)과 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
 
 ## 전제 조건
 
@@ -14,8 +14,6 @@
 ## 설치
 
 ### 1. 마켓플레이스 등록
-
-Claude Code 안에서 실행합니다:
 
 ```
 /plugin marketplace add redsub-captain/redsub-claude-code
@@ -30,14 +28,40 @@ Claude Code 안에서 실행합니다:
 ### 3. 초기 설정
 
 ```
-/redsub-claude-code:rs-setup
+/redsub-setup
 ```
 
 이 스킬이 하는 일:
-- Rules 5개를 `~/.claude/rules/`에 배포
-- CLAUDE.md 템플릿을 프로젝트 루트에 생성
-- TypeScript LSP 의존성 확인
-- 환경변수 확인 (`STITCH_API_KEY`)
+- 의존 공식 플러그인 확인 + 미설치 안내
+- Rules 3개를 `~/.claude/rules/`에 배포
+- CLAUDE.md 템플릿 생성 (기존 파일 시 마커 기반 추가/건너뛰기 선택)
+- 설치 매니페스트 생성 (`~/.claude-redsub/install-manifest.json`)
+
+### 업데이트
+
+```
+/redsub-update
+```
+
+### 삭제
+
+```
+/redsub-uninstall
+```
+
+## 의존 공식 플러그인
+
+이 플러그인은 아래 공식 플러그인과 조합하여 동작합니다:
+
+| 플러그인 | 역할 |
+|---------|------|
+| superpowers | TDD, 설계, 계획, 서브에이전트, 코드 리뷰 위임 |
+| code-review | PR 자동 리뷰 (GitHub 코멘트 게시) |
+| pr-review-toolkit | 6개 전문 리뷰 에이전트 (테스트/타입/보안/간소화 등) |
+| ralph-loop | 반복 작업 자동화 (TDD, 일괄 수정) |
+| security-guidance | 보안 모범 사례 |
+| context7 | 라이브러리 최신 문서 조회 |
+| typescript-lsp | TypeScript 실시간 타입 진단 |
 
 ## 워크플로우
 
@@ -45,53 +69,170 @@ Claude Code 안에서 실행합니다:
 Plan → Start → Code → Test → Review → Ship → Deploy
 ```
 
-> 모든 스킬은 `rs-` 접두사를 사용합니다.
-> 예: `/rs-plan`, `/rs-validate` (전체 이름: `/redsub-claude-code:rs-plan`)
+## 명령어 레퍼런스
 
-| 단계 | 스킬 | 설명 |
-|------|------|------|
-| 관리 | `/rs-setup` | 초기 설정 (rules 배포, CLAUDE.md 생성) |
-| 계획 | `/rs-plan` | 코드베이스 탐색 후 작업 계획 수립 (planner 에이전트) |
-| 시작 | `/rs-start-work` | feature 브랜치 생성 |
-| 개발 | `/rs-save` | WIP 커밋 |
-| | `/rs-explore` | 코드베이스 아키텍처 탐색 (planner 에이전트) |
-| | `/rs-fix-all` | 패턴을 코드베이스 전체에서 검색하여 일괄 수정 |
-| 디자인 | `/rs-design` | Stitch MCP로 UI/UX 화면 설계 (designer 에이전트) |
-| 테스트 | `/rs-test` | TDD: 테스트 작성 → 실패 확인 → 구현 → 통과 (developer 에이전트) |
-| 검증 | `/rs-validate` | `npm run lint && npm run check && npm run test:unit` |
-| 리뷰 | `/rs-review` | 보안/타입/성능/DB/테스트 관점 코드 리뷰 (reviewer 에이전트) |
-| 출시 | `/rs-ship` | Save → Validate → Merge 순서 강제 |
-| 배포 | `/rs-deploy` | 개발계 → 동작 확인 → 사용자 승인 → 운영계 |
-| 상태 | `/rs-status` | git 상태, 최근 커밋, 미완료 작업 요약 |
-| 세션 | `/rs-session-save` | CLAUDE.md에 진행 상황 저장 + WIP 커밋 |
-| 유지 | `/rs-update-check` | Claude Code 업데이트 시 플러그인 호환성 분석 |
+### /redsub-start-work [name]
+
+Feature 브랜치를 생성하고 작업을 시작합니다.
+
+**사용 시점:** 새 작업 시작 시.
+```
+/redsub-start-work user-authentication
+```
+
+### /redsub-test [target]
+
+TDD 자동화. Red-Green-Refactor 사이클을 실행합니다.
+
+**사용 시점:** 새 기능 구현 시 테스트 우선, 버그 수정 시 재현 테스트부터.
+```
+/redsub-test user-authentication
+```
+
+**ralph-loop 연동 (반복):**
+```
+/ralph-loop "TDD: user-authentication" --completion-promise "ALL TESTS PASSING" --max-iterations 20
+```
+
+### /redsub-validate
+
+lint + type check + unit test를 순차 실행합니다. 증거(명령어 출력) 필수.
+
+**사용 시점:** 코드 변경 후, merge 전 필수.
+```
+/redsub-validate
+```
+
+### /redsub-ship [patch|minor|major] [description]
+
+Save → Validate → Review → Version → Merge → Tag → Push 파이프라인을 강제합니다.
+
+**사용 시점:** 기능 완성 후 main에 통합할 때.
+```
+/redsub-ship minor "사용자 인증 기능 추가"
+```
+
+### /redsub-fix-all [pattern]
+
+코드베이스 전체에서 패턴을 검색하여 일괄 수정합니다.
+
+**사용 시점:** 린트 에러, 네이밍 변경, 패턴 일괄 수정.
+```
+/redsub-fix-all "ESLint errors"
+/redsub-fix-all --team "ESLint errors"    # 병렬 (Agent Teams)
+```
+
+**ralph-loop 연동:**
+```
+/ralph-loop "Fix all ESLint errors" --completion-promise "LINT CLEAN" --max-iterations 30
+```
+
+### /redsub-deploy [dev|prod]
+
+개발계/운영계 배포. 운영계는 사용자 승인 필수.
+
+**사용 시점:** 배포 시.
+```
+/redsub-deploy dev     # 개발계 먼저
+/redsub-deploy prod    # 운영계 (승인 필수)
+```
+
+### /redsub-design [screen]
+
+Stitch MCP를 사용한 UI/UX 화면 설계.
+
+**사용 시점:** 새 화면 설계 시.
+```
+/redsub-design 대시보드 페이지
+```
+
+### /redsub-session-save
+
+CLAUDE.md에 진행 상황 저장 + WIP 커밋.
+
+**사용 시점:** 세션 종료 전.
+```
+/redsub-session-save
+```
+
+### /redsub-setup
+
+초기 설정 (의존 플러그인 확인, Rules 배포, CLAUDE.md 생성).
+
+### /redsub-update
+
+플러그인 버전 + Claude Code 호환성 확인.
+
+### /redsub-doctor
+
+플러그인 상태 진단 + 자동 복구.
+
+### /redsub-uninstall
+
+매니페스트 기반 깔끔한 삭제.
+
+## 시나리오별 명령어 매핑
+
+### "새 기능을 만들고 싶어"
+1. `/brainstorming` — 설계 문서 생성 (superpowers)
+2. `/writing-plans` — 2-5분 단위 구현 계획
+3. `/redsub-start-work feature-name` — 브랜치 생성
+4. `/redsub-test target` — TDD 구현
+5. `/redsub-validate` — 검증
+6. `/review-pr` — 리뷰 (6개 전문 에이전트 병렬)
+7. `/redsub-ship minor "feature description"` — 출시
+
+### "린트 에러가 100개야"
+- `/redsub-fix-all "ESLint errors"` — 순차 전수 수정
+- `/redsub-fix-all --team "ESLint errors"` — 병렬 팀 수정 (Agent Teams)
+- `/ralph-loop "Fix all ESLint errors" --completion-promise "LINT CLEAN"` — 반복 수정
+
+### "배포하고 싶어"
+1. `/redsub-validate` — 사전 검증
+2. `/redsub-deploy dev` — 개발계 먼저
+3. `/redsub-deploy prod` — 운영계 (사용자 승인 필수)
+
+### "코드 리뷰 해줘"
+- PR이 있으면 → `/code-review` (GitHub 코멘트 자동 게시)
+- 심층 분석 → `/review-pr` (6개 전문 에이전트 병렬)
+- 계획 대비 검증 → superpowers:requesting-code-review
+
+### "플러그인이 이상해"
+```
+/redsub-doctor
+```
+규칙/훅/매니페스트/의존 플러그인 자동 진단 + 복구.
+
+## 삭제된 스킬 → 대체 안내
+
+| 삭제된 스킬 | 대체 명령어 |
+|------------|-----------|
+| /rs-review | /code-review 또는 /review-pr |
+| /rs-save | /commit |
+| /rs-plan | /brainstorming → /writing-plans |
+| /rs-explore | /brainstorming |
+| /rs-status | git status |
+| /rs-update-check | /redsub-update |
 
 ## 구성 요소
 
 | 종류 | 수량 | 내용 |
 |------|------|------|
-| Skills | 15개 | 위 워크플로우 테이블 참조 |
-| Agents | 5개 | developer (Opus), reviewer (Sonnet, 읽기 전용), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 7개 | main 커밋 차단, merge 전 validate 검증, 자동 포맷, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
-| Rules | 5개 | 코드 품질, 데이터베이스, 보안, 워크플로우, 테스트 |
-| MCP | 3개 | context7 (라이브러리 문서), stitch (UI/UX 설계), sveltekit (공식 문서) |
-| LSP | 1개 | TypeScript (실시간 타입 에러 진단) |
+| Skills | 12개 | 위 명령어 레퍼런스 참조 |
+| Agents | 4개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
+| Hooks | 7개 | main 커밋 차단, merge 시 validate 마커 체크, 자동 포맷, validate 마커 생성, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
+| Rules | 3개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law) |
+| MCP | 2개 | stitch (UI/UX 설계), sveltekit (공식 문서) |
 
-## 3단계 방어 (MECE 자동화)
-
-MECE(Mutually Exclusive, Collectively Exhaustive) — 빠짐없이, 겹침 없이 모든 케이스를 커버하는 원칙.
-
-CLAUDE.md에 "~하지 마세요"라고 써놓는 것만으로는 Claude가 규칙을 어길 수 있습니다. 이 플러그인은 3단계로 **물리적으로** 강제합니다:
+## 3단계 방어
 
 | 단계 | 수단 | 역할 | 예시 |
 |------|------|------|------|
-| 1. 예방 | **Rules** | 파일 패턴별 규칙 자동 주입 | `.ts` 파일 수정 시 TypeScript strict 규칙 자동 로드 |
-| 2. 차단 | **Hooks** | 위험 행동 물리적 차단 | main 브랜치 직접 커밋 시 `exit 2`로 차단 |
-| 3. 절차 | **Skills** | 서브에이전트로 격리 실행 | `/rs-ship`이 Save→Validate→Merge 순서 강제 |
+| 1. 예방 | **Rules** | 파일 패턴별 규칙 자동 주입 | `.ts` 수정 시 TypeScript strict 규칙 자동 로드 |
+| 2. 차단 | **Hooks** | 위험 행동 물리적 차단 | main 직접 커밋 시 `exit 2`로 차단 |
+| 3. 절차 | **Skills** | 파이프라인 순서 강제 | `/redsub-ship`이 Save→Validate→Merge 순서 강제 |
 
 ## 기술 스택
-
-이 플러그인은 아래 기술 스택을 전제로 설계되었습니다:
 
 SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS 4
 
@@ -101,7 +242,7 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 
 | 변수 | 용도 | 필수 여부 |
 |------|------|----------|
-| `STITCH_API_KEY` | Google Stitch MCP (`:design` 스킬에서 UI/UX 화면 설계) | 선택 (없으면 `:design` 스킬만 사용 불가) |
+| `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` 스킬) | 선택 |
 
 ## 라이선스
 

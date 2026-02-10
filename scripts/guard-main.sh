@@ -1,25 +1,33 @@
 #!/usr/bin/env bash
-# [PreToolUse:Bash] main/master 브랜치에서 직접 커밋 차단
-# exit 2 = Claude Code에서 도구 실행 차단
+# [PreToolUse:Bash] Block direct commits on main/master + block merge without validate marker
+# exit 2 = block tool execution in Claude Code
 
 set -euo pipefail
 
-# stdin에서 JSON 입력 읽기
+# Read JSON input from stdin
 INPUT=$(cat)
 
-# 명령어 추출
+# Extract command
 COMMAND=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('input',{}).get('command',''))" 2>/dev/null || echo "")
 
-# git commit 명령인지 확인
+# Check if git merge command — require validate marker
+if echo "$COMMAND" | grep -q "git merge"; then
+  if [ ! -f /tmp/.claude-redsub-validated ]; then
+    echo "BLOCKED: Cannot merge without validation. Run /redsub-validate first."
+    exit 2
+  fi
+  exit 0
+fi
+
+# Check if git commit command
 if ! echo "$COMMAND" | grep -q "git commit"; then
   exit 0
 fi
 
-# 현재 브랜치 확인
+# Check current branch
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
 
 if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
-  echo "❌ main/master 브랜치에 직접 커밋할 수 없습니다."
-  echo "   /start-work [branch-name]으로 feature 브랜치를 생성하세요."
+  echo "BLOCKED: Cannot commit directly to $BRANCH. Use /redsub-start-work [name] to create a feature branch."
   exit 2
 fi

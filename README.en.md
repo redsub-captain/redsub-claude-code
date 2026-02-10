@@ -2,9 +2,9 @@
 
 # redsub-claude-code
 
-A [Claude Code](https://claude.com/claude-code) plugin that automates the entire development workflow for solo developers — from planning to deployment.
+A **workflow orchestrator** plugin for Claude Code, designed for solo developers.
 
-It structures the full cycle (plan → branch → code → TDD → review → ship → deploy) using skills, agents, and hooks, and **physically blocks** rule violations.
+Works in **combination** with official plugins (superpowers, code-review, pr-review-toolkit, ralph-loop, etc.) to automate the entire development cycle from planning to deployment.
 
 ## Prerequisites
 
@@ -14,8 +14,6 @@ It structures the full cycle (plan → branch → code → TDD → review → sh
 ## Installation
 
 ### 1. Add marketplace
-
-Run inside Claude Code:
 
 ```
 /plugin marketplace add redsub-captain/redsub-claude-code
@@ -30,14 +28,40 @@ Run inside Claude Code:
 ### 3. Initial setup
 
 ```
-/redsub-claude-code:rs-setup
+/redsub-setup
 ```
 
 This skill will:
-- Deploy 5 rules to `~/.claude/rules/`
-- Generate a CLAUDE.md template at the project root
-- Check TypeScript LSP dependencies
-- Verify environment variables (`STITCH_API_KEY`)
+- Check and suggest installing required official plugins
+- Deploy 3 rules to `~/.claude/rules/`
+- Generate a CLAUDE.md template (marker-based append/prepend/skip if file exists)
+- Create install manifest (`~/.claude-redsub/install-manifest.json`)
+
+### Update
+
+```
+/redsub-update
+```
+
+### Uninstall
+
+```
+/redsub-uninstall
+```
+
+## Required Official Plugins
+
+This plugin works in combination with these official plugins:
+
+| Plugin | Role |
+|--------|------|
+| superpowers | TDD, design, planning, subagents, code review delegation |
+| code-review | Automated PR review (GitHub comment posting) |
+| pr-review-toolkit | 6 specialized review agents (test/type/security/simplifier, etc.) |
+| ralph-loop | Iterative task automation (TDD, bulk fixes) |
+| security-guidance | Security best practices |
+| context7 | Latest library documentation lookup |
+| typescript-lsp | Real-time TypeScript type diagnostics |
 
 ## Workflow
 
@@ -45,63 +69,180 @@ This skill will:
 Plan → Start → Code → Test → Review → Ship → Deploy
 ```
 
-> All skills use the `rs-` prefix to avoid conflicts with built-in commands.
-> Example: `/rs-plan`, `/rs-validate` (full name: `/redsub-claude-code:rs-plan`)
+## Command Reference
 
-| Phase | Skill | Description |
-|-------|-------|-------------|
-| Admin | `/rs-setup` | Initial setup (deploy rules, create CLAUDE.md) |
-| Plan | `/rs-plan` | Explore codebase and create work plan (planner agent) |
-| Start | `/rs-start-work` | Create feature branch |
-| Dev | `/rs-save` | WIP commit |
-| | `/rs-explore` | Explore codebase architecture (planner agent) |
-| | `/rs-fix-all` | Search and bulk-fix a pattern across the entire codebase |
-| Design | `/rs-design` | UI/UX design via Stitch MCP (designer agent) |
-| Test | `/rs-test` | TDD: write test → verify fail → implement → pass (developer agent) |
-| Validate | `/rs-validate` | `npm run lint && npm run check && npm run test:unit` |
-| Review | `/rs-review` | Code review: security/types/perf/DB/tests (reviewer agent) |
-| Ship | `/rs-ship` | Enforced Save → Validate → Merge pipeline |
-| Deploy | `/rs-deploy` | Dev → verify → user approval → prod |
-| Status | `/rs-status` | Git status, recent commits, pending work summary |
-| Session | `/rs-session-save` | Save progress to CLAUDE.md + WIP commit |
-| Maintain | `/rs-update-check` | Analyze Claude Code updates for plugin compatibility |
+### /redsub-start-work [name]
+
+Create a feature branch and start working.
+
+**When to use:** Starting new work.
+```
+/redsub-start-work user-authentication
+```
+
+### /redsub-test [target]
+
+TDD automation. Runs the Red-Green-Refactor cycle.
+
+**When to use:** Test-first for new features, reproduction test first for bug fixes.
+```
+/redsub-test user-authentication
+```
+
+**With ralph-loop (iterative):**
+```
+/ralph-loop "TDD: user-authentication" --completion-promise "ALL TESTS PASSING" --max-iterations 20
+```
+
+### /redsub-validate
+
+Run lint + type check + unit tests sequentially. Evidence (command output) required.
+
+**When to use:** After code changes, required before merge.
+```
+/redsub-validate
+```
+
+### /redsub-ship [patch|minor|major] [description]
+
+Enforced pipeline: Save → Validate → Review → Version → Merge → Tag → Push.
+
+**When to use:** When a feature is complete and ready to integrate into main.
+```
+/redsub-ship minor "Add user authentication feature"
+```
+
+### /redsub-fix-all [pattern]
+
+Search the entire codebase for a pattern and bulk-fix all occurrences.
+
+**When to use:** Lint errors, naming changes, pattern bulk fixes.
+```
+/redsub-fix-all "ESLint errors"
+/redsub-fix-all --team "ESLint errors"    # Parallel (Agent Teams)
+```
+
+**With ralph-loop:**
+```
+/ralph-loop "Fix all ESLint errors" --completion-promise "LINT CLEAN" --max-iterations 30
+```
+
+### /redsub-deploy [dev|prod]
+
+Deploy to dev/prod environments. Prod requires explicit user approval.
+
+**When to use:** Deployment time.
+```
+/redsub-deploy dev     # Dev first
+/redsub-deploy prod    # Prod (approval required)
+```
+
+### /redsub-design [screen]
+
+UI/UX screen design via Stitch MCP.
+
+**When to use:** Designing new screens.
+```
+/redsub-design dashboard page
+```
+
+### /redsub-session-save
+
+Save progress to CLAUDE.md + WIP commit.
+
+**When to use:** Before ending a session.
+```
+/redsub-session-save
+```
+
+### /redsub-setup
+
+Initial setup (check dependency plugins, deploy rules, create CLAUDE.md).
+
+### /redsub-update
+
+Check plugin version + Claude Code compatibility.
+
+### /redsub-doctor
+
+Diagnose plugin health + auto-repair.
+
+### /redsub-uninstall
+
+Manifest-based clean removal.
+
+## Scenario → Command Mapping
+
+### "I want to build a new feature"
+1. `/brainstorming` — Generate design document (superpowers)
+2. `/writing-plans` — Create 2-5 min implementation tasks
+3. `/redsub-start-work feature-name` — Create branch
+4. `/redsub-test target` — TDD implementation
+5. `/redsub-validate` — Validation
+6. `/review-pr` — Review (6 specialized agents in parallel)
+7. `/redsub-ship minor "feature description"` — Ship it
+
+### "I have 100 lint errors"
+- `/redsub-fix-all "ESLint errors"` — Sequential exhaustive fix
+- `/redsub-fix-all --team "ESLint errors"` — Parallel team fix (Agent Teams)
+- `/ralph-loop "Fix all ESLint errors" --completion-promise "LINT CLEAN"` — Iterative fix
+
+### "I want to deploy"
+1. `/redsub-validate` — Pre-validation
+2. `/redsub-deploy dev` — Dev first
+3. `/redsub-deploy prod` — Prod (user approval required)
+
+### "Review my code"
+- If there's a PR → `/code-review` (auto-post GitHub comments)
+- Deep analysis → `/review-pr` (6 specialized agents in parallel)
+- Plan-vs-implementation → superpowers:requesting-code-review
+
+### "The plugin seems broken"
+```
+/redsub-doctor
+```
+Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
+
+## Removed Skills → Replacements
+
+| Removed Skill | Replacement |
+|--------------|-------------|
+| /rs-review | /code-review or /review-pr |
+| /rs-save | /commit |
+| /rs-plan | /brainstorming → /writing-plans |
+| /rs-explore | /brainstorming |
+| /rs-status | git status |
+| /rs-update-check | /redsub-update |
 
 ## Components
 
 | Type | Count | Details |
 |------|-------|---------|
-| Skills | 15 | See workflow table above |
-| Agents | 5 | developer (Opus), reviewer (Sonnet, read-only), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 7 | Block main commits, validate before merge, auto-format, version check, desktop notifications, context preservation, session end check |
-| Rules | 5 | Code quality, database, security, workflow, testing |
-| MCP | 3 | context7 (library docs), stitch (UI/UX design), sveltekit (official docs) |
-| LSP | 1 | TypeScript (real-time type error diagnostics) |
+| Skills | 12 | See command reference above |
+| Agents | 4 | developer (Opus), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
+| Hooks | 7 | Block main commits, validate marker check on merge, auto-format, validate marker creation, version check, desktop notifications, context preservation, session end check |
+| Rules | 3 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law) |
+| MCP | 2 | stitch (UI/UX design), sveltekit (official docs) |
 
-## Three-Layer Defense (MECE Automation)
-
-MECE (Mutually Exclusive, Collectively Exhaustive) — cover every case, without gaps or overlaps.
-
-Writing "don't do X" in CLAUDE.md alone can't guarantee Claude will follow the rule. This plugin **physically enforces** rules in three layers:
+## Three-Layer Defense
 
 | Layer | Mechanism | Role | Example |
 |-------|-----------|------|---------|
 | 1. Prevention | **Rules** | Auto-inject rules by file pattern | TypeScript strict rules auto-load when editing `.ts` files |
 | 2. Blocking | **Hooks** | Physically block risky actions | `exit 2` blocks direct commits to main branch |
-| 3. Procedure | **Skills** | Isolated execution via subagents | `/rs-ship` enforces Save → Validate → Merge order |
+| 3. Procedure | **Skills** | Enforce pipeline order | `/redsub-ship` enforces Save → Validate → Merge order |
 
 ## Tech Stack
 
-This plugin is designed for the following tech stack:
-
 SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS 4
 
-To use with a different stack, modify the rules, agents, and skills accordingly.
+To use with a different stack, modify the rules, agents, and skills.
 
 ## Environment Variables
 
 | Variable | Purpose | Required |
 |----------|---------|----------|
-| `STITCH_API_KEY` | Google Stitch MCP (UI/UX design in `:design` skill) | Optional (only `:design` skill is unavailable without it) |
+| `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` skill) | Optional |
 
 ## License
 

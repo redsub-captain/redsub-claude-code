@@ -1,9 +1,5 @@
 {
   "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
-    },
     "stitch": {
       "type": "http",
       "url": "https://stitch.googleapis.com/mcp",

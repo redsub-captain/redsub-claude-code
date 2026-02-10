@@ -1,18 +1,28 @@
-# 호환성 기록
+# Compatibility Log
 
-플러그인과 Claude Code 버전 간 호환성을 추적합니다.
-`/rs-update-check` 스킬이 이 파일을 자동 갱신합니다.
+Tracks compatibility between this plugin and Claude Code versions.
+`/redsub-update` skill auto-checks these.
 
-## 현재 상태
+## Current Status
 
-| 항목 | 버전 |
-|------|------|
-| 플러그인 | 1.0.0 |
-| Claude Code | (설치 시 기록) |
+| Item | Version |
+|------|---------|
+| Plugin | 2.0.0 |
+| Claude Code | (recorded on install) |
 
-## 변경 이력
+## Changelog
 
-### 1.0.0 (초기 릴리즈)
-- 15개 스킬, 5개 에이전트, 7개 훅, 5개 규칙
+### 2.0.0 (Major restructure)
+- 12 skills (redsub- prefix), 4 agents, 7 hooks, 3 rules
+- MCP: stitch, sveltekit (context7 moved to official plugin)
+- Removed: 6 duplicate skills, reviewer agent, security/database rules, .lsp.json
+- Added: redsub-uninstall, redsub-update, redsub-doctor
+- Integrated: superpowers, code-review, pr-review-toolkit, ralph-loop
+- Korean → English content migration
+- Install manifest + marker system for CLAUDE.md
+- Context-aware command mapping
+
+### 1.0.0 (Initial release)
+- 15 skills, 5 agents, 10 hooks, 5 rules
 - MCP: context7, stitch, sveltekit
 - LSP: TypeScript
