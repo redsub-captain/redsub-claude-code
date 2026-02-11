@@ -26,9 +26,13 @@ paths:
 - Location: alongside source (`*.test.ts`) or `tests/` directory.
 
 ## E2E Tests (Playwright)
-- Cover critical user scenarios.
+- Cover critical user scenarios (login, purchase, data CRUD).
 - Location: `e2e/` directory.
-- Headless mode for CI compatibility.
+- Setup: `npm install -D @playwright/test && npx playwright install`
+- Run: `npm run test:e2e` (headless for CI).
+- TDD: Write failing E2E first → implement → verify pass.
+- Focus: critical user flows only. Unit/integration tests cover the rest.
+- Playwright MCP 도구로 브라우저 자동화, 스크린샷, 폼 입력 가능.
 
 ## Coverage
 - No coverage regression. New code must maintain or exceed current level.

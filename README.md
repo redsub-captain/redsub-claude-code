@@ -72,6 +72,7 @@ marketplace pull → cache 복사 → registry 업데이트까지 자동으로 �
 | claude-md-management | claude-plugins-official | CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`) |
 | firebase | claude-plugins-official | Firebase MCP (Firestore, Auth, Functions) |
 | supabase | claude-plugins-official | Supabase MCP (PostgreSQL, Auth, Storage) |
+| playwright | claude-plugins-official | E2E 브라우저 테스트 자동화 (Microsoft Playwright MCP) |
 
 ## 워크플로우
 

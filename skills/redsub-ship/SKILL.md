@@ -81,6 +81,27 @@ with open('.claude-plugin/marketplace.json','w') as f: json.dump(d,f,indent=2,en
 "
 
 git add package.json .claude-plugin/plugin.json .claude-plugin/marketplace.json
+```
+
+#### Sync COMPATIBILITY.md
+
+Update the Plugin version in the "Current" table:
+
+```bash
+sed -i '' "s/| Plugin | [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]* |/| Plugin | $NEW_VER |/" COMPATIBILITY.md
+git add COMPATIBILITY.md
+```
+
+#### Sync template version
+
+Update the version comment in `templates/CLAUDE.md.template`:
+
+```bash
+sed -i '' "s/<!-- redsub-template-version:.* -->/<!-- redsub-template-version:$NEW_VER -->/" templates/CLAUDE.md.template
+git add templates/CLAUDE.md.template
+```
+
+```bash
 git commit -m "chore: bump version to $NEW_VER"
 ```
 

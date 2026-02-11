@@ -44,8 +44,11 @@ Install: /plugin install <name>@<marketplace>
 If CLAUDE.md contains `<!-- redsub-claude-code:start -->`:
 - Verify matching `<!-- redsub-claude-code:end -->` exists
 - Verify content between markers is valid
+- Check `<!-- redsub-template-version:X.X.X -->` inside markers:
+  - Compare with version in `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`
+  - Report: "Template: current (vX.X.X)" / "Template: outdated (vX.X.X → vY.Y.Y)" / "Template: legacy (no version)"
 
-**Auto-fix**: Re-inject markers if corrupted.
+**Auto-fix**: Re-inject markers if corrupted. For outdated templates, suggest `/redsub-update`.
 
 ### 5. Hooks integrity
 
@@ -71,6 +74,7 @@ Plugin health check:
 - Manifest: [OK/FIXED/MISSING]
 - Dependencies: [OK/N missing]
 - CLAUDE.md markers: [OK/FIXED/N/A]
+- Template version: [current/outdated/legacy]
 - Hooks: [OK/FIXED]
 - Prefix consistency: [OK/N legacy refs]
 
