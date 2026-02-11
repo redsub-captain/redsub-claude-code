@@ -118,7 +118,7 @@ git push origin main --tags
 On "Push + Release":
 ```bash
 git push origin main --tags
-gh release create v[new version] --title "v[new version]" --generate-notes
+gh release create v[new version] --title "v[new version]" --notes-from-tag
 ```
 
 ## Important
