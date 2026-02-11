@@ -5,8 +5,6 @@ description: Save session context for continuation in next session.
 
 # Session Save
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Procedure
 
 ### 1. Update CLAUDE.md

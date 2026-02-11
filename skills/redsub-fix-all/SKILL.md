@@ -5,8 +5,6 @@ description: Search and bulk-fix a pattern across the entire codebase.
 
 # Bulk Pattern Fix
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Input
 
 `$ARGUMENTS`: pattern description + optional flags (`--team`, `--loop`).

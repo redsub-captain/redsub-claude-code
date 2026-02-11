@@ -5,8 +5,6 @@ description: Create feature branch and start working.
 
 # Branch Creation
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Input
 
 `$ARGUMENTS` provides the branch name.

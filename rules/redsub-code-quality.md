@@ -17,12 +17,8 @@ paths:
 - Server-only logic in `+server.ts` or `src/lib/server/` only.
 - Server data in `+page.ts` load functions must use `+page.server.ts`.
 
-## Security (merged from security-guidance)
-- Never hardcode secrets. Use env vars.
-- Validate all user input at system boundaries.
-- Supabase: RLS required on all tables.
-- Firestore: Security Rules must restrict access.
-- No dynamic code execution, no innerHTML with user data, no unparameterized SQL.
+## Security
+→ `security-guidance` plugin handles detailed rules. Key reminders: no hardcoded secrets, validate user input at boundaries.
 
 ## Environment Variables
 - When adding new env vars, update simultaneously:

@@ -5,8 +5,6 @@ description: Diagnose and auto-repair plugin integrity.
 
 # Doctor
 
-> **Language**: Follow the user's Claude Code language setting.
-
 Diagnose plugin health and auto-repair issues.
 
 ## Checks

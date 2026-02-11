@@ -5,8 +5,6 @@ description: UI/UX screen design via Stitch MCP.
 
 # UI/UX Design
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Prerequisites
 
 Check if `STITCH_API_KEY` is configured:
@@ -16,15 +14,12 @@ echo "${STITCH_API_KEY:+configured}"
 ```
 
 - **If set** → proceed with Stitch MCP (Steps 1-4 below).
-- **If NOT set** → inform user:
-  ```
-  Stitch API key is not configured. Two options:
-  (a) Set up now with /redsub-setup --force
-  (b) Use the frontend-design plugin instead (no API key needed)
-      → Just describe your desired UI and the frontend-design skill
-        will guide you with production-grade implementation.
-  ```
-  If user chooses (b), stop this skill. The frontend-design plugin will auto-activate on frontend work.
+- **If NOT set** → use `AskUserQuestion` tool:
+  - question: "Stitch API key가 설정되지 않았습니다. 어떻게 하시겠습니까?"
+  - header: "Stitch API"
+  - options: ["Set up now" (run /redsub-setup --force to configure), "Use frontend-design" (no API key needed, frontend-design plugin will handle UI work)]
+
+  If user chooses "Use frontend-design", stop this skill. The frontend-design plugin will auto-activate on frontend work.
 
 ## Input
 

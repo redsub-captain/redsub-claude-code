@@ -5,8 +5,6 @@ description: Clean uninstall of redsub-claude-code plugin using install manifest
 
 # Uninstall
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Procedure
 
 ### 1. Read manifest
