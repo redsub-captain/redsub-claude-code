@@ -69,3 +69,28 @@ with open('$MANIFEST', 'w') as f:
     fi
   fi
 fi
+
+# --- Plugin count check (reads from SSOT: config/plugins.json) ---
+INSTALLED_COUNT=0
+INSTALLED_FILE="$HOME/.claude/plugins/installed_plugins.json"
+REGISTRY="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}/config/plugins.json"
+EXPECTED_PLUGINS=13
+if [ -f "$REGISTRY" ]; then
+  EXPECTED_PLUGINS=$(python3 -c "import json; print(len(json.load(open('$REGISTRY'))['plugins']))" 2>/dev/null || echo 13)
+fi
+if [ -f "$INSTALLED_FILE" ]; then
+  INSTALLED_COUNT=$(python3 -c "import json; print(len(json.load(open('$INSTALLED_FILE'))))" 2>/dev/null || echo 0)
+fi
+if [ "$INSTALLED_COUNT" -lt "$EXPECTED_PLUGINS" ]; then
+  echo "SETUP: Some dependency plugins may be missing ($INSTALLED_COUNT/$EXPECTED_PLUGINS). Run /redsub-doctor to check."
+fi
+
+# --- CLAUDE.md freshness check ---
+if [ -f "CLAUDE.md" ]; then
+  LAST_MOD=$(stat -f %m "CLAUDE.md" 2>/dev/null || stat -c %Y "CLAUDE.md" 2>/dev/null || echo 0)
+  NOW=$(date +%s)
+  DAYS=$(( (NOW - LAST_MOD) / 86400 ))
+  if [ "$DAYS" -ge 7 ]; then
+    echo "MAINTENANCE: CLAUDE.md hasn't been updated in ${DAYS} days. Run /revise-claude-md."
+  fi
+fi

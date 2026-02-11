@@ -7,7 +7,7 @@ Tracks compatibility between this plugin and Claude Code versions.
 
 | Item | Version |
 |------|---------|
-| Plugin | 2.1.1 |
+| Plugin | 2.1.5 |
 | Claude Code | (recorded on install) |
 
 ## Changelog

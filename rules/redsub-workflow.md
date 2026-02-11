@@ -36,6 +36,17 @@
   2. **Subagent delegation**: Use Task tool to delegate bulk edits to a subagent
   3. **Small batches**: Split into groups of 2-3 files, process each batch sequentially
 
+## Single Source of Truth (SSOT)
+
+When referencing plugin data, ALWAYS read from the canonical source. Never hardcode these values.
+
+| Data | SSOT Location | Consumers |
+|------|---------------|-----------|
+| Dependency plugin list | `${CLAUDE_PLUGIN_ROOT}/config/plugins.json` | /redsub-setup, /redsub-doctor, version-check.sh |
+| Plugin version | `package.json` → synced to plugin.json, marketplace.json | /redsub-ship, guard-main.sh |
+| Hook definitions | `hooks/hooks.json` | Claude Code runtime |
+| Validation | `scripts/verify-install.sh` | /redsub-doctor, pre-merge |
+
 ## Token Optimization
 - Prefer Glob/Grep for file discovery. Avoid bulk reads.
 - Keep responses concise. No redundant code block repetition.
@@ -71,3 +82,7 @@ When you detect these situations, suggest the appropriate commands:
 | Session ending | `/redsub-session-save` |
 | Plugin issues | `/redsub-doctor` |
 | UI/UX design needed | `/redsub-design [screen]` |
+| New feature (complex, multi-file) | `/feature-dev [description]` (feature-dev plugin) |
+| CLAUDE.md outdated or session end | `/revise-claude-md` (claude-md-management plugin) |
+| Code quality after implementation | code-simplifier runs automatically |
+| UI/UX design (no Stitch) | frontend-design plugin auto-activates |

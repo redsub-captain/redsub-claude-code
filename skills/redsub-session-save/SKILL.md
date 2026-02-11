@@ -28,11 +28,26 @@ git add -A
 git commit -m "wip: session save"
 ```
 
-### 3. Confirm
+### 3. Capture session learnings (REQUIRED)
+
+This step is **REQUIRED** — do not skip.
+
+Run `/revise-claude-md` to capture patterns, conventions, and gotchas discovered during this session into CLAUDE.md.
+
+If the claude-md-management plugin is not installed, manually review the session and add any new learnings to CLAUDE.md under appropriate sections (e.g., commands, gotchas, conventions).
+
+After completing this step, create a marker file:
+```bash
+touch /tmp/.claude-redsub-claude-md-revised
+```
+
+### 4. Confirm
+
 ```
 Session saved:
 - CLAUDE.md updated: [yes/no]
 - WIP commit: [yes/no]
+- Session learnings captured: [yes/no]
 - Branch: [current branch]
 ```
 

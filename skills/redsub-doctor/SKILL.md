@@ -31,11 +31,15 @@ Read `~/.claude-redsub/install-manifest.json`:
 
 ### 3. Dependency plugins
 
-Check `~/.claude/plugins/installed_plugins.json` for required plugins:
-- superpowers, code-review, pr-review-toolkit, ralph-loop
-- security-guidance, context7, typescript-lsp
+**Read the plugin registry from `${CLAUDE_PLUGIN_ROOT}/config/plugins.json`** — this is the Single Source of Truth (SSOT). Do NOT use a hardcoded list.
 
-**Report**: List missing plugins with install commands.
+For each plugin in the registry, check if it's installed in `~/.claude/plugins/installed_plugins.json`.
+
+**Report**: List missing plugins with install commands constructed from `name` and `marketplace` fields:
+```
+Missing: <name>
+Install: /plugin install <name>@<marketplace>
+```
 
 ### 4. CLAUDE.md marker integrity
 

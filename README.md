@@ -4,7 +4,7 @@
 
 1인 개발자를 위한 Claude Code **워크플로우 오케스트레이터** 플러그인.
 
-공식 플러그인(superpowers, code-review, pr-review-toolkit, ralph-loop 등)과 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
+공식 플러그인 13개(superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
 
 ## 전제 조건
 
@@ -57,15 +57,21 @@ marketplace pull → cache 복사 → registry 업데이트까지 자동으로 �
 
 이 플러그인은 아래 공식 플러그인과 조합하여 동작합니다:
 
-| 플러그인 | 역할 |
-|---------|------|
-| superpowers | TDD, 설계, 계획, 서브에이전트, 코드 리뷰 위임 |
-| code-review | PR 자동 리뷰 (GitHub 코멘트 게시) |
-| pr-review-toolkit | 6개 전문 리뷰 에이전트 (테스트/타입/보안/간소화 등) |
-| ralph-loop | 반복 작업 자동화 (TDD, 일괄 수정) |
-| security-guidance | 보안 모범 사례 |
-| context7 | 라이브러리 최신 문서 조회 |
-| typescript-lsp | TypeScript 실시간 타입 진단 |
+| 플러그인 | 마켓플레이스 | 역할 |
+|---------|------------|------|
+| superpowers | obra/superpowers-marketplace | TDD, 설계, 계획, 서브에이전트, 코드 리뷰 위임 |
+| code-review | claude-plugins-official | PR 자동 리뷰 (GitHub 코멘트 게시) |
+| pr-review-toolkit | claude-plugins-official | 6개 전문 리뷰 에이전트 (테스트/타입/보안/간소화 등) |
+| ralph-loop | claude-plugins-official | 반복 작업 자동화 (TDD, 일괄 수정) |
+| security-guidance | claude-plugins-official | 보안 모범 사례 |
+| context7 | claude-plugins-official | 라이브러리 최신 문서 조회 |
+| typescript-lsp | claude-plugins-official | TypeScript 실시간 타입 진단 |
+| frontend-design | claude-plugins-official | UI/UX 구현 가이드 (Stitch 없이도 사용 가능) |
+| feature-dev | claude-plugins-official | 구조화된 기능 개발 (`/feature-dev`) |
+| code-simplifier | claude-plugins-official | 자율적 코드 간소화 리뷰 |
+| claude-md-management | claude-plugins-official | CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`) |
+| firebase | claude-plugins-official | Firebase MCP (Firestore, Auth, Functions) |
+| supabase | claude-plugins-official | Supabase MCP (PostgreSQL, Auth, Storage) |
 
 ## 워크플로우
 
@@ -201,6 +207,17 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 - 심층 분석 → `/review-pr` (6개 전문 에이전트 병렬)
 - 계획 대비 검증 → superpowers:requesting-code-review
 
+### "복잡한 기능을 개발해야 해"
+1. `/feature-dev user-authentication` — 구조화된 기능 개발 시작
+2. 자동으로 Agent 팀이 설계 → 구현 → 테스트 단계를 수행
+3. `/redsub-ship minor "기능 설명"` — 출시
+
+### "CLAUDE.md를 정리하고 싶어"
+```
+/revise-claude-md
+```
+CLAUDE.md 품질 감사 + 세션 중 발견한 패턴/규칙 반영. 세션 종료 전 `/redsub-session-save`가 자동으로 실행합니다.
+
 ### "플러그인이 이상해"
 ```
 /redsub-doctor
@@ -224,7 +241,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 |------|------|------|
 | Skills | 12개 | 위 명령어 레퍼런스 참조 |
 | Agents | 4개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 9개 | 워크플로우 오케스트레이터, main 커밋 차단, main 편집 경고, merge 시 validate 마커 체크, 자동 포맷, validate 마커 생성, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
+| Hooks | 9개 | 워크플로우 오케스트레이터, main 커밋/merge 차단 (버전 일치 검증 포함), main 편집 경고, 자동 포맷 + 편집 추적, validate 마커 생성, 버전/플러그인/CLAUDE.md 체크, 데스크톱 알림, 컨텍스트 보존 + 학습 리마인더, 세션 종료 3중 체크 |
 | Rules | 3개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law) |
 | MCP | 2개 | stitch (UI/UX 설계), sveltekit (공식 문서) |
 
@@ -250,16 +267,21 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 
 ### Stitch API Key 설정 (선택)
 
-`/redsub-design` 스킬로 UI/UX 화면을 설계하려면 Stitch API 키가 필요합니다. UI 설계 기능을 사용하지 않는다면 건너뛰어도 됩니다.
+`/redsub-design` 스킬로 UI/UX 화면을 설계하려면 Stitch API 키가 필요합니다. Stitch 없이도 **frontend-design** 플러그인으로 UI 구현 가이드를 받을 수 있으므로, 화면 디자인 생성이 필요하지 않다면 건너뛰어도 됩니다.
 
-1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials)에서 API 키 생성
-2. "Generative Language API" 활성화
-3. 쉘 프로필에 추가:
-   ```bash
-   echo 'export STITCH_API_KEY="your-api-key-here"' >> ~/.zshrc
-   source ~/.zshrc
+`/redsub-setup`을 실행하면 API 키 입력과 저장을 자동으로 처리합니다.
+
+수동 설정이 필요한 경우:
+1. [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)에서 API 키 생성
+2. `~/.claude/settings.json`의 `env` 섹션에 추가:
+   ```json
+   {
+     "env": {
+       "STITCH_API_KEY": "your-api-key-here"
+     }
+   }
    ```
-4. Claude Code 재시작
+3. Claude Code 새 세션 시작
 
 ## 라이선스
 

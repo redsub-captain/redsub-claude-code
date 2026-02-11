@@ -54,10 +54,36 @@ User may skip.
 
 ### 4. Version bump
 
+Update **all 3 version files** (package.json, plugin.json, marketplace.json):
+
 ```bash
 npm version [patch|minor|major] --no-git-tag-version
-git add package.json
-git commit -m "chore: bump version to [new version]"
+```
+
+Read the new version from `package.json`, then update the other 2 files to match:
+
+```bash
+# Read new version
+NEW_VER=$(node -p "require('./package.json').version")
+
+# Sync plugin.json
+python3 -c "
+import json
+with open('.claude-plugin/plugin.json','r') as f: d=json.load(f)
+d['version']='$NEW_VER'
+with open('.claude-plugin/plugin.json','w') as f: json.dump(d,f,indent=2,ensure_ascii=False); f.write('\n')
+"
+
+# Sync marketplace.json
+python3 -c "
+import json
+with open('.claude-plugin/marketplace.json','r') as f: d=json.load(f)
+d['plugins'][0]['version']='$NEW_VER'
+with open('.claude-plugin/marketplace.json','w') as f: json.dump(d,f,indent=2,ensure_ascii=False); f.write('\n')
+"
+
+git add package.json .claude-plugin/plugin.json .claude-plugin/marketplace.json
+git commit -m "chore: bump version to $NEW_VER"
 ```
 
 ### 5. Merge (user approval required)

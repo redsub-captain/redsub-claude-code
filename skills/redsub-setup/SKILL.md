@@ -15,42 +15,45 @@ If `~/.claude-redsub/.setup-done` exists and `--force` was NOT given in `$ARGUME
 
 ### 1. Dependency plugins check
 
-Check `~/.claude/plugins/installed_plugins.json` for required plugins:
+**Read the plugin registry from `${CLAUDE_PLUGIN_ROOT}/config/plugins.json`** — this is the Single Source of Truth (SSOT). Do NOT use a hardcoded list.
 
-| Plugin | Purpose |
-|--------|---------|
-| superpowers | Planning, TDD, subagent-driven development |
-| code-review | Automated PR review with GitHub comments |
-| pr-review-toolkit | 6 specialized review agents |
-| ralph-loop | Iterative development loops |
-| security-guidance | Security best practices |
-| context7 | Library documentation |
-| typescript-lsp | TypeScript real-time diagnostics |
+For each plugin in the registry, check if it's installed in `~/.claude/plugins/installed_plugins.json`.
 
-For each missing plugin, show install command:
+For missing plugins, check marketplaces first:
+
+**Step A — Marketplace registration:**
+Read the `marketplaces` array from `config/plugins.json`. Check if each is registered. If not, show registration commands FIRST:
 ```
-Missing: superpowers
-Install: /plugin install superpowers@claude-plugins-official
+The following marketplaces need to be registered first:
+/plugin marketplace add <marketplace-name>
+```
+
+**Step B — Plugin installation:**
+For each missing plugin, construct the install command from `name` and `marketplace` fields:
+```
+Missing plugins (install all at once):
+/plugin install <name>@<marketplace>
+...
+```
+
+**Step C — Re-run:**
+```
+After installing, re-run: /redsub-setup --force
 ```
 
 ### 2. Deploy rules
 
-Copy the 3 rule files (code quality, workflow, testing) from the plugin to the Claude Code global rules directory. These rules are automatically loaded by Claude Code based on file patterns.
+Copy the 3 rule files from the plugin to the Claude Code global rules directory.
 
 ```bash
-# Ensure the Claude Code rules directory exists
 mkdir -p ~/.claude/rules
-# Deploy: redsub-code-quality.md, redsub-workflow.md, redsub-testing.md
 cp ${CLAUDE_PLUGIN_ROOT}/rules/redsub-*.md ~/.claude/rules/
 ```
 
 ### 3. CLAUDE.md handling
 
-CLAUDE.md is the project-level instruction file that Claude Code reads on every session. This step sets up the workflow guide.
-
-If `CLAUDE.md` does NOT exist in the current directory: create from the plugin's template.
+If `CLAUDE.md` does NOT exist: create from the plugin's template.
 ```bash
-# Create CLAUDE.md from template (includes workflow commands, tech stack, principles)
 cp ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template CLAUDE.md
 ```
 
@@ -62,7 +65,7 @@ CLAUDE.md already exists. How should we add the workflow guide?
 (c) Skip
 ```
 
-For (a) or (b), wrap the template content with markers so it can be updated or removed later:
+For (a) or (b), wrap the template content with markers:
 ```
 <!-- redsub-claude-code:start -->
 (template content)
@@ -71,12 +74,11 @@ For (a) or (b), wrap the template content with markers so it can be updated or r
 
 ### 4. Stitch API key (optional)
 
-The `/redsub-design` skill uses [Google Stitch MCP](https://stitch.googleapis.com) for UI/UX screen design. An API key is required only if the user plans to use this feature.
+The `/redsub-design` skill uses [Google Stitch](https://stitch.withgoogle.com) for UI/UX screen design. An API key is required only if the user plans to use this feature.
 
 Check if `STITCH_API_KEY` environment variable is set:
 
 ```bash
-# Check if the Stitch API key is configured
 echo "${STITCH_API_KEY:+configured}"
 ```
 
@@ -84,29 +86,34 @@ echo "${STITCH_API_KEY:+configured}"
 ```
 Stitch API key is not configured.
 The /redsub-design skill requires this key for UI/UX screen design.
+(If you don't need UI design, the frontend-design plugin works without an API key.)
 
-(a) Set up now — I'll guide you through getting a key
-(b) Skip — I'll set it up later
+(a) Set up now
+(b) Skip
 ```
 
-**If user chooses (a)**, show the setup guide:
-```
-1. Go to https://console.cloud.google.com/apis/credentials
-2. Create an API key (or use an existing one)
-3. Enable the "Generative Language API" for the key
-4. Add the key to your shell profile:
+**If user chooses (a)**:
 
-   echo 'export STITCH_API_KEY="your-api-key-here"' >> ~/.zshrc
-   source ~/.zshrc
+1. Tell user: "Go to https://stitch.withgoogle.com/settings and create an API key."
+2. Use AskUserQuestion to ask the user to paste their API key.
+3. Read `~/.claude/settings.json`.
+4. Add the key to the `env` section (create `env` if it doesn't exist):
+   ```json
+   {
+     "env": {
+       "STITCH_API_KEY": "<user-provided-key>"
+     },
+     ...existing settings
+   }
+   ```
+5. Write the updated settings.json back.
+6. Tell user: "Saved. Start a new Claude Code session to activate."
 
-After setting the key, restart Claude Code for it to take effect.
-```
+**Do NOT** suggest modifying shell profiles (~/.zshrc, ~/.bashrc) or running shell commands.
 
 **If user chooses (b)**, continue without it and note in the summary.
 
 ### 5. Install manifest
-
-Create a manifest file that records what was installed. This is used by `/redsub-uninstall` for clean removal and by `/redsub-doctor` for integrity checks.
 
 Create `~/.claude-redsub/install-manifest.json`:
 ```json
@@ -125,10 +132,7 @@ Create `~/.claude-redsub/install-manifest.json`:
 
 ### 6. Completion marker
 
-Mark setup as complete. This prevents accidental re-runs (unless `--force` is used).
-
 ```bash
-# Create the completion marker with timestamp
 mkdir -p ~/.claude-redsub
 date > ~/.claude-redsub/.setup-done
 ```
