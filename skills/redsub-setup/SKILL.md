@@ -35,10 +35,10 @@ Count installed vs total.
    ...
    ```
 
-3. Ask user via AskUserQuestion: "위 플러그인을 설치하시겠습니까?"
-   - Options: "Install all" / "Skip for now"
+3. Ask user via AskUserQuestion: "위 플러그인을 설치하시겠습니까? (사용자가 직접 명령어를 실행해야 합니다)"
+   - Options: "Show install commands" / "Skip for now"
 
-4. **If user chooses install**: present the commands and wait for the user to execute them. After the user finishes, continue to the next step. **Do NOT require re-running setup.**
+4. **If user chooses install**: present the commands and wait for the user to execute them. After the user finishes, re-read `~/.claude/plugins/installed_plugins.json` to update the installed count. Continue to the next step. **Do NOT require re-running setup.**
 
 5. **If user chooses skip**: continue to the next step without blocking. Record the count for the summary.
 
@@ -68,7 +68,7 @@ cp ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template ~/.claude/CLAUDE.md
 (c) Skip
 ```
 
-For (a) or (b), Read the existing file first, then wrap the template content with markers and merge:
+For (a) or (b), Read the existing file first. If markers `<!-- redsub-claude-code:start -->` and `<!-- redsub-claude-code:end -->` already exist, **replace** the content between them with the new template. Otherwise, wrap the template content with markers and append/prepend:
 ```
 <!-- redsub-claude-code:start -->
 (template content)
@@ -124,7 +124,7 @@ Target: `~/.claude-redsub/install-manifest.json`
 mkdir -p ~/.claude-redsub
 ```
 
-**If the file already exists**, Read it first then update `version`, `installed_at`, and merge arrays (`files_created`, `files_modified`, `rules_installed`) without duplicates.
+**If the file already exists**, Read it first then update `version`, `installed_at`, and merge arrays using path-based deduplication (add new entries only if no existing entry has the same path).
 
 **If the file does NOT exist**, create it.
 
