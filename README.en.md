@@ -72,6 +72,7 @@ This plugin works in combination with these official plugins:
 | claude-md-management | claude-plugins-official | CLAUDE.md audit + session learning (`/revise-claude-md`) |
 | firebase | claude-plugins-official | Firebase MCP (Firestore, Auth, Functions) |
 | supabase | claude-plugins-official | Supabase MCP (PostgreSQL, Auth, Storage) |
+| playwright | claude-plugins-official | E2E browser test automation (Microsoft Playwright MCP) |
 
 ## Workflow
 
