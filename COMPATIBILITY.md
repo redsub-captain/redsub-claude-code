@@ -7,10 +7,14 @@ Tracks compatibility between this plugin and Claude Code versions.
 
 | Item | Version |
 |------|---------|
-| Plugin | 2.1.0 |
+| Plugin | 2.1.1 |
 | Claude Code | (recorded on install) |
 
 ## Changelog
+
+### 2.1.1 (Ship UX improvement)
+- /redsub-ship approval steps use AskUserQuestion button UI instead of text y/n
+- Merge Push+Release steps into single approval
 
 ### 2.1.0 (Workflow orchestration improvements)
 - Active workflow orchestration via UserPromptSubmit hook
