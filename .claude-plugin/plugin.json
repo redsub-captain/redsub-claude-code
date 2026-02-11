@@ -1,6 +1,6 @@
 {
   "name": "redsub-claude-code",
-  "version": "2.1.5",
+  "version": "2.2.0",
   "description": "Solo developer workflow orchestrator for Claude Code",
   "author": {
     "name": "RED SUB Inc.",
@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/redsub-captain/redsub-claude-code",
   "license": "MIT",
-  "keywords": ["claude-code", "workflow", "tdd", "sveltekit", "firebase", "solo-developer"]
+  "keywords": [
+    "claude-code",
+    "workflow",
+    "tdd",
+    "sveltekit",
+    "firebase",
+    "solo-developer"
+  ]
 }
