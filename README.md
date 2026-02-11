@@ -41,13 +41,10 @@
 
 세션 시작 시 새 버전이 있으면 자동으로 알림이 표시됩니다.
 
-```
-# 1. 플러그인 업데이트
-/plugin update redsub-claude-code@redsub-plugins
+1. `/plugin` 입력 → **Installed** 탭 → **redsub-claude-code** 선택 → **Update now**
+2. 새 세션 시작 (업데이트된 스킬/훅 적용)
 
-# 2. 버전/호환성 상세 확인 (선택)
-/redsub-update
-```
+버전/호환성 상세 확인: `/redsub-update`
 
 ### 삭제
 
@@ -167,7 +164,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 
 ### /redsub-update
 
-플러그인 버전 + Claude Code 호환성 확인. 실제 업데이트는 `/plugin update redsub-claude-code@redsub-plugins`로 수행합니다.
+플러그인 버전 + Claude Code 호환성 확인. 실제 업데이트는 `/plugin` → Installed → Update now.
 
 ### /redsub-doctor
 

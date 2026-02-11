@@ -1,6 +1,6 @@
 {
   "name": "redsub-claude-code",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Solo developer workflow orchestrator for Claude Code",
   "license": "MIT",
   "author": "redsub",

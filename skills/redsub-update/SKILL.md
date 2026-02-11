@@ -3,7 +3,7 @@ name: redsub-update
 description: Check plugin version updates and Claude Code compatibility.
 ---
 
-# Update Check
+# Plugin Auto-Update
 
 > **Language**: Follow the user's Claude Code language setting.
 
@@ -15,80 +15,94 @@ description: Check plugin version updates and Claude Code compatibility.
 
 Read version from `${CLAUDE_PLUGIN_ROOT}/package.json`.
 
-```bash
-cat ${CLAUDE_PLUGIN_ROOT}/package.json
-```
-
 ### 2. Latest version (GitHub)
 
-First try GitHub releases API:
 ```bash
 curl -s https://api.github.com/repos/redsub-captain/redsub-claude-code/releases/latest | grep '"tag_name"'
 ```
 
-If no releases found, check the `package.json` on the default branch:
+If no releases found, fallback:
 ```bash
 curl -s https://raw.githubusercontent.com/redsub-captain/redsub-claude-code/main/package.json | grep '"version"'
 ```
 
 ### 3. Compare versions
 
-- If current = latest: "Plugin is up to date (vX.X.X)"
-- If current < latest: proceed to step 6 for update instructions
+- If current = latest → report "Up to date (vX.X.X)" and skip to step 6.
+- If current < latest → proceed to step 4.
 
-### 4. Claude Code compatibility
+### 4. Auto-update
+
+Execute these commands **sequentially** (one at a time):
+
+#### 4a. Pull latest from marketplace repo
+
+```bash
+git -C ~/.claude/plugins/marketplaces/redsub-plugins pull origin main
+```
+
+If this fails (e.g. merge conflicts), reset and retry:
+```bash
+git -C ~/.claude/plugins/marketplaces/redsub-plugins fetch origin main && git -C ~/.claude/plugins/marketplaces/redsub-plugins reset --hard origin/main
+```
+
+#### 4b. Read new version from pulled repo
+
+```bash
+cat ~/.claude/plugins/marketplaces/redsub-plugins/package.json
+```
+
+Extract the `version` field. Let this be `NEW_VERSION`.
+
+#### 4c. Create new cache directory and copy files
+
+```bash
+mkdir -p ~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION
+```
+
+```bash
+rsync -a --exclude='.git' ~/.claude/plugins/marketplaces/redsub-plugins/ ~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION/
+```
+
+#### 4d. Get git commit SHA
+
+```bash
+git -C ~/.claude/plugins/marketplaces/redsub-plugins rev-parse HEAD
+```
+
+Save this as `COMMIT_SHA`.
+
+#### 4e. Update installed_plugins.json
+
+Read `~/.claude/plugins/installed_plugins.json`.
+
+Find the `"redsub-claude-code@redsub-plugins"` entry and update:
+- `installPath` → `~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION` (use full absolute path with $HOME expanded)
+- `version` → `NEW_VERSION`
+- `lastUpdated` → current ISO timestamp
+- `gitCommitSha` → `COMMIT_SHA`
+
+Write the updated JSON back using the Edit tool. **Do NOT use Write** (the file was already Read).
+
+### 5. Verify update
+
+Read `~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION/package.json` and confirm the version matches.
+
+### 6. Claude Code compatibility
 
 ```bash
 claude --version 2>/dev/null || echo "unknown"
 ```
 
-Compare against minimum required version if specified in plugin metadata.
+### 7. Report result
 
-### 5. Dependency check
-
-Read `~/.claude/plugins/installed_plugins.json` and verify these required plugins are installed:
-- superpowers
-- code-review
-- pr-review-toolkit
-- ralph-loop
-- security-guidance
-- context7
-- typescript-lsp
-
-Report missing plugins with install commands:
+If update was performed:
 ```
-Missing: [plugin-name]
-Install: /plugin install [plugin-name]@claude-plugins-official
+Updated: vOLD → vNEW
+Restart the session to apply changes.
 ```
 
-### 6. Update instructions (if needed)
-
+If already up to date:
 ```
-Update available: vCURRENT → vLATEST
-
-To update:
-/plugin update redsub-claude-code@redsub-plugins
-
-Note: install-manifest.json is auto-synced on next session start.
-```
-
-### 7. Post-update sync (if update was just performed)
-
-If the user has already run `/plugin update` during this session, sync the install manifest immediately:
-
-```bash
-PLUGIN_VER=$(python3 -c "import json; print(json.load(open('${CLAUDE_PLUGIN_ROOT}/package.json'))['version'])")
-MANIFEST="$HOME/.claude-redsub/install-manifest.json"
-if [ -f "$MANIFEST" ]; then
-  python3 -c "
-import json
-with open('$MANIFEST', 'r') as f:
-    data = json.load(f)
-old_ver = data.get('version', 'unknown')
-data['version'] = '$PLUGIN_VER'
-with open('$MANIFEST', 'w') as f:
-    json.dump(data, f, indent=2)
-print(f'install-manifest.json synced: v{old_ver} -> v$PLUGIN_VER')
-"
-fi
+Up to date: vX.X.X
 ```
