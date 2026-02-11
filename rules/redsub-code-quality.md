@@ -48,3 +48,6 @@ paths:
 - Supabase: Always use RLS. Test policies in SQL editor first.
 - Firestore: Keep documents small. Use subcollections for large data.
 - Index frequently queried fields.
+
+## Tool Support
+SvelteKit/Firebase/Supabase 작업 시 해당 MCP 도구로 공식 문서 참조. 상세 → agents/developer.md

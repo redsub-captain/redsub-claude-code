@@ -52,10 +52,11 @@ cp ${CLAUDE_PLUGIN_ROOT}/rules/redsub-*.md ~/.claude/rules/
 Target path: `~/.claude/CLAUDE.md` (global — applies to all projects).
 
 **If `~/.claude/CLAUDE.md` does NOT exist:** create from the plugin's template, wrapped with markers.
+Read the template version from the first line of `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template` (format: `<!-- redsub-template-version:X.X.X -->`).
 Write `~/.claude/CLAUDE.md` with markers wrapping the template content:
 ```
 <!-- redsub-claude-code:start -->
-(content of ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template)
+(content of ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template, including the version comment)
 <!-- redsub-claude-code:end -->
 ```
 

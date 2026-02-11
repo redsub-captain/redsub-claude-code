@@ -86,6 +86,20 @@ Write the updated JSON back using the Edit tool. **Do NOT use Write** (the file 
 
 Read `~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION/package.json` and confirm the version matches.
 
+### 5.5. Template sync check
+
+If update was performed (step 4 ran):
+
+1. Read `~/.claude/CLAUDE.md` and extract `redsub-template-version:` from between the markers.
+2. Read the template version from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template` first line.
+3. Compare versions:
+   - If match → skip.
+   - If mismatch or no version found (legacy) → use `AskUserQuestion`:
+     - question: "CLAUDE.md 템플릿이 업데이트됐습니다 (현재: [old or 'legacy'] → 최신: [new]). 갱신할까요?"
+     - header: "Template"
+     - options: ["Update (Recommended)" (replace content between markers with new template), "Skip" (keep current)]
+   - If user chooses "Update": Read `~/.claude/CLAUDE.md`, replace everything between `<!-- redsub-claude-code:start -->` and `<!-- redsub-claude-code:end -->` with the new template content, preserving content outside markers.
+
 ### 6. Claude Code compatibility
 
 ```bash

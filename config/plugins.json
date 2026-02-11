@@ -82,6 +82,12 @@
       "marketplace": "claude-plugins-official",
       "role_ko": "Supabase MCP (PostgreSQL, Auth, Storage)",
       "role_en": "Supabase MCP (PostgreSQL, Auth, Storage)"
+    },
+    {
+      "name": "playwright",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "E2E 브라우저 테스트 자동화 (Microsoft Playwright MCP)",
+      "role_en": "E2E browser test automation (Microsoft Playwright MCP)"
     }
   ]
 }
