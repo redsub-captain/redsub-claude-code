@@ -3,12 +3,13 @@
 # No-op if prettier is not installed
 
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 # Read JSON input from stdin
 INPUT=$(cat)
 
 # Extract modified file path
-FILE_PATH=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('input',{}).get('file_path',''))" 2>/dev/null || echo "")
+FILE_PATH=$(json_input_val "$INPUT" "" input file_path)
 
 if [ -z "$FILE_PATH" ] || [ ! -f "$FILE_PATH" ]; then
   exit 0
@@ -20,13 +21,13 @@ if command -v npx &>/dev/null && [ -f "node_modules/.bin/prettier" ]; then
 fi
 
 # --- Session edit tracker ---
-COUNTER_FILE="/tmp/.claude-redsub-edit-count"
+COUNTER_FILE="$REDSUB_DIR/edit-count"
 COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
 echo $((COUNT + 1)) > "$COUNTER_FILE"
 
 # Track Svelte file edits
 if echo "$FILE_PATH" | grep -qE '\.svelte$'; then
-  SVELTE_FILE="/tmp/.claude-redsub-svelte-count"
+  SVELTE_FILE="$REDSUB_DIR/svelte-count"
   SCOUNT=$(cat "$SVELTE_FILE" 2>/dev/null || echo 0)
   echo $((SCOUNT + 1)) > "$SVELTE_FILE"
 fi

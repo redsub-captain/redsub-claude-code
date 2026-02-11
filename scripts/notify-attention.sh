@@ -3,12 +3,13 @@
 # Triggered on permission_prompt and idle_prompt events
 
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 # Read JSON input from stdin
 INPUT=$(cat)
 
 # Extract notification type
-NOTIFICATION_TYPE=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('type',''))" 2>/dev/null || echo "attention")
+NOTIFICATION_TYPE=$(json_input_val "$INPUT" "attention" type)
 
 case "$NOTIFICATION_TYPE" in
   permission_prompt)
@@ -25,7 +26,5 @@ case "$NOTIFICATION_TYPE" in
     ;;
 esac
 
-# macOS notification
-if command -v osascript &>/dev/null; then
-  osascript -e "display notification \"$MESSAGE\" with title \"$TITLE\"" 2>/dev/null || true
-fi
+# macOS notification (safe_osascript escapes special characters)
+safe_osascript "$TITLE" "$MESSAGE"

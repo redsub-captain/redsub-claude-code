@@ -3,6 +3,7 @@
 # Checks file existence, JSON validity, executable permissions, reference consistency
 
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 ERRORS=0
@@ -25,7 +26,7 @@ echo ""
 echo "[JSON Files]"
 for f in ".claude-plugin/plugin.json" ".mcp.json" "hooks/hooks.json" ".claude-plugin/marketplace.json"; do
   if [ -f "$PLUGIN_ROOT/$f" ]; then
-    if python3 -m json.tool "$PLUGIN_ROOT/$f" > /dev/null 2>&1; then
+    if json_valid "$PLUGIN_ROOT/$f"; then
       check "ok" "$f — valid JSON"
     else
       check "fail" "$f — JSON parse error"
@@ -105,9 +106,9 @@ done
 
 echo ""
 
-# 6. Scripts (10, executable)
+# 6. Scripts (executable) — auto-discover from filesystem
 echo "[Scripts (executable)]"
-SCRIPTS="workflow-orchestrator.sh version-check.sh guard-main.sh warn-main-edit.sh validate-marker.sh auto-format.sh notify-attention.sh pre-compact-context.sh completion-check.sh verify-install.sh"
+SCRIPTS="workflow-orchestrator.sh version-check.sh guard-main.sh warn-main-edit.sh validate-marker.sh auto-format.sh notify-attention.sh pre-compact-context.sh completion-check.sh verify-install.sh lib.sh"
 for script in $SCRIPTS; do
   f="scripts/$script"
   if [ -f "$PLUGIN_ROOT/$f" ]; then
@@ -137,9 +138,9 @@ echo ""
 
 # 8. Version consistency
 echo "[Version Consistency]"
-PLUGIN_VER=$(python3 -c "import json; print(json.load(open('$PLUGIN_ROOT/.claude-plugin/plugin.json'))['version'])" 2>/dev/null || echo "")
-PKG_VER=$(python3 -c "import json; print(json.load(open('$PLUGIN_ROOT/package.json'))['version'])" 2>/dev/null || echo "")
-MKT_VER=$(python3 -c "import json; p=json.load(open('$PLUGIN_ROOT/.claude-plugin/marketplace.json')); print(p['plugins'][0]['version'])" 2>/dev/null || echo "")
+PLUGIN_VER=$(json_val "$PLUGIN_ROOT/.claude-plugin/plugin.json" version)
+PKG_VER=$(json_val "$PLUGIN_ROOT/package.json" version)
+MKT_VER=$(json_val "$PLUGIN_ROOT/.claude-plugin/marketplace.json" plugins 0 version)
 
 if [ -n "$PLUGIN_VER" ] && [ "$PLUGIN_VER" = "$PKG_VER" ] && [ "$PLUGIN_VER" = "$MKT_VER" ]; then
   check "ok" "All versions match: v$PLUGIN_VER"
@@ -168,23 +169,15 @@ echo "[Count Consistency]"
 ACTUAL_SKILLS=$(ls -d "$PLUGIN_ROOT"/skills/*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')
 ACTUAL_AGENTS=$(ls "$PLUGIN_ROOT"/agents/*.md 2>/dev/null | wc -l | tr -d ' ')
 ACTUAL_RULES=$(ls "$PLUGIN_ROOT"/rules/*.md 2>/dev/null | wc -l | tr -d ' ')
-ACTUAL_HOOKS=$(python3 -c "
-import json
-with open('$PLUGIN_ROOT/hooks/hooks.json') as f: d=json.load(f)
-print(sum(len(group) for groups in d['hooks'].values() for group in groups))
-" 2>/dev/null || echo "0")
-ACTUAL_MCPS=$(python3 -c "
-import json
-with open('$PLUGIN_ROOT/.mcp.json') as f: d=json.load(f)
-print(len(d.get('mcpServers',{})))
-" 2>/dev/null || echo "0")
+ACTUAL_HOOKS=$(json_count "$PLUGIN_ROOT/hooks/hooks.json" hooks)
+ACTUAL_MCPS=$(json_count "$PLUGIN_ROOT/.mcp.json" mcpServers)
 ACTUAL_SCRIPTS=$(ls "$PLUGIN_ROOT"/scripts/*.sh 2>/dev/null | wc -l | tr -d ' ')
 
 # Verify counts match expected (hardcoded list lengths above)
-EXPECTED_SKILLS=$(echo $SKILLS | wc -w | tr -d ' ')
-EXPECTED_AGENTS=$(echo $AGENTS | wc -w | tr -d ' ')
-EXPECTED_RULES=$(echo $RULES | wc -w | tr -d ' ')
-EXPECTED_SCRIPTS=$(echo $SCRIPTS | wc -w | tr -d ' ')
+EXPECTED_SKILLS=$(echo "$SKILLS" | wc -w | tr -d ' ')
+EXPECTED_AGENTS=$(echo "$AGENTS" | wc -w | tr -d ' ')
+EXPECTED_RULES=$(echo "$RULES" | wc -w | tr -d ' ')
+EXPECTED_SCRIPTS=$(echo "$SCRIPTS" | wc -w | tr -d ' ')
 
 if [ "$ACTUAL_SKILLS" = "$EXPECTED_SKILLS" ]; then
   check "ok" "Skills: $ACTUAL_SKILLS (matches expected)"
@@ -218,11 +211,10 @@ echo ""
 echo "[Plugin Registry (SSOT)]"
 REGISTRY="$PLUGIN_ROOT/config/plugins.json"
 if [ -f "$REGISTRY" ]; then
-  EXPECTED_PLUGINS=$(python3 -c "import json; print(len(json.load(open('$REGISTRY'))['plugins']))" 2>/dev/null || echo "0")
+  EXPECTED_PLUGINS=$(json_count "$REGISTRY" plugins)
 
   # Check README files (static copies that need manual sync)
-  # Note: redsub-setup and redsub-doctor read from plugins.json dynamically — no check needed
-  SSOT_NAMES=$(python3 -c "import json; [print(p['name']) for p in json.load(open('$REGISTRY'))['plugins']]" 2>/dev/null)
+  SSOT_NAMES=$(json_list_field "$REGISTRY" plugins name)
 
   for TARGET_LABEL_FILE in \
     "README.md:$PLUGIN_ROOT/README.md" \
