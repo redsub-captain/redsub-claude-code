@@ -12,29 +12,25 @@ if git rev-parse --is-inside-work-tree &>/dev/null; then
   fi
 fi
 
+# --- Claude Code version change detection ---
 VERSION_FILE="$HOME/.claude-redsub/claude-version"
 mkdir -p "$HOME/.claude-redsub"
 
-# Get current Claude Code version
 CURRENT_VERSION=""
 if command -v claude &>/dev/null; then
-  CURRENT_VERSION=$(claude --version 2>/dev/null || echo "unknown")
+  CURRENT_VERSION=$(claude --version 2>/dev/null || echo "")
 fi
 
-if [ -z "$CURRENT_VERSION" ] || [ "$CURRENT_VERSION" = "unknown" ]; then
-  exit 0
-fi
-
-# Compare with saved version
-if [ -f "$VERSION_FILE" ]; then
-  SAVED_VERSION=$(cat "$VERSION_FILE")
-  if [ "$SAVED_VERSION" != "$CURRENT_VERSION" ]; then
-    echo "Claude Code updated: $SAVED_VERSION -> $CURRENT_VERSION. Run /redsub-update to check compatibility."
+if [ -n "$CURRENT_VERSION" ]; then
+  if [ -f "$VERSION_FILE" ]; then
+    SAVED_VERSION=$(cat "$VERSION_FILE")
+    if [ "$SAVED_VERSION" != "$CURRENT_VERSION" ]; then
+      echo "Claude Code updated: $SAVED_VERSION -> $CURRENT_VERSION. Run /redsub-update to check compatibility."
+      echo "$CURRENT_VERSION" > "$VERSION_FILE"
+    fi
+  else
     echo "$CURRENT_VERSION" > "$VERSION_FILE"
   fi
-else
-  # First run — save version
-  echo "$CURRENT_VERSION" > "$VERSION_FILE"
 fi
 
 # Check plugin updates (non-blocking, best-effort)
