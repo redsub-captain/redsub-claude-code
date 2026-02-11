@@ -47,4 +47,20 @@ if [ -f "$PLUGIN_ROOT/package.json" ]; then
       echo "Plugin update available: v$LOCAL_VER -> v$REMOTE_VER. Run /redsub-update for details."
     fi
   fi
+
+  # Auto-sync install-manifest.json version after plugin update
+  MANIFEST="$HOME/.claude-redsub/install-manifest.json"
+  if [ -f "$MANIFEST" ] && [ -n "$LOCAL_VER" ]; then
+    MANIFEST_VER=$(python3 -c "import json; print(json.load(open('$MANIFEST'))['version'])" 2>/dev/null || echo "")
+    if [ -n "$MANIFEST_VER" ] && [ "$MANIFEST_VER" != "$LOCAL_VER" ]; then
+      python3 -c "
+import json
+with open('$MANIFEST', 'r') as f:
+    data = json.load(f)
+data['version'] = '$LOCAL_VER'
+with open('$MANIFEST', 'w') as f:
+    json.dump(data, f, indent=2)
+" 2>/dev/null && echo "install-manifest.json synced: v$MANIFEST_VER -> v$LOCAL_VER"
+    fi
+  fi
 fi
