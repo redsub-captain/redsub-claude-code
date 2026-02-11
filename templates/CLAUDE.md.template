@@ -9,6 +9,12 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 ## Principles
 - **Plan first**: Use /brainstorming → /writing-plans (superpowers) before coding
 - **TDD**: Tests before code (superpowers:test-driven-development)
+- **SSOT (Single Source of Truth)**: Every piece of data lives in exactly ONE canonical location. All other consumers read from that source — never duplicate, never hardcode.
+  - Config values → one config file or env var
+  - Business rules → one module, re-exported where needed
+  - UI strings → i18n files only
+  - API URLs / endpoints → one constants file
+  - Type definitions → one source, re-exported (no redeclaring the same shape)
 - **Security**: No API key exposure, server-side processing
 - **Cost**: Minimize unnecessary API calls and DB reads
 - **No hardcoding**: Use i18n keys or constants
@@ -31,6 +37,9 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 | Save | /redsub-session-save | context preservation |
 | Fix | /redsub-fix-all [pattern] | bulk fix |
 | UI | /redsub-design [screen] | Stitch MCP |
+| Feature | /feature-dev [target] | feature-dev plugin (complex features) |
+| UI (alt) | frontend-design (auto) | No Stitch API key needed |
+| Maintain | /revise-claude-md | CLAUDE.md quality audit |
 
 ### Management Commands
 
@@ -40,6 +49,7 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 | /redsub-update | Check for updates |
 | /redsub-doctor | Diagnose and repair |
 | /redsub-uninstall | Clean removal |
+| /revise-claude-md | Audit CLAUDE.md quality |
 
 ## In progress
 (none)

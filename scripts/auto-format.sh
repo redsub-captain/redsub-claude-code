@@ -18,3 +18,15 @@ fi
 if command -v npx &>/dev/null && [ -f "node_modules/.bin/prettier" ]; then
   npx prettier --write "$FILE_PATH" 2>/dev/null || true
 fi
+
+# --- Session edit tracker ---
+COUNTER_FILE="/tmp/.claude-redsub-edit-count"
+COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
+echo $((COUNT + 1)) > "$COUNTER_FILE"
+
+# Track Svelte file edits
+if echo "$FILE_PATH" | grep -qE '\.svelte$'; then
+  SVELTE_FILE="/tmp/.claude-redsub-svelte-count"
+  SCOUNT=$(cat "$SVELTE_FILE" 2>/dev/null || echo 0)
+  echo $((SCOUNT + 1)) > "$SVELTE_FILE"
+fi

@@ -28,6 +28,16 @@ elif [ "$CHANGES" -gt 20 ]; then
   OUTPUT="WORKFLOW: $CHANGES uncommitted changes on '$BRANCH'. Consider /redsub-session-save or /redsub-validate."
 fi
 
+# Case 3: CLAUDE.md stale (7+ days)
+if [ -z "$OUTPUT" ] && [ -f "CLAUDE.md" ]; then
+  LAST_MOD=$(stat -f %m "CLAUDE.md" 2>/dev/null || stat -c %Y "CLAUDE.md" 2>/dev/null || echo 0)
+  NOW=$(date +%s)
+  DAYS_AGO=$(( (NOW - LAST_MOD) / 86400 ))
+  if [ "$DAYS_AGO" -ge 7 ]; then
+    OUTPUT="WORKFLOW: CLAUDE.md hasn't been updated in ${DAYS_AGO} days. Consider /revise-claude-md."
+  fi
+fi
+
 if [ -n "$OUTPUT" ]; then
   echo "$OUTPUT"
 fi

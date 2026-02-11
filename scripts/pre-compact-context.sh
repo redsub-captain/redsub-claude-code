@@ -19,3 +19,8 @@ echo "Recent commits:"
 git log --oneline -3 2>/dev/null || echo "  (no commits)"
 
 echo "=========================="
+
+# --- Session learning capture reminder ---
+if [ ! -f /tmp/.claude-redsub-claude-md-revised ]; then
+  echo "LEARNING: Before context compression, consider /revise-claude-md to capture session learnings."
+fi

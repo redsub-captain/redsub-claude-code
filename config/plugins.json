@@ -1,0 +1,87 @@
+{
+  "description": "Single Source of Truth for dependency plugin list. All other files reference this.",
+  "marketplaces": [
+    "anthropics/claude-plugins-official",
+    "obra/superpowers-marketplace"
+  ],
+  "plugins": [
+    {
+      "name": "superpowers",
+      "marketplace": "obra/superpowers-marketplace",
+      "role_ko": "TDD, 설계, 계획, 서브에이전트, 코드 리뷰 위임",
+      "role_en": "TDD, design, planning, subagents, code review delegation"
+    },
+    {
+      "name": "code-review",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "PR 자동 리뷰 (GitHub 코멘트 게시)",
+      "role_en": "Automated PR review (GitHub comment posting)"
+    },
+    {
+      "name": "pr-review-toolkit",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "6개 전문 리뷰 에이전트 (테스트/타입/보안/간소화 등)",
+      "role_en": "6 specialized review agents (test/type/security/simplifier, etc.)"
+    },
+    {
+      "name": "ralph-loop",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "반복 작업 자동화 (TDD, 일괄 수정)",
+      "role_en": "Iterative task automation (TDD, bulk fixes)"
+    },
+    {
+      "name": "security-guidance",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "보안 모범 사례",
+      "role_en": "Security best practices"
+    },
+    {
+      "name": "context7",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "라이브러리 최신 문서 조회",
+      "role_en": "Latest library documentation lookup"
+    },
+    {
+      "name": "typescript-lsp",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "TypeScript 실시간 타입 진단",
+      "role_en": "Real-time TypeScript type diagnostics"
+    },
+    {
+      "name": "frontend-design",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "UI/UX 구현 가이드 (Stitch 없이도 사용 가능)",
+      "role_en": "UI/UX implementation guide (works without Stitch)"
+    },
+    {
+      "name": "feature-dev",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "구조화된 기능 개발 (`/feature-dev`)",
+      "role_en": "Structured feature development (`/feature-dev`)"
+    },
+    {
+      "name": "code-simplifier",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "자율적 코드 간소화 리뷰",
+      "role_en": "Autonomous code simplification review"
+    },
+    {
+      "name": "claude-md-management",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`)",
+      "role_en": "CLAUDE.md audit + session learning (`/revise-claude-md`)"
+    },
+    {
+      "name": "firebase",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "Firebase MCP (Firestore, Auth, Functions)",
+      "role_en": "Firebase MCP (Firestore, Auth, Functions)"
+    },
+    {
+      "name": "supabase",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "Supabase MCP (PostgreSQL, Auth, Storage)",
+      "role_en": "Supabase MCP (PostgreSQL, Auth, Storage)"
+    }
+  ]
+}

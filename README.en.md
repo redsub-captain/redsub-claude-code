@@ -4,7 +4,7 @@
 
 A **workflow orchestrator** plugin for Claude Code, designed for solo developers.
 
-Works in **combination** with official plugins (superpowers, code-review, pr-review-toolkit, ralph-loop, etc.) to automate the entire development cycle from planning to deployment.
+Works in **combination** with 13 official plugins (superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
 
 ## Prerequisites
 
@@ -57,15 +57,21 @@ Automatically handles marketplace pull → cache copy → registry update. Start
 
 This plugin works in combination with these official plugins:
 
-| Plugin | Role |
-|--------|------|
-| superpowers | TDD, design, planning, subagents, code review delegation |
-| code-review | Automated PR review (GitHub comment posting) |
-| pr-review-toolkit | 6 specialized review agents (test/type/security/simplifier, etc.) |
-| ralph-loop | Iterative task automation (TDD, bulk fixes) |
-| security-guidance | Security best practices |
-| context7 | Latest library documentation lookup |
-| typescript-lsp | Real-time TypeScript type diagnostics |
+| Plugin | Marketplace | Role |
+|--------|-------------|------|
+| superpowers | obra/superpowers-marketplace | TDD, design, planning, subagents, code review delegation |
+| code-review | claude-plugins-official | Automated PR review (GitHub comment posting) |
+| pr-review-toolkit | claude-plugins-official | 6 specialized review agents (test/type/security/simplifier, etc.) |
+| ralph-loop | claude-plugins-official | Iterative task automation (TDD, bulk fixes) |
+| security-guidance | claude-plugins-official | Security best practices |
+| context7 | claude-plugins-official | Latest library documentation lookup |
+| typescript-lsp | claude-plugins-official | Real-time TypeScript type diagnostics |
+| frontend-design | claude-plugins-official | UI/UX implementation guide (works without Stitch) |
+| feature-dev | claude-plugins-official | Structured feature development (`/feature-dev`) |
+| code-simplifier | claude-plugins-official | Autonomous code simplification review |
+| claude-md-management | claude-plugins-official | CLAUDE.md audit + session learning (`/revise-claude-md`) |
+| firebase | claude-plugins-official | Firebase MCP (Firestore, Auth, Functions) |
+| supabase | claude-plugins-official | Supabase MCP (PostgreSQL, Auth, Storage) |
 
 ## Workflow
 
@@ -201,6 +207,17 @@ Manifest-based clean removal.
 - Deep analysis → `/review-pr` (6 specialized agents in parallel)
 - Plan-vs-implementation → superpowers:requesting-code-review
 
+### "I need to build a complex feature"
+1. `/feature-dev user-authentication` — Start structured feature development
+2. Agent team automatically handles design → implementation → testing
+3. `/redsub-ship minor "feature description"` — Ship it
+
+### "I want to clean up CLAUDE.md"
+```
+/revise-claude-md
+```
+CLAUDE.md quality audit + captures patterns/conventions discovered during the session. `/redsub-session-save` runs this automatically before session end.
+
 ### "The plugin seems broken"
 ```
 /redsub-doctor
@@ -224,7 +241,7 @@ Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
 |------|-------|---------|
 | Skills | 12 | See command reference above |
 | Agents | 4 | developer (Opus), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 9 | Workflow orchestrator, block main commits, main edit warning, validate marker check on merge, auto-format, validate marker creation, version check, desktop notifications, context preservation, session end check |
+| Hooks | 9 | Workflow orchestrator, main commit/merge guard (version consistency check), main edit warning, auto-format + edit tracking, validate marker creation, version/plugin/CLAUDE.md freshness check, desktop notifications, context preservation + learning reminder, session end triple-check |
 | Rules | 3 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law) |
 | MCP | 2 | stitch (UI/UX design), sveltekit (official docs) |
 
@@ -250,16 +267,21 @@ To use with a different stack, modify the rules, agents, and skills.
 
 ### Setting Up Stitch API Key (Optional)
 
-The `/redsub-design` skill requires a Stitch API key for UI/UX screen design. You can skip this if you don't plan to use the design feature.
+The `/redsub-design` skill requires a Stitch API key for UI/UX screen design. You can still get UI implementation guidance via the **frontend-design** plugin without Stitch, so skip this if you don't need screen design generation.
 
-1. Create an API key at [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
-2. Enable the "Generative Language API"
-3. Add to your shell profile:
-   ```bash
-   echo 'export STITCH_API_KEY="your-api-key-here"' >> ~/.zshrc
-   source ~/.zshrc
+Running `/redsub-setup` handles API key input and storage automatically.
+
+For manual setup:
+1. Create an API key at [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)
+2. Add to `~/.claude/settings.json` under the `env` section:
+   ```json
+   {
+     "env": {
+       "STITCH_API_KEY": "your-api-key-here"
+     }
+   }
    ```
-4. Restart Claude Code
+3. Start a new Claude Code session
 
 ## License
 

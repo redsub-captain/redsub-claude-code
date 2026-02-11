@@ -30,6 +30,16 @@ paths:
   2. `apphosting.yaml` (deployment)
   3. Related documentation
 
+## Single Source of Truth (SSOT)
+- **Every piece of data has exactly one canonical source.** All consumers read from it.
+- Config values (API URLs, feature flags, limits) → one config file or env var. Never scatter across files.
+- Business logic (pricing rules, validation, permissions) → one module. Other files import, never re-implement.
+- Type definitions → define once, re-export. Never redeclare the same shape in multiple files.
+- UI strings → i18n files only. No inline text in components.
+- Constants (error codes, status enums, route paths) → one constants file per domain.
+- **Review checkpoint**: When editing a value, search for duplicates (`Grep`). If found elsewhere, refactor to single source before proceeding.
+- **Violation = bug**: Treating duplicated data sources as bugs, not style issues.
+
 ## Strings
 - No hardcoded strings. Use i18n keys or constants.
 - Includes error messages and UI text.
