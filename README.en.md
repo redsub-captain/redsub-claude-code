@@ -41,10 +41,11 @@ This skill will:
 
 A notification is automatically shown at session start when a new version is available.
 
-1. Type `/plugin` → **Installed** tab → **redsub-claude-code** → **Update now**
-2. Start a new session (to apply updated skills/hooks)
+```
+/redsub-update
+```
 
-Check version/compatibility details: `/redsub-update`
+Automatically handles marketplace pull → cache copy → registry update. Start a new session after completion to apply changes.
 
 ### Uninstall
 
@@ -164,7 +165,7 @@ Initial setup (check dependency plugins, deploy rules, create CLAUDE.md).
 
 ### /redsub-update
 
-Check plugin version + Claude Code compatibility. To actually update: `/plugin` → Installed → Update now.
+Auto-update plugin. Handles marketplace pull → cache copy → registry update in one step.
 
 ### /redsub-doctor
 
