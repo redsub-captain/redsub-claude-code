@@ -23,24 +23,22 @@ Count installed vs total.
 
 **If there are missing plugins:**
 
-1. Check marketplaces from `config/plugins.json`. If any marketplace is not registered, show registration commands first:
-   ```
-   /plugin marketplace add <marketplace-name>
-   ```
-
-2. Show the full list of missing plugins with install commands:
-   ```
-   Missing plugins ([N] of [total]):
-   /plugin install <name>@<marketplace>
-   ...
+1. Check marketplaces from `config/plugins.json`. If any marketplace is not registered, register them automatically:
+   ```bash
+   claude plugin marketplace add <marketplace-name> <marketplace-url>
    ```
 
-3. Ask user via AskUserQuestion: "위 플러그인을 설치하시겠습니까? (사용자가 직접 명령어를 실행해야 합니다)"
-   - Options: "Show install commands" / "Skip for now"
+2. Show missing plugin count and ask user:
+   - AskUserQuestion: "누락된 플러그인 [N]개를 자동 설치하시겠습니까?"
+   - Options: "Install all (Recommended)" / "Skip for now"
 
-4. **If user chooses install**: present the commands and wait for the user to execute them. After the user finishes, re-read `~/.claude/plugins/installed_plugins.json` to update the installed count. Continue to the next step. **Do NOT require re-running setup.**
+3. **If user chooses install**: install each missing plugin automatically via Bash:
+   ```bash
+   claude plugin install <name>@<marketplace>
+   ```
+   Run installs sequentially (one at a time). Show progress as each plugin installs. If any single install fails, log the error and continue with the remaining plugins.
 
-5. **If user chooses skip**: continue to the next step without blocking. Record the count for the summary.
+4. **If user chooses skip**: continue to the next step without blocking. Record the count for the summary.
 
 ### 2. Deploy rules
 
@@ -164,10 +162,10 @@ Setup complete:
 - Dependencies: [N]/[total] installed
 ```
 
-**If there are still missing plugins** (user skipped installation in step 1), append:
+**If there are still missing plugins** (user skipped or some failed), append:
 
 ```
-Skipped plugins:
-/plugin install <name>@<marketplace>
-...
+Missing plugins ([N]):
+  claude plugin install <name>@<marketplace>
+  ...
 ```
