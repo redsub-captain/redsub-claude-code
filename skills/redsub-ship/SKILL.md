@@ -88,7 +88,7 @@ git add package.json .claude-plugin/plugin.json .claude-plugin/marketplace.json
 Update the Plugin version in the "Current" table:
 
 ```bash
-sed -i '' "s/| Plugin | .* |/| Plugin | $NEW_VER |/" COMPATIBILITY.md
+sed -i '' "s/| Plugin | [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]* |/| Plugin | $NEW_VER |/" COMPATIBILITY.md
 git add COMPATIBILITY.md
 ```
 
