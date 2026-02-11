@@ -19,27 +19,28 @@ If `~/.claude-redsub/.setup-done` exists and `--force` was NOT given in `$ARGUME
 
 For each plugin in the registry, check if it's installed in `~/.claude/plugins/installed_plugins.json`.
 
-For missing plugins, check marketplaces first:
+Count installed vs total.
 
-**Step A — Marketplace registration:**
-Read the `marketplaces` array from `config/plugins.json`. Check if each is registered. If not, show registration commands FIRST:
-```
-The following marketplaces need to be registered first:
-/plugin marketplace add <marketplace-name>
-```
+**If there are missing plugins:**
 
-**Step B — Plugin installation:**
-For each missing plugin, construct the install command from `name` and `marketplace` fields:
-```
-Missing plugins (install all at once):
-/plugin install <name>@<marketplace>
-...
-```
+1. Check marketplaces from `config/plugins.json`. If any marketplace is not registered, show registration commands first:
+   ```
+   /plugin marketplace add <marketplace-name>
+   ```
 
-**Step C — Re-run:**
-```
-After installing, re-run: /redsub-setup --force
-```
+2. Show the full list of missing plugins with install commands:
+   ```
+   Missing plugins ([N] of [total]):
+   /plugin install <name>@<marketplace>
+   ...
+   ```
+
+3. Ask user via AskUserQuestion: "위 플러그인을 설치하시겠습니까? (사용자가 직접 명령어를 실행해야 합니다)"
+   - Options: "Show install commands" / "Skip for now"
+
+4. **If user chooses install**: present the commands and wait for the user to execute them. After the user finishes, re-read `~/.claude/plugins/installed_plugins.json` to update the installed count. Continue to the next step. **Do NOT require re-running setup.**
+
+5. **If user chooses skip**: continue to the next step without blocking. Record the count for the summary.
 
 ### 2. Deploy rules
 
@@ -52,20 +53,22 @@ cp ${CLAUDE_PLUGIN_ROOT}/rules/redsub-*.md ~/.claude/rules/
 
 ### 3. CLAUDE.md handling
 
-If `CLAUDE.md` does NOT exist: create from the plugin's template.
+Target path: `~/.claude/CLAUDE.md` (global — applies to all projects).
+
+**If `~/.claude/CLAUDE.md` does NOT exist:** create from the plugin's template.
 ```bash
-cp ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template CLAUDE.md
+cp ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template ~/.claude/CLAUDE.md
 ```
 
-If `CLAUDE.md` already EXISTS, ask user how to integrate:
+**If `~/.claude/CLAUDE.md` already EXISTS**, ask user how to integrate:
 ```
-CLAUDE.md already exists. How should we add the workflow guide?
+~/.claude/CLAUDE.md already exists. How should we add the workflow guide?
 (a) Append at end (with markers)
 (b) Prepend at start (with markers)
 (c) Skip
 ```
 
-For (a) or (b), wrap the template content with markers:
+For (a) or (b), Read the existing file first. If markers `<!-- redsub-claude-code:start -->` and `<!-- redsub-claude-code:end -->` already exist, **replace** the content between them with the new template. Otherwise, wrap the template content with markers and append/prepend:
 ```
 <!-- redsub-claude-code:start -->
 (template content)
@@ -95,7 +98,7 @@ The /redsub-design skill requires this key for UI/UX screen design.
 **If user chooses (a)**:
 
 1. Tell user: "Go to https://stitch.withgoogle.com/settings and create an API key."
-2. Use AskUserQuestion to ask the user to paste their API key.
+2. Use AskUserQuestion with two options: "Skip" and "Already configured". The user will use the auto-generated free-text input option to paste their API key. In the question text, clearly state: "API 키를 아래 텍스트 입력란에 붙여넣어 주세요."
 3. Read `~/.claude/settings.json`.
 4. Add the key to the `env` section (create `env` if it doesn't exist):
    ```json
@@ -115,10 +118,22 @@ The /redsub-design skill requires this key for UI/UX screen design.
 
 ### 5. Install manifest
 
-Create `~/.claude-redsub/install-manifest.json`:
+Target: `~/.claude-redsub/install-manifest.json`
+
+```bash
+mkdir -p ~/.claude-redsub
+```
+
+**If the file already exists**, Read it first then update `version`, `installed_at`, and merge arrays using path-based deduplication (add new entries only if no existing entry has the same path).
+
+**If the file does NOT exist**, create it.
+
+Read the plugin version from `${CLAUDE_PLUGIN_ROOT}/package.json` (SSOT). Do NOT hardcode the version.
+
+Schema:
 ```json
 {
-  "version": "2.0.0",
+  "version": "<from package.json>",
   "installed_at": "ISO-8601",
   "files_created": [],
   "files_modified": [],
@@ -129,6 +144,8 @@ Create `~/.claude-redsub/install-manifest.json`:
   ]
 }
 ```
+
+Track any files created or modified during this setup run in the corresponding arrays.
 
 ### 6. Completion marker
 
@@ -141,8 +158,16 @@ date > ~/.claude-redsub/.setup-done
 
 ```
 Setup complete:
-- Rules deployed: 3
-- CLAUDE.md: [created/markers added/skipped]
-- Dependencies: [all installed / N missing]
-- Stitch API: [configured/not set (optional)]
+- Rules deployed: 3 (code-quality, workflow, testing)
+- CLAUDE.md: [created at ~/.claude/CLAUDE.md / markers added / skipped]
+- Stitch API: [configured / skipped (optional)]
+- Dependencies: [N]/[total] installed
+```
+
+**If there are still missing plugins** (user skipped installation in step 1), append:
+
+```
+Skipped plugins:
+/plugin install <name>@<marketplace>
+...
 ```
