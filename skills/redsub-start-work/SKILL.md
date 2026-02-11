@@ -5,7 +5,7 @@ description: Create feature branch and start working.
 
 # Branch Creation
 
-> **Language**: Read `~/.claude-redsub/language` (ko/en). Default to `en` if not found.
+> **Language**: Follow the user's Claude Code language setting.
 
 ## Input
 

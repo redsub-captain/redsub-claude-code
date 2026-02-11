@@ -5,7 +5,7 @@ description: Run lint, type check, and unit tests with evidence.
 
 # Code Validation
 
-> **Language**: Read `~/.claude-redsub/language` (ko/en). Default to `en` if not found.
+> **Language**: Follow the user's Claude Code language setting.
 
 ## Procedure
 

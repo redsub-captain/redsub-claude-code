@@ -220,7 +220,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 |------|------|------|
 | Skills | 12개 | 위 명령어 레퍼런스 참조 |
 | Agents | 4개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 7개 | main 커밋 차단, merge 시 validate 마커 체크, 자동 포맷, validate 마커 생성, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
+| Hooks | 9개 | 워크플로우 오케스트레이터, main 커밋 차단, main 편집 경고, merge 시 validate 마커 체크, 자동 포맷, validate 마커 생성, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
 | Rules | 3개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law) |
 | MCP | 2개 | stitch (UI/UX 설계), sveltekit (공식 문서) |
 
@@ -243,6 +243,19 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 | 변수 | 용도 | 필수 여부 |
 |------|------|----------|
 | `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` 스킬) | 선택 |
+
+### Stitch API Key 설정 (선택)
+
+`/redsub-design` 스킬로 UI/UX 화면을 설계하려면 Stitch API 키가 필요합니다. UI 설계 기능을 사용하지 않는다면 건너뛰어도 됩니다.
+
+1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials)에서 API 키 생성
+2. "Generative Language API" 활성화
+3. 쉘 프로필에 추가:
+   ```bash
+   echo 'export STITCH_API_KEY="your-api-key-here"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+4. Claude Code 재시작
 
 ## 라이선스
 

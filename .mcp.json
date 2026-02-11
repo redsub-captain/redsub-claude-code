@@ -9,7 +9,7 @@
     },
     "sveltekit": {
       "command": "npx",
-      "args": ["-y", "@anthropic/mcp-remote@latest", "https://mcp.svelte.dev/mcp"]
+      "args": ["-y", "@sveltejs/mcp"]
     }
   }
 }

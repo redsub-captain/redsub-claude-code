@@ -220,7 +220,7 @@ Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
 |------|-------|---------|
 | Skills | 12 | See command reference above |
 | Agents | 4 | developer (Opus), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 7 | Block main commits, validate marker check on merge, auto-format, validate marker creation, version check, desktop notifications, context preservation, session end check |
+| Hooks | 9 | Workflow orchestrator, block main commits, main edit warning, validate marker check on merge, auto-format, validate marker creation, version check, desktop notifications, context preservation, session end check |
 | Rules | 3 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law) |
 | MCP | 2 | stitch (UI/UX design), sveltekit (official docs) |
 
@@ -243,6 +243,19 @@ To use with a different stack, modify the rules, agents, and skills.
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` skill) | Optional |
+
+### Setting Up Stitch API Key (Optional)
+
+The `/redsub-design` skill requires a Stitch API key for UI/UX screen design. You can skip this if you don't plan to use the design feature.
+
+1. Create an API key at [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+2. Enable the "Generative Language API"
+3. Add to your shell profile:
+   ```bash
+   echo 'export STITCH_API_KEY="your-api-key-here"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+4. Restart Claude Code
 
 ## License
 

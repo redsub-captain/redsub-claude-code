@@ -105,9 +105,9 @@ done
 
 echo ""
 
-# 6. Scripts (8, executable)
+# 6. Scripts (10, executable)
 echo "[Scripts (executable)]"
-SCRIPTS="version-check.sh guard-main.sh validate-marker.sh auto-format.sh notify-attention.sh pre-compact-context.sh completion-check.sh verify-install.sh"
+SCRIPTS="workflow-orchestrator.sh version-check.sh guard-main.sh warn-main-edit.sh validate-marker.sh auto-format.sh notify-attention.sh pre-compact-context.sh completion-check.sh verify-install.sh"
 for script in $SCRIPTS; do
   f="scripts/$script"
   if [ -f "$PLUGIN_ROOT/$f" ]; then

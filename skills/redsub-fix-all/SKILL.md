@@ -5,7 +5,7 @@ description: Search and bulk-fix a pattern across the entire codebase.
 
 # Bulk Pattern Fix
 
-> **Language**: Read `~/.claude-redsub/language` (ko/en). Default to `en` if not found.
+> **Language**: Follow the user's Claude Code language setting.
 
 ## Input
 
