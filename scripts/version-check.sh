@@ -76,7 +76,7 @@ if [ "$EXPECTED_PLUGINS" -eq 0 ]; then
   exit 0  # SSOT registry를 읽을 수 없으면 체크 skip
 fi
 if [ -f "$INSTALLED_FILE" ]; then
-  INSTALLED_COUNT=$(json_count "$INSTALLED_FILE")
+  INSTALLED_COUNT=$(json_count "$INSTALLED_FILE" plugins)
 fi
 if [ "$INSTALLED_COUNT" -lt "$EXPECTED_PLUGINS" ]; then
   echo "SETUP: Some dependency plugins may be missing ($INSTALLED_COUNT/$EXPECTED_PLUGINS). Run /redsub-doctor to check."

@@ -51,9 +51,12 @@ cp ${CLAUDE_PLUGIN_ROOT}/rules/redsub-*.md ~/.claude/rules/
 
 Target path: `~/.claude/CLAUDE.md` (global — applies to all projects).
 
-**If `~/.claude/CLAUDE.md` does NOT exist:** create from the plugin's template.
-```bash
-cp ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template ~/.claude/CLAUDE.md
+**If `~/.claude/CLAUDE.md` does NOT exist:** create from the plugin's template, wrapped with markers.
+Write `~/.claude/CLAUDE.md` with markers wrapping the template content:
+```
+<!-- redsub-claude-code:start -->
+(content of ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template)
+<!-- redsub-claude-code:end -->
 ```
 
 **If `~/.claude/CLAUDE.md` already EXISTS**, use `AskUserQuestion` tool:
