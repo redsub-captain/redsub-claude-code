@@ -5,7 +5,7 @@ description: TDD automation with Red-Green-Refactor cycle.
 
 # TDD Automation
 
-> **Language**: Read `~/.claude-redsub/language` (ko/en). Default to `en` if not found.
+> **Language**: Follow the user's Claude Code language setting.
 
 ## Input
 

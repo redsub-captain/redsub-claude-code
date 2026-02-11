@@ -5,7 +5,7 @@ description: Diagnose and auto-repair plugin integrity.
 
 # Doctor
 
-> **Language**: Read `~/.claude-redsub/language` (ko/en). Default to `en` if not found.
+> **Language**: Follow the user's Claude Code language setting.
 
 Diagnose plugin health and auto-repair issues.
 

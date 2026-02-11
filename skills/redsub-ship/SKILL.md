@@ -5,7 +5,7 @@ description: Enforced release pipeline. Save → Validate → Review → Version
 
 # Release Pipeline
 
-> **Language**: Read `~/.claude-redsub/language` (ko/en). Default to `en` if not found.
+> **Language**: Follow the user's Claude Code language setting.
 
 ## Input
 

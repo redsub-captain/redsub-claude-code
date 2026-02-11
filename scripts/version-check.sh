@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
-# [SessionStart] Detect Claude Code version changes + check plugin updates via GitHub API
+# [SessionStart] Branch safety check + version changes + plugin updates via GitHub API
 
 set -euo pipefail
+
+# --- Branch safety check ---
+# Warn if starting a session on main/master (work should happen on feature branches)
+if git rev-parse --is-inside-work-tree &>/dev/null; then
+  BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+  if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
+    echo "WARNING: On '$BRANCH' branch. Create a feature branch before making changes: /redsub-start-work [name]"
+  fi
+fi
 
 VERSION_FILE="$HOME/.claude-redsub/claude-version"
 mkdir -p "$HOME/.claude-redsub"

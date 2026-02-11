@@ -5,7 +5,7 @@ description: Save session context for continuation in next session.
 
 # Session Save
 
-> **Language**: Read `~/.claude-redsub/language` (ko/en). Default to `en` if not found.
+> **Language**: Follow the user's Claude Code language setting.
 
 ## Procedure
 

@@ -244,6 +244,19 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 |------|------|----------|
 | `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` 스킬) | 선택 |
 
+### Stitch API Key 설정 (선택)
+
+`/redsub-design` 스킬로 UI/UX 화면을 설계하려면 Stitch API 키가 필요합니다. UI 설계 기능을 사용하지 않는다면 건너뛰어도 됩니다.
+
+1. [Google Cloud Console](https://console.cloud.google.com/apis/credentials)에서 API 키 생성
+2. "Generative Language API" 활성화
+3. 쉘 프로필에 추가:
+   ```bash
+   echo 'export STITCH_API_KEY="your-api-key-here"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+4. Claude Code 재시작
+
 ## 라이선스
 
 MIT
