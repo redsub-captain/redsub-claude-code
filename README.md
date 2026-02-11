@@ -97,6 +97,7 @@ TDD 자동화. Red-Green-Refactor 사이클을 실행합니다.
 **사용 시점:** 새 기능 구현 시 테스트 우선, 버그 수정 시 재현 테스트부터.
 ```
 /redsub-test user-authentication
+/redsub-test --team user-authentication  # 모듈별 병렬 TDD (Agent Teams)
 ```
 
 **ralph-loop 연동 (반복):**
@@ -124,12 +125,12 @@ Save → Validate → Review → Version → Merge → Tag → Push 파이프라
 
 ### /redsub-fix-all [pattern]
 
-코드베이스 전체에서 패턴을 검색하여 일괄 수정합니다.
+코드베이스 전체에서 패턴을 검색하여 일괄 수정합니다. Agent Teams가 활성화되어 있으면 실행 모드를 선택할 수 있습니다.
 
 **사용 시점:** 린트 에러, 네이밍 변경, 패턴 일괄 수정.
 ```
-/redsub-fix-all "ESLint errors"
-/redsub-fix-all --team "ESLint errors"    # 병렬 (Agent Teams)
+/redsub-fix-all "ESLint errors"                    # 순차 (기본)
+/redsub-fix-all --team "ESLint errors"             # 병렬 (Agent Teams)
 ```
 
 **ralph-loop 연동:**
@@ -264,6 +265,7 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 | 변수 | 용도 | 필수 여부 |
 |------|------|----------|
 | `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` 스킬) | 선택 |
+| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams 병렬 실행 (`/redsub-fix-all`, `/redsub-test`) | 선택 |
 
 ### Stitch API Key 설정 (선택)
 

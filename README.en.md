@@ -97,6 +97,7 @@ TDD automation. Runs the Red-Green-Refactor cycle.
 **When to use:** Test-first for new features, reproduction test first for bug fixes.
 ```
 /redsub-test user-authentication
+/redsub-test --team user-authentication  # Parallel TDD per module (Agent Teams)
 ```
 
 **With ralph-loop (iterative):**
@@ -124,12 +125,12 @@ Enforced pipeline: Save → Validate → Review → Version → Merge → Tag �
 
 ### /redsub-fix-all [pattern]
 
-Search the entire codebase for a pattern and bulk-fix all occurrences.
+Search the entire codebase for a pattern and bulk-fix all occurrences. When Agent Teams is enabled, you can choose the execution mode interactively.
 
 **When to use:** Lint errors, naming changes, pattern bulk fixes.
 ```
-/redsub-fix-all "ESLint errors"
-/redsub-fix-all --team "ESLint errors"    # Parallel (Agent Teams)
+/redsub-fix-all "ESLint errors"                    # Sequential (default)
+/redsub-fix-all --team "ESLint errors"             # Parallel (Agent Teams)
 ```
 
 **With ralph-loop:**
@@ -264,6 +265,7 @@ To use with a different stack, modify the rules, agents, and skills.
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` skill) | Optional |
+| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams parallel execution (`/redsub-fix-all`, `/redsub-test`) | Optional |
 
 ### Setting Up Stitch API Key (Optional)
 

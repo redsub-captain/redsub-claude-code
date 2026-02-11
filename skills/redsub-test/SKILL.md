@@ -7,7 +7,38 @@ description: TDD automation with Red-Green-Refactor cycle.
 
 ## Input
 
-`$ARGUMENTS` provides the test target. `--loop` flag enables ralph-loop integration.
+`$ARGUMENTS` provides the test target. Optional flags: `--loop` (ralph-loop), `--team` (Agent Teams).
+
+## Parallel Mode (Agent Teams)
+
+### Explicit flag
+`--team` in `$ARGUMENTS` → directly use Agent Teams mode.
+
+### Auto-detection
+If `--team` was NOT passed, check whether parallelization is beneficial:
+
+```bash
+echo "${CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS:+enabled}"
+```
+
+**If enabled AND scope covers 3+ distinct modules/files** → use `AskUserQuestion` tool:
+- question: "여러 모듈이 감지되었습니다. 실행 모드를 선택하세요."
+- header: "Test Mode"
+- options: ["Sequential (Recommended)" (모듈별 순차 TDD — 안전, 토큰 절약), "Agent Teams" (모듈별 병렬 TDD — 빠르지만 토큰 더 소비)]
+
+**If not enabled OR single target** → Sequential mode without asking.
+
+### Team mode procedure
+Uses superpowers:dispatching-parallel-agents.
+> Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`.
+
+1. Analyze target scope, identify distinct modules/test areas.
+2. Partition: each teammate gets one module. **No overlapping files.**
+3. Each teammate runs independent Red-Green-Refactor cycle.
+4. Lead collects results and runs final validation:
+   ```bash
+   npm run test:unit -- --run
+   ```
 
 ## Iron Law (superpowers:test-driven-development)
 
