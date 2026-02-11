@@ -220,7 +220,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 |------|------|------|
 | Skills | 12개 | 위 명령어 레퍼런스 참조 |
 | Agents | 4개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 7개 | main 커밋 차단, merge 시 validate 마커 체크, 자동 포맷, validate 마커 생성, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
+| Hooks | 9개 | 워크플로우 오케스트레이터, main 커밋 차단, main 편집 경고, merge 시 validate 마커 체크, 자동 포맷, validate 마커 생성, 버전 체크, 데스크톱 알림, 컨텍스트 보존, 세션 종료 확인 |
 | Rules | 3개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law) |
 | MCP | 2개 | stitch (UI/UX 설계), sveltekit (공식 문서) |
 

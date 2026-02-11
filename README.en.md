@@ -220,7 +220,7 @@ Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
 |------|-------|---------|
 | Skills | 12 | See command reference above |
 | Agents | 4 | developer (Opus), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
-| Hooks | 7 | Block main commits, validate marker check on merge, auto-format, validate marker creation, version check, desktop notifications, context preservation, session end check |
+| Hooks | 9 | Workflow orchestrator, block main commits, main edit warning, validate marker check on merge, auto-format, validate marker creation, version check, desktop notifications, context preservation, session end check |
 | Rules | 3 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law) |
 | MCP | 2 | stitch (UI/UX design), sveltekit (official docs) |
 
