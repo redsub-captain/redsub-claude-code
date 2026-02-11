@@ -62,11 +62,12 @@ git commit -m "chore: bump version to [new version]"
 
 ### 5. Merge (user approval required)
 
-```
-Validation passed, version [new version]. Merge to main? (y/n)
-```
+Use `AskUserQuestion` tool to get approval:
+- question: "v[new version] merge to main?"
+- header: "Merge"
+- options: ["Merge" (merge and continue), "Skip" (stop pipeline)]
 
-On approval:
+On "Merge":
 ```bash
 git checkout main
 git merge --no-ff [feature-branch] -m "release: v[new version] - [description]"
@@ -78,29 +79,25 @@ git merge --no-ff [feature-branch] -m "release: v[new version] - [description]"
 git tag -a v[new version] -m "v[new version] [description]"
 ```
 
-### 7. Push (user approval required)
+### 7. Push + Release (user approval required)
 
-```
-Push main + tags? (y/n)
-```
+Use `AskUserQuestion` tool to get approval:
+- question: "Push main + tags to remote?"
+- header: "Push"
+- options: ["Push only" (push, no release), "Push + Release" (push and create GitHub release), "Skip" (no push)]
 
-On approval:
+On "Push only":
 ```bash
 git push origin main --tags
 ```
 
-### 8. Release (optional)
-
-```
-Create GitHub release? (y/n)
-```
-
-On approval:
+On "Push + Release":
 ```bash
+git push origin main --tags
 gh release create v[new version] --title "v[new version]" --generate-notes
 ```
 
 ## Important
 
-- **All merge/push/release require explicit user approval.**
+- **All merge/push/release require explicit user approval via AskUserQuestion.**
 - Stop immediately if validate fails.
