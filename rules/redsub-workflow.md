@@ -86,3 +86,17 @@ When you detect these situations, suggest the appropriate commands:
 | CLAUDE.md outdated or session end | `/revise-claude-md` (claude-md-management plugin) |
 | Code quality after implementation | code-simplifier runs automatically |
 | UI/UX design (no Stitch) | frontend-design plugin auto-activates |
+
+## Hook Output Relay
+
+SessionStart hook (`version-check.sh`) outputs important notifications as `system-reminder`. The AI **MUST** relay these to the user in the **first response** of every session.
+
+| Prefix | Meaning | Action |
+|--------|---------|--------|
+| `WARNING:` | On main/master branch | Relay warning, suggest `/redsub-start-work` |
+| `UPDATE:` | Plugin update available | Relay update info, suggest `/redsub-update` |
+| `SETUP:` | Missing dependency plugins | Relay count, suggest `/redsub-doctor` |
+| `MAINTENANCE:` | CLAUDE.md stale | Relay days count, suggest `/revise-claude-md` |
+| `Claude Code updated:` | Claude Code version changed | Relay version change, suggest `/redsub-update` |
+
+Format: Present all detected notifications as a brief summary block before addressing the user's request.
