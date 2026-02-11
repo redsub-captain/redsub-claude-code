@@ -5,8 +5,6 @@ description: Initial plugin setup. Deploy rules, create CLAUDE.md, check depende
 
 # Initial Setup
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Re-run prevention
 
 If `~/.claude-redsub/.setup-done` exists and `--force` was NOT given in `$ARGUMENTS`, print "Already configured. Use --force to re-run." and stop.
@@ -58,15 +56,12 @@ Target path: `~/.claude/CLAUDE.md` (global — applies to all projects).
 cp ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template ~/.claude/CLAUDE.md
 ```
 
-**If `~/.claude/CLAUDE.md` already EXISTS**, ask user how to integrate:
-```
-~/.claude/CLAUDE.md already exists. How should we add the workflow guide?
-(a) Append at end (with markers)
-(b) Prepend at start (with markers)
-(c) Skip
-```
+**If `~/.claude/CLAUDE.md` already EXISTS**, use `AskUserQuestion` tool:
+- question: "~/.claude/CLAUDE.md가 이미 존재합니다. 워크플로우 가이드를 어떻게 추가할까요?"
+- header: "CLAUDE.md"
+- options: ["Append at end (Recommended)" (append with markers at end of file), "Prepend at start" (prepend with markers at start of file), "Skip" (do not modify existing file)]
 
-For (a) or (b), Read the existing file first. If markers `<!-- redsub-claude-code:start -->` and `<!-- redsub-claude-code:end -->` already exist, **replace** the content between them with the new template. Otherwise, wrap the template content with markers and append/prepend:
+For "Append" or "Prepend", Read the existing file first. If markers `<!-- redsub-claude-code:start -->` and `<!-- redsub-claude-code:end -->` already exist, **replace** the content between them with the new template. Otherwise, wrap the template content with markers and append/prepend:
 ```
 <!-- redsub-claude-code:start -->
 (template content)
@@ -83,17 +78,12 @@ Check if `STITCH_API_KEY` environment variable is set:
 echo "${STITCH_API_KEY:+configured}"
 ```
 
-**If not set**, ask user:
-```
-Stitch API key is not configured.
-The /redsub-design skill requires this key for UI/UX screen design.
-(If you don't need UI design, the frontend-design plugin works without an API key.)
+**If not set**, use `AskUserQuestion` tool:
+- question: "Stitch API key가 설정되지 않았습니다. /redsub-design에 필요합니다. (UI 디자인이 필요 없다면 frontend-design 플러그인이 API key 없이 동작합니다.)"
+- header: "Stitch API"
+- options: ["Set up now" (proceed to API key configuration), "Skip" (continue without Stitch API)]
 
-(a) Set up now
-(b) Skip
-```
-
-**If user chooses (a)**:
+**If user chooses "Set up now"**:
 
 1. Tell user: "Go to https://stitch.withgoogle.com/settings and create an API key."
 2. Use AskUserQuestion with two options: "Skip" and "Already configured". The user will use the auto-generated free-text input option to paste their API key. In the question text, clearly state: "API 키를 아래 텍스트 입력란에 붙여넣어 주세요."
@@ -112,7 +102,7 @@ The /redsub-design skill requires this key for UI/UX screen design.
 
 **Do NOT** suggest modifying shell profiles (~/.zshrc, ~/.bashrc) or running shell commands.
 
-**If user chooses (b)**, continue without it and note in the summary.
+**If user chooses "Skip"**, continue without it and note in the summary.
 
 ### 5. Install manifest
 

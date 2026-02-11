@@ -41,7 +41,7 @@ if [ -f "$PLUGIN_ROOT/package.json" ]; then
   LOCAL_VER=$(json_val "$PLUGIN_ROOT/package.json" version)
   if [ -n "$LOCAL_VER" ]; then
     REMOTE_VER=""
-    REMOTE_JSON=$(curl -s --connect-timeout 2 "https://raw.githubusercontent.com/redsub-captain/redsub-claude-code/main/package.json" 2>/dev/null || echo "")
+    REMOTE_JSON=$(curl -s --connect-timeout 2 --max-time 5 "https://raw.githubusercontent.com/redsub-captain/redsub-claude-code/main/package.json" 2>/dev/null || echo "")
     if [ -n "$REMOTE_JSON" ]; then
       REMOTE_VER=$(json_input_val "$REMOTE_JSON" "" version)
     fi
@@ -73,7 +73,7 @@ if [ -f "$REGISTRY" ]; then
   EXPECTED_PLUGINS=$(json_count "$REGISTRY" plugins)
 fi
 if [ "$EXPECTED_PLUGINS" -eq 0 ]; then
-  EXPECTED_PLUGINS=13
+  exit 0  # SSOT registry를 읽을 수 없으면 체크 skip
 fi
 if [ -f "$INSTALLED_FILE" ]; then
   INSTALLED_COUNT=$(json_count "$INSTALLED_FILE")

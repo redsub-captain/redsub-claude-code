@@ -5,8 +5,6 @@ description: Enforced release pipeline. Save → Validate → Review → Version
 
 # Release Pipeline
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Input
 
 `$ARGUMENTS` provides version type and release description.

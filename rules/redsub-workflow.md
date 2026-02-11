@@ -1,5 +1,8 @@
 # Workflow Rules
 
+## Language
+- All skills: Follow the user's Claude Code language setting.
+
 ## Branching
 - No direct commits to main/master.
 - Use branch prefixes: `feature/`, `fix/`, `chore/`.

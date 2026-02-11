@@ -5,8 +5,6 @@ description: Run lint, type check, and unit tests with evidence.
 
 # Code Validation
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Procedure
 
 Run sequentially. Stop on first failure.

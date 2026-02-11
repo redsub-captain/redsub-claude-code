@@ -5,8 +5,6 @@ description: Deployment workflow for dev/prod environments.
 
 # Deployment
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Input
 
 `$ARGUMENTS`: `dev` or `prod`.
@@ -24,10 +22,16 @@ description: Deployment workflow for dev/prod environments.
 - Verify validate marker exists
 
 ### 2. Dev confirmation
-Ask: "Have you tested on dev environment?"
+Use `AskUserQuestion` tool:
+- question: "Dev 환경에서 테스트를 완료했나요?"
+- header: "Dev test"
+- options: ["Yes, tested" (proceed to next step), "No, skip" (warn and continue)]
 
 ### 3. User approval
-Ask: "Deploy to PRODUCTION? (y/n)"
+Use `AskUserQuestion` tool:
+- question: "PRODUCTION에 배포하시겠습니까?"
+- header: "Deploy"
+- options: ["Deploy to prod" (execute deployment), "Cancel" (stop pipeline)]
 
 ### 4. Execute
 Only after approval. Use project-specific deploy commands.

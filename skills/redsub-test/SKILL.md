@@ -5,8 +5,6 @@ description: TDD automation with Red-Green-Refactor cycle.
 
 # TDD Automation
 
-> **Language**: Follow the user's Claude Code language setting.
-
 ## Input
 
 `$ARGUMENTS` provides the test target. `--loop` flag enables ralph-loop integration.

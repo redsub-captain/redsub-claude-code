@@ -5,8 +5,6 @@ description: Check plugin version updates and Claude Code compatibility.
 
 # Plugin Auto-Update
 
-> **Language**: Follow the user's Claude Code language setting.
-
 > **IMPORTANT**: All bash commands in this skill MUST be executed sequentially (one at a time), NOT in parallel. Parallel execution causes "Sibling tool call errored" failures.
 
 ## Procedure

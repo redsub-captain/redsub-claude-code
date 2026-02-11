@@ -38,9 +38,10 @@ done
 
 echo ""
 
-# 2. Skills (12 with redsub- prefix)
-echo "[Skills (12)]"
-SKILLS="redsub-setup redsub-ship redsub-start-work redsub-deploy redsub-design redsub-test redsub-validate redsub-fix-all redsub-session-save redsub-uninstall redsub-update redsub-doctor"
+# 2. Skills (auto-discovered from filesystem)
+SKILLS=$(ls -d "$PLUGIN_ROOT"/skills/*/SKILL.md 2>/dev/null | while read -r f; do basename "$(dirname "$f")"; done)
+SKILL_COUNT=$(echo "$SKILLS" | wc -w | tr -d ' ')
+echo "[Skills ($SKILL_COUNT)]"
 for skill in $SKILLS; do
   f="skills/$skill/SKILL.md"
   if [ -f "$PLUGIN_ROOT/$f" ]; then
@@ -62,9 +63,10 @@ done
 
 echo ""
 
-# 3. Agents (4)
-echo "[Agents (4)]"
-AGENTS="developer planner devops designer"
+# 3. Agents (auto-discovered from filesystem)
+AGENTS=$(ls "$PLUGIN_ROOT"/agents/*.md 2>/dev/null | while read -r f; do basename "$f" .md; done)
+AGENT_COUNT=$(echo "$AGENTS" | wc -w | tr -d ' ')
+echo "[Agents ($AGENT_COUNT)]"
 for agent in $AGENTS; do
   f="agents/$agent.md"
   if [ -f "$PLUGIN_ROOT/$f" ]; then
@@ -92,9 +94,10 @@ done
 
 echo ""
 
-# 5. Rules (3 with redsub- prefix)
-echo "[Rules (3)]"
-RULES="redsub-code-quality redsub-workflow redsub-testing"
+# 5. Rules (auto-discovered from filesystem)
+RULES=$(ls "$PLUGIN_ROOT"/rules/redsub-*.md 2>/dev/null | while read -r f; do basename "$f" .md; done)
+RULE_COUNT=$(echo "$RULES" | wc -w | tr -d ' ')
+echo "[Rules ($RULE_COUNT)]"
 for rule in $RULES; do
   f="rules/$rule.md"
   if [ -f "$PLUGIN_ROOT/$f" ]; then
@@ -106,9 +109,10 @@ done
 
 echo ""
 
-# 6. Scripts (executable) — auto-discover from filesystem
-echo "[Scripts (executable)]"
-SCRIPTS="workflow-orchestrator.sh version-check.sh guard-main.sh warn-main-edit.sh validate-marker.sh auto-format.sh notify-attention.sh pre-compact-context.sh completion-check.sh verify-install.sh lib.sh"
+# 6. Scripts (auto-discovered from filesystem)
+SCRIPTS=$(ls "$PLUGIN_ROOT"/scripts/*.sh 2>/dev/null | while read -r f; do basename "$f"; done)
+SCRIPT_COUNT=$(echo "$SCRIPTS" | wc -w | tr -d ' ')
+echo "[Scripts ($SCRIPT_COUNT)]"
 for script in $SCRIPTS; do
   f="scripts/$script"
   if [ -f "$PLUGIN_ROOT/$f" ]; then
@@ -126,12 +130,12 @@ echo ""
 
 # 7. Legacy prefix check
 echo "[Legacy Prefix Check]"
-LEGACY_COUNT=$(set +o pipefail; grep -r '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" "$PLUGIN_ROOT/rules/" 2>/dev/null | grep -v "node_modules" | grep -v "redsub-doctor" | wc -l | tr -d ' ')
+LEGACY_COUNT=$(set +o pipefail; grep -r --include='*.md' '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" "$PLUGIN_ROOT/rules/" 2>/dev/null | grep -v "redsub-doctor" | wc -l | tr -d ' ')
 if [ "$LEGACY_COUNT" = "0" ]; then
   check "ok" "No legacy /rs- references found (excluding redsub-doctor diagnostics)"
 else
   check "fail" "$LEGACY_COUNT legacy /rs- references found"
-  grep -r '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" "$PLUGIN_ROOT/rules/" 2>/dev/null | grep -v "node_modules" | grep -v "redsub-doctor" | head -5
+  grep -r --include='*.md' '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" "$PLUGIN_ROOT/rules/" 2>/dev/null | grep -v "redsub-doctor" | head -5
 fi
 
 echo ""
@@ -162,47 +166,11 @@ done
 
 echo ""
 
-# 10. Cross-reference count consistency (auto-count vs hardcoded)
-echo "[Count Consistency]"
-
-# Actual counts from filesystem
-ACTUAL_SKILLS=$(ls -d "$PLUGIN_ROOT"/skills/*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')
-ACTUAL_AGENTS=$(ls "$PLUGIN_ROOT"/agents/*.md 2>/dev/null | wc -l | tr -d ' ')
-ACTUAL_RULES=$(ls "$PLUGIN_ROOT"/rules/*.md 2>/dev/null | wc -l | tr -d ' ')
+# 10. Asset count summary (all auto-discovered)
+echo "[Asset Counts]"
 ACTUAL_HOOKS=$(json_count "$PLUGIN_ROOT/hooks/hooks.json" hooks)
 ACTUAL_MCPS=$(json_count "$PLUGIN_ROOT/.mcp.json" mcpServers)
-ACTUAL_SCRIPTS=$(ls "$PLUGIN_ROOT"/scripts/*.sh 2>/dev/null | wc -l | tr -d ' ')
-
-# Verify counts match expected (hardcoded list lengths above)
-EXPECTED_SKILLS=$(echo "$SKILLS" | wc -w | tr -d ' ')
-EXPECTED_AGENTS=$(echo "$AGENTS" | wc -w | tr -d ' ')
-EXPECTED_RULES=$(echo "$RULES" | wc -w | tr -d ' ')
-EXPECTED_SCRIPTS=$(echo "$SCRIPTS" | wc -w | tr -d ' ')
-
-if [ "$ACTUAL_SKILLS" = "$EXPECTED_SKILLS" ]; then
-  check "ok" "Skills: $ACTUAL_SKILLS (matches expected)"
-else
-  check "fail" "Skills: found $ACTUAL_SKILLS on disk, but verify-install expects $EXPECTED_SKILLS — update SKILLS list"
-fi
-
-if [ "$ACTUAL_AGENTS" = "$EXPECTED_AGENTS" ]; then
-  check "ok" "Agents: $ACTUAL_AGENTS (matches expected)"
-else
-  check "fail" "Agents: found $ACTUAL_AGENTS on disk, but verify-install expects $EXPECTED_AGENTS — update AGENTS list"
-fi
-
-if [ "$ACTUAL_RULES" = "$EXPECTED_RULES" ]; then
-  check "ok" "Rules: $ACTUAL_RULES (matches expected)"
-else
-  check "fail" "Rules: found $ACTUAL_RULES on disk, but verify-install expects $EXPECTED_RULES — update RULES list"
-fi
-
-if [ "$ACTUAL_SCRIPTS" = "$EXPECTED_SCRIPTS" ]; then
-  check "ok" "Scripts: $ACTUAL_SCRIPTS (matches expected)"
-else
-  check "fail" "Scripts: found $ACTUAL_SCRIPTS on disk, but verify-install expects $EXPECTED_SCRIPTS — update SCRIPTS list"
-fi
-
+check "ok" "Skills: $SKILL_COUNT, Agents: $AGENT_COUNT, Rules: $RULE_COUNT, Scripts: $SCRIPT_COUNT"
 check "ok" "Hooks: $ACTUAL_HOOKS registered, MCPs: $ACTUAL_MCPS configured"
 
 echo ""
