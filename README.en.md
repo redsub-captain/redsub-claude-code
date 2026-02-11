@@ -41,13 +41,10 @@ This skill will:
 
 A notification is automatically shown at session start when a new version is available.
 
-```
-# 1. Update the plugin
-/plugin update redsub-claude-code@redsub-plugins
+1. Type `/plugin` → **Installed** tab → **redsub-claude-code** → **Update now**
+2. Start a new session (to apply updated skills/hooks)
 
-# 2. Check version/compatibility details (optional)
-/redsub-update
-```
+Check version/compatibility details: `/redsub-update`
 
 ### Uninstall
 
@@ -167,7 +164,7 @@ Initial setup (check dependency plugins, deploy rules, create CLAUDE.md).
 
 ### /redsub-update
 
-Check plugin version + Claude Code compatibility. To actually update, run `/plugin update redsub-claude-code@redsub-plugins`.
+Check plugin version + Claude Code compatibility. To actually update: `/plugin` → Installed → Update now.
 
 ### /redsub-doctor
 

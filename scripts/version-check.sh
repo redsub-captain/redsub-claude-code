@@ -44,7 +44,7 @@ if [ -f "$PLUGIN_ROOT/package.json" ]; then
   if [ -n "$LOCAL_VER" ]; then
     REMOTE_VER=$(curl -s --connect-timeout 2 "https://raw.githubusercontent.com/redsub-captain/redsub-claude-code/main/package.json" 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin)['version'])" 2>/dev/null || echo "")
     if [ -n "$REMOTE_VER" ] && [ "$LOCAL_VER" != "$REMOTE_VER" ]; then
-      echo "UPDATE: redsub-claude-code v$LOCAL_VER -> v$REMOTE_VER available. Run: /plugin update redsub-claude-code@redsub-plugins"
+      echo "UPDATE: redsub-claude-code v$LOCAL_VER -> v$REMOTE_VER available. Run /plugin -> Installed -> redsub-claude-code -> Update now, then start a new session."
     fi
   fi
 

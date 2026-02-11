@@ -67,28 +67,8 @@ Install: /plugin install [plugin-name]@claude-plugins-official
 Update available: vCURRENT → vLATEST
 
 To update:
-/plugin update redsub-claude-code@redsub-plugins
+1. /plugin → Installed → redsub-claude-code → Update now
+2. Start a new session (to apply updated skills/hooks)
 
 Note: install-manifest.json is auto-synced on next session start.
-```
-
-### 7. Post-update sync (if update was just performed)
-
-If the user has already run `/plugin update` during this session, sync the install manifest immediately:
-
-```bash
-PLUGIN_VER=$(python3 -c "import json; print(json.load(open('${CLAUDE_PLUGIN_ROOT}/package.json'))['version'])")
-MANIFEST="$HOME/.claude-redsub/install-manifest.json"
-if [ -f "$MANIFEST" ]; then
-  python3 -c "
-import json
-with open('$MANIFEST', 'r') as f:
-    data = json.load(f)
-old_ver = data.get('version', 'unknown')
-data['version'] = '$PLUGIN_VER'
-with open('$MANIFEST', 'w') as f:
-    json.dump(data, f, indent=2)
-print(f'install-manifest.json synced: v{old_ver} -> v$PLUGIN_VER')
-"
-fi
 ```
