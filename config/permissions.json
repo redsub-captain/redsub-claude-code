@@ -1,0 +1,45 @@
+{
+  "description": "Single Source of Truth for recommended permission patterns. Used by /redsub-setup to auto-configure ~/.claude/settings.json.",
+  "categories": {
+    "git": {
+      "description_ko": "Git 작업 (브랜치, 커밋, 머지, 태그)",
+      "description_en": "Git operations (branch, commit, merge, tag)",
+      "patterns": [
+        "Bash(git *)"
+      ]
+    },
+    "build": {
+      "description_ko": "빌드, 테스트, 린트 (npm scripts)",
+      "description_en": "Build, test, lint (npm scripts)",
+      "patterns": [
+        "Bash(npm run *)",
+        "Bash(npm version *)",
+        "Bash(npx *)"
+      ]
+    },
+    "github": {
+      "description_ko": "GitHub CLI (PR, 릴리즈, 이슈)",
+      "description_en": "GitHub CLI (PR, release, issues)",
+      "patterns": [
+        "Bash(gh *)"
+      ]
+    },
+    "plugin": {
+      "description_ko": "Claude Code 플러그인 관리",
+      "description_en": "Claude Code plugin management",
+      "patterns": [
+        "Bash(claude plugin *)"
+      ]
+    },
+    "file_ops": {
+      "description_ko": "파일 작업 (디렉토리 생성, 복사, 권한)",
+      "description_en": "File operations (mkdir, copy, permissions)",
+      "patterns": [
+        "Bash(chmod +x *)",
+        "Bash(mkdir -p *)",
+        "Bash(cp *)",
+        "Bash(date *)"
+      ]
+    }
+  }
+}

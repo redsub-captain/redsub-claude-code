@@ -48,6 +48,7 @@ When referencing plugin data, ALWAYS read from the canonical source. Never hardc
 | Dependency plugin list | `${CLAUDE_PLUGIN_ROOT}/config/plugins.json` | /redsub-setup, /redsub-doctor, version-check.sh |
 | Plugin version | `package.json` → synced to plugin.json, marketplace.json | /redsub-ship, guard-main.sh |
 | Hook definitions | `hooks/hooks.json` | Claude Code runtime |
+| Permission patterns | `${CLAUDE_PLUGIN_ROOT}/config/permissions.json` | /redsub-setup |
 | Validation | `scripts/verify-install.sh` | /redsub-doctor, pre-merge |
 
 ## Token Optimization

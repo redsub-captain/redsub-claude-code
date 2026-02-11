@@ -47,7 +47,32 @@ mkdir -p ~/.claude/rules
 cp ${CLAUDE_PLUGIN_ROOT}/rules/redsub-*.md ~/.claude/rules/
 ```
 
-### 3. CLAUDE.md handling
+### 3. Configure permissions
+
+Auto-register recommended permission patterns in `~/.claude/settings.json` to reduce repetitive "Allow" prompts during plugin usage.
+
+**Read the permission registry from `${CLAUDE_PLUGIN_ROOT}/config/permissions.json`** — this is the Single Source of Truth (SSOT). Do NOT hardcode patterns.
+
+Collect all `patterns` arrays from every category into a single flat list.
+
+**Show the user what will be added** using `AskUserQuestion`:
+- question: "플러그인 워크플로우에 필요한 권한 [N]개를 ~/.claude/settings.json에 등록하면, 이후 작업 시 반복적인 Allow 프롬프트가 줄어듭니다. 등록할까요?"
+- header: "Permissions"
+- options: ["Register all (Recommended)" (register all patterns), "Show details first" (list all patterns then ask again), "Skip" (do not modify permissions)]
+
+**If user chooses "Show details first"**: print all patterns grouped by category (use category `description_ko`), then ask again with just "Register all" / "Skip".
+
+**If user chooses "Register all"**:
+
+1. Read `~/.claude/settings.json`. If file doesn't exist, start with `{}`.
+2. Ensure `permissions.allow` array exists (create if missing).
+3. Merge: add only patterns that are NOT already present in the existing `permissions.allow` array. Use exact string matching for deduplication.
+4. Write the updated `settings.json` back.
+5. Report: "권한 [N]개 등록 완료. (기존 중복 [M]개 스킵)"
+
+**If user chooses "Skip"**: continue without modifying permissions. Note in the summary.
+
+### 4. CLAUDE.md handling
 
 Target path: `~/.claude/CLAUDE.md` (global — applies to all projects).
 
@@ -72,7 +97,7 @@ For "Append" or "Prepend", Read the existing file first. If markers `<!-- redsub
 <!-- redsub-claude-code:end -->
 ```
 
-### 4. Stitch API key (optional)
+### 5. Stitch API key (optional)
 
 The `/redsub-design` skill uses [Google Stitch](https://stitch.withgoogle.com) for UI/UX screen design. An API key is required only if the user plans to use this feature.
 
@@ -108,7 +133,7 @@ echo "${STITCH_API_KEY:+configured}"
 
 **If user chooses "Skip"**, continue without it and note in the summary.
 
-### 5. Install manifest
+### 6. Install manifest
 
 Target: `~/.claude-redsub/install-manifest.json`
 
@@ -139,18 +164,19 @@ Schema:
 
 Track any files created or modified during this setup run in the corresponding arrays.
 
-### 6. Completion marker
+### 7. Completion marker
 
 ```bash
 mkdir -p ~/.claude-redsub
 date > ~/.claude-redsub/.setup-done
 ```
 
-### 7. Summary
+### 8. Summary
 
 ```
 Setup complete:
 - Rules deployed: 3 (code-quality, workflow, testing)
+- Permissions: [N registered / skipped] in ~/.claude/settings.json
 - CLAUDE.md: [created at ~/.claude/CLAUDE.md / markers added / skipped]
 - Stitch API: [configured / skipped (optional)]
 - Dependencies: [N]/[total] installed
