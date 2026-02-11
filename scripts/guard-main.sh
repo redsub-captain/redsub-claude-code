@@ -3,24 +3,25 @@
 # exit 2 = block tool execution in Claude Code
 
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 # Read JSON input from stdin
 INPUT=$(cat)
 
 # Extract command
-COMMAND=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('input',{}).get('command',''))" 2>/dev/null || echo "")
+COMMAND=$(json_input_val "$INPUT" "" input command)
 
 # Check if git merge command — require validate marker + version consistency
 if echo "$COMMAND" | grep -q "git merge"; then
-  if [ ! -f /tmp/.claude-redsub-validated ]; then
+  if [ ! -f "$REDSUB_DIR/validated" ]; then
     echo "BLOCKED: Cannot merge without validation. Run /redsub-validate first."
     exit 2
   fi
 
   # Version consistency check across 3 files
-  PKG_VER=$(python3 -c "import json; print(json.load(open('package.json'))['version'])" 2>/dev/null || echo "")
-  PLUGIN_VER=$(python3 -c "import json; print(json.load(open('.claude-plugin/plugin.json'))['version'])" 2>/dev/null || echo "")
-  MKT_VER=$(python3 -c "import json; print(json.load(open('.claude-plugin/marketplace.json'))['plugins'][0]['version'])" 2>/dev/null || echo "")
+  PKG_VER=$(json_val "package.json" version)
+  PLUGIN_VER=$(json_val ".claude-plugin/plugin.json" version)
+  MKT_VER=$(json_val ".claude-plugin/marketplace.json" plugins 0 version)
 
   if [ -n "$PKG_VER" ] && { [ "$PKG_VER" != "$PLUGIN_VER" ] || [ "$PKG_VER" != "$MKT_VER" ]; }; then
     echo "BLOCKED: Version mismatch — package.json: $PKG_VER, plugin.json: $PLUGIN_VER, marketplace.json: $MKT_VER"

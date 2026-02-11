@@ -4,14 +4,13 @@
 # Output is visible to Claude as a system reminder, making it hard to ignore.
 
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 # Skip if not in a git repo
 git rev-parse --is-inside-work-tree &>/dev/null || exit 0
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
 CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-VALIDATED=""
-[ -f /tmp/.claude-redsub-validated ] && VALIDATED="yes"
 
 # Build output — only when there's something actionable
 OUTPUT=""
@@ -30,7 +29,7 @@ fi
 
 # Case 3: CLAUDE.md stale (7+ days)
 if [ -z "$OUTPUT" ] && [ -f "CLAUDE.md" ]; then
-  LAST_MOD=$(stat -f %m "CLAUDE.md" 2>/dev/null || stat -c %Y "CLAUDE.md" 2>/dev/null || echo 0)
+  LAST_MOD=$(file_mtime "CLAUDE.md")
   NOW=$(date +%s)
   DAYS_AGO=$(( (NOW - LAST_MOD) / 86400 ))
   if [ "$DAYS_AGO" -ge 7 ]; then

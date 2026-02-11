@@ -3,18 +3,20 @@
 # Used by guard-main.sh to verify validation before merge
 
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 # Read JSON input from stdin
 INPUT=$(cat)
 
 # Extract executed command
-COMMAND=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('input',{}).get('command',''))" 2>/dev/null || echo "")
+COMMAND=$(json_input_val "$INPUT" "" input command)
 
 # Create marker if both lint and check were in the command
 if echo "$COMMAND" | grep -q "npm run lint" && echo "$COMMAND" | grep -q "npm run check"; then
   # Verify command succeeded
-  EXIT_CODE=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('output',{}).get('exitCode',1))" 2>/dev/null || echo "1")
+  EXIT_CODE=$(json_input_val "$INPUT" "1" output exitCode)
   if [ "$EXIT_CODE" = "0" ]; then
-    touch /tmp/.claude-redsub-validated
+    touch "$REDSUB_DIR/validated"
+    chmod 600 "$REDSUB_DIR/validated"
   fi
 fi

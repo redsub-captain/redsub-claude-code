@@ -3,6 +3,7 @@
 # Does NOT block — only warns. Commits are blocked separately by guard-main.sh.
 
 set -euo pipefail
+source "$(dirname "$0")/lib.sh"
 
 # Skip if not in a git repo
 git rev-parse --is-inside-work-tree &>/dev/null || exit 0
@@ -14,17 +15,12 @@ if [ "$BRANCH" != "main" ] && [ "$BRANCH" != "master" ]; then
   exit 0
 fi
 
-# One warning per session (marker resets when /tmp is cleaned or session ends)
-MARKER="/tmp/.claude-redsub-main-edit-warned-$$"
-
-# Check for any existing marker from this parent process tree
-EXISTING=$(ls /tmp/.claude-redsub-main-edit-warned-* 2>/dev/null | head -1 || echo "")
-
-if [ -n "$EXISTING" ]; then
-  # Already warned this session
+# One warning per session (marker resets at SessionStart via clean_session_markers)
+if [ -f "$REDSUB_DIR/main-edit-warned" ]; then
   exit 0
 fi
 
 # First edit on main — show warning and create marker
-touch "$MARKER"
+touch "$REDSUB_DIR/main-edit-warned"
+chmod 600 "$REDSUB_DIR/main-edit-warned"
 echo "WARNING: Editing files on '$BRANCH'. Consider creating a feature branch first: /redsub-start-work [name]"
