@@ -9,6 +9,12 @@ set -o pipefail
 
 source "$(dirname "$0")/lib.sh"
 
+# Guard: require jq or python3 for JSON operations
+if ! command -v jq &>/dev/null && ! command -v python3 &>/dev/null; then
+  echo '{"status":"error","message":"Either jq or python3 is required but neither was found"}'
+  exit 1
+fi
+
 PLUGIN_ROOT="${1:?Usage: setup-core.sh <CLAUDE_PLUGIN_ROOT> [--force]}"
 FORCE="${2:-}"
 INSTALLED_PLUGINS="$HOME/.claude/plugins/installed_plugins.json"
@@ -98,7 +104,7 @@ if [ -f "$PERMS_JSON" ]; then
       --argjson existing "$EXISTING_PERMS" \
       '[$all[] | select(. as $p | $existing | index($p) | not)]')
   else
-    python3 - "$PERMS_JSON" "$SETTINGS_FILE" <<'PYEOF' > /tmp/redsub_perms_check.json
+    PERMS_RESULT=$(python3 - "$PERMS_JSON" "$SETTINGS_FILE" <<'PYEOF'
 import json, sys, os
 
 with open(sys.argv[1]) as f:
@@ -117,10 +123,9 @@ if os.path.exists(sys.argv[2]):
 missing = [p for p in all_patterns if p not in existing]
 print(json.dumps({"total": len(all_patterns), "missing": missing}))
 PYEOF
-    PERMS_RESULT=$(cat /tmp/redsub_perms_check.json 2>/dev/null || echo '{"total":0,"missing":[]}')
+    )
     TOTAL_PERMS=$(echo "$PERMS_RESULT" | python3 -c "import json,sys; print(json.load(sys.stdin)['total'])" 2>/dev/null || echo "0")
     MISSING_PERMS_JSON=$(echo "$PERMS_RESULT" | python3 -c "import json,sys; print(json.dumps(json.load(sys.stdin)['missing']))" 2>/dev/null || echo "[]")
-    rm -f /tmp/redsub_perms_check.json
   fi
 
   MISSING_PERM_COUNT=$(echo "$MISSING_PERMS_JSON" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "0")
@@ -204,7 +209,7 @@ TEMPLATE_VERSION=""
 
 if [ -f "$CLAUDE_MD" ]; then
   if grep -q 'redsub-claude-code:start' "$CLAUDE_MD" 2>/dev/null; then
-    TEMPLATE_VERSION=$(grep -m1 'redsub-template-version:' "$CLAUDE_MD" | sed -n 's/.*redsub-template-version:\([0-9.]*\).*/\1/p')
+    TEMPLATE_VERSION=$(grep -m1 'redsub-template-version:' "$CLAUDE_MD" | sed -n 's/.*redsub-template-version: *\([0-9.]*\).*/\1/p')
     CLAUDE_MD_STATUS="has_markers"
   else
     CLAUDE_MD_STATUS="no_markers"
@@ -214,7 +219,7 @@ fi
 TEMPLATE_LATEST=""
 TEMPLATE_FILE="$PLUGIN_ROOT/templates/CLAUDE.md.template"
 if [ -f "$TEMPLATE_FILE" ]; then
-  TEMPLATE_LATEST=$(head -1 "$TEMPLATE_FILE" | sed -n 's/.*redsub-template-version:\([0-9.]*\).*/\1/p')
+  TEMPLATE_LATEST=$(head -1 "$TEMPLATE_FILE" | sed -n 's/.*redsub-template-version: *\([0-9.]*\).*/\1/p')
 fi
 
 # --- Output JSON ---

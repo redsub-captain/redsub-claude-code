@@ -136,8 +136,9 @@ When replacing content between main markers (`<!-- redsub-claude-code:start -->`
    - `## Tech Stack` → extract heading + all lines until next `##` heading
    - `## In progress` → extract heading + all lines until next `##` heading or end of markers
 2. Replace everything between main markers with new template content.
-3. If sections were found: in the new template's sub-markers, replace the default content with the extracted sections.
-4. If no sections found: keep the template defaults.
+3. Combine any found sections into USER_CONFIG (join with blank line). If only one section found, use just that one.
+4. If USER_CONFIG is non-empty: in the new template's sub-markers, replace the default content between them with USER_CONFIG.
+5. If no sections found: keep the template defaults.
 
 ### Case C: No main markers (first install — same as "missing" case above)
 

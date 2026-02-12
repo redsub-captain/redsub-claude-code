@@ -8,6 +8,12 @@ set -o pipefail
 
 source "$(dirname "$0")/lib.sh"
 
+# Guard: require jq or python3 for JSON operations
+if ! command -v jq &>/dev/null && ! command -v python3 &>/dev/null; then
+  echo '{"status":"error","message":"Either jq or python3 is required but neither was found"}'
+  exit 1
+fi
+
 PLUGIN_ROOT="${1:?Usage: update-core.sh <CLAUDE_PLUGIN_ROOT>}"
 MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/redsub-plugins"
 INSTALLED_PLUGINS="$HOME/.claude/plugins/installed_plugins.json"
@@ -106,7 +112,10 @@ fi
 # 4c. Cache directory + copy files
 CACHE_DIR="$HOME/.claude/plugins/cache/redsub-plugins/redsub-claude-code/$NEW_VERSION"
 mkdir -p "$CACHE_DIR"
-rsync -a --exclude='.git' "$MARKETPLACE_DIR/" "$CACHE_DIR/"
+if ! rsync -a --exclude='.git' "$MARKETPLACE_DIR/" "$CACHE_DIR/"; then
+  output_json "error" "$CURRENT_VERSION" "$NEW_VERSION" "false" "" "" "Failed to copy plugin files to cache directory"
+  exit 1
+fi
 
 # 4d. Git commit SHA
 COMMIT_SHA=$(git -C "$MARKETPLACE_DIR" rev-parse HEAD 2>/dev/null || echo "unknown")
@@ -162,11 +171,11 @@ TEMPLATE_OLD=""
 TEMPLATE_NEW=""
 
 if [ -f "$TEMPLATE_FILE" ]; then
-  TEMPLATE_NEW=$(head -1 "$TEMPLATE_FILE" | sed -n 's/.*redsub-template-version:\([0-9.]*\).*/\1/p')
+  TEMPLATE_NEW=$(head -1 "$TEMPLATE_FILE" | sed -n 's/.*redsub-template-version: *\([0-9.]*\).*/\1/p')
 fi
 
 if [ -f "$CLAUDE_MD" ]; then
-  TEMPLATE_OLD=$(grep -m1 'redsub-template-version:' "$CLAUDE_MD" | sed -n 's/.*redsub-template-version:\([0-9.]*\).*/\1/p')
+  TEMPLATE_OLD=$(grep -m1 'redsub-template-version:' "$CLAUDE_MD" | sed -n 's/.*redsub-template-version: *\([0-9.]*\).*/\1/p')
 fi
 
 if [ -n "$TEMPLATE_NEW" ] && [ "$TEMPLATE_OLD" != "$TEMPLATE_NEW" ]; then
