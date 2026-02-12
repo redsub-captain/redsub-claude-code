@@ -125,16 +125,24 @@ TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
 
 if [ -f "$INSTALLED_PLUGINS" ]; then
   if command -v jq &>/dev/null; then
+    # Support both v1 (keys at root) and v2 (keys under .plugins)
     jq --arg path "$CACHE_DIR" \
        --arg ver "$NEW_VERSION" \
        --arg ts "$TIMESTAMP" \
        --arg sha "$COMMIT_SHA" \
        --arg key "$PLUGIN_KEY" \
-       'if has($key) then
-          (.[$key][0].installPath = $path) |
-          (.[$key][0].version = $ver) |
-          (.[$key][0].lastUpdated = $ts) |
-          (.[$key][0].gitCommitSha = $sha)
+       'if (.plugins | type) == "object" then
+          if .plugins | has($key) then
+            .plugins[$key][0].installPath = $path |
+            .plugins[$key][0].version = $ver |
+            .plugins[$key][0].lastUpdated = $ts |
+            .plugins[$key][0].gitCommitSha = $sha
+          else . end
+        elif has($key) then
+          .[$key][0].installPath = $path |
+          .[$key][0].version = $ver |
+          .[$key][0].lastUpdated = $ts |
+          .[$key][0].gitCommitSha = $sha
         else . end' \
        "$INSTALLED_PLUGINS" > "${INSTALLED_PLUGINS}.tmp" && \
     mv "${INSTALLED_PLUGINS}.tmp" "$INSTALLED_PLUGINS"
@@ -144,11 +152,12 @@ import json, sys
 file_path, cache_path, version, timestamp, sha, key = sys.argv[1:]
 with open(file_path) as f:
     data = json.load(f)
-if key in data and len(data[key]) > 0:
-    data[key][0]["installPath"] = cache_path
-    data[key][0]["version"] = version
-    data[key][0]["lastUpdated"] = timestamp
-    data[key][0]["gitCommitSha"] = sha
+plugins = data.get("plugins", data)  # v2 uses .plugins, v1 has keys at root
+if key in plugins and len(plugins[key]) > 0:
+    plugins[key][0]["installPath"] = cache_path
+    plugins[key][0]["version"] = version
+    plugins[key][0]["lastUpdated"] = timestamp
+    plugins[key][0]["gitCommitSha"] = sha
 with open(file_path, 'w') as f:
     json.dump(data, f, indent=4)
     f.write('\n')

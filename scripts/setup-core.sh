@@ -42,10 +42,12 @@ if [ -f "$PLUGINS_JSON" ]; then
 
   if command -v jq &>/dev/null; then
     # Use jq to build missing plugins list
+    # Support both v1 (keys at root) and v2 (keys under .plugins)
     MISSING_PLUGINS_JSON=$(jq -r --slurpfile installed <([ -f "$INSTALLED_PLUGINS" ] && cat "$INSTALLED_PLUGINS" || echo "{}") '
+      ($installed[0].plugins // $installed[0]) as $inst |
       [.plugins[] |
         "\(.name)@\(.marketplace)" as $key |
-        select($installed[0][$key] == null) |
+        select($inst[$key] == null) |
         $key
       ]' "$PLUGINS_JSON" 2>/dev/null || echo "[]")
   else
@@ -56,7 +58,8 @@ with open(sys.argv[1]) as f:
 installed = {}
 if os.path.exists(sys.argv[2]):
     with open(sys.argv[2]) as f:
-        installed = json.load(f)
+        raw = json.load(f)
+    installed = raw.get("plugins", raw)  # v2 uses .plugins, v1 has keys at root
 missing = []
 for p in plugins.get("plugins", []):
     key = f"{p['name']}@{p['marketplace']}"
