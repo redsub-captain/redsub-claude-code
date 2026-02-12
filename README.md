@@ -4,7 +4,7 @@
 
 1인 개발자를 위한 Claude Code **워크플로우 오케스트레이터** 플러그인.
 
-공식 플러그인 11개(superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
+공식 플러그인 12개(code-review, pr-review-toolkit, commit-commands, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
 
 ## 전제 조건
 
@@ -59,7 +59,6 @@ marketplace pull → cache 복사 → registry 업데이트까지 자동으로 �
 
 | 플러그인 | 마켓플레이스 | 역할 |
 |---------|------------|------|
-| superpowers | obra/superpowers-marketplace | TDD, 설계, 계획, 서브에이전트, 코드 리뷰 위임 |
 | code-review | claude-plugins-official | PR 자동 리뷰 (GitHub 코멘트 게시) |
 | pr-review-toolkit | claude-plugins-official | 6개 전문 리뷰 에이전트 (테스트/타입/보안/간소화 등) |
 | ralph-loop | claude-plugins-official | 반복 작업 자동화 (TDD, 일괄 수정) |
@@ -70,6 +69,8 @@ marketplace pull → cache 복사 → registry 업데이트까지 자동으로 �
 | code-simplifier | claude-plugins-official | 자율적 코드 간소화 리뷰 |
 | claude-md-management | claude-plugins-official | CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`) |
 | playwright | claude-plugins-official | E2E 브라우저 테스트 자동화 (Microsoft Playwright MCP) |
+| claude-code-setup | claude-plugins-official | 프로젝트 분석 → Claude Code 자동화 추천 |
+| commit-commands | claude-plugins-official | 커밋/푸시/PR 자동화 (/commit, /commit-push-pr, /clean_gone) |
 
 ## 워크플로우
 
@@ -168,10 +169,10 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 ## 시나리오별 명령어 매핑
 
 ### "새 기능을 만들고 싶어"
-1. `/brainstorming` — 설계 문서 생성 (superpowers)
-2. `/writing-plans` — 2-5분 단위 구현 계획
+1. `/redsub-brainstorm` — 설계 문서 생성
+2. `/redsub-plan` — 2-5분 단위 구현 계획
 3. `/redsub-start-work feature-name` — 브랜치 생성
-4. TDD 구현 — superpowers:test-driven-development 원칙 적용
+4. TDD 구현 — TDD (redsub-testing 규칙) 원칙 적용
 5. `/redsub-validate` — 검증
 6. `/review-pr` — 리뷰 (6개 전문 에이전트 병렬)
 7. `/redsub-ship minor "feature description"` — 출시
@@ -189,7 +190,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 ### "코드 리뷰 해줘"
 - PR이 있으면 → `/code-review` (GitHub 코멘트 자동 게시)
 - 심층 분석 → `/review-pr` (6개 전문 에이전트 병렬)
-- 계획 대비 검증 → superpowers:requesting-code-review
+- 계획 대비 검증 → /review-pr (pr-review-toolkit)
 
 ### "복잡한 기능을 개발해야 해"
 1. `/feature-dev user-authentication` — 구조화된 기능 개발 시작
@@ -214,17 +215,17 @@ CLAUDE.md 품질 감사 + 세션 중 발견한 패턴/규칙 반영. 세션 종�
 |------------|-----------|
 | /rs-review | /code-review 또는 /review-pr |
 | /rs-save | /commit |
-| /rs-plan | /brainstorming → /writing-plans |
-| /rs-explore | /brainstorming |
+| /rs-plan | /redsub-brainstorm → /redsub-plan |
+| /rs-explore | /redsub-brainstorm |
 | /rs-status | git status |
 | /rs-update-check | /redsub-update |
-| /redsub-test | superpowers:test-driven-development + /redsub-validate |
+| /redsub-test | TDD (redsub-testing 규칙) + /redsub-validate |
 
 ## 구성 요소
 
 | 종류 | 수량 | 내용 |
 |------|------|------|
-| Skills | 11개 | 위 명령어 레퍼런스 참조 |
+| Skills | 14개 | 위 명령어 레퍼런스 참조 |
 | Agents | 4개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
 | Hooks | 9개 | 워크플로우 오케스트레이터, main 커밋/merge 차단 (버전 일치 검증 포함), main 편집 경고, 자동 포맷 + 편집 추적, validate 마커 생성, 버전/플러그인/CLAUDE.md 체크, 데스크톱 알림, 컨텍스트 보존 + 학습 리마인더, 세션 종료 3중 체크 |
 | Rules | 4개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law), Claude Code 실전 관례 |

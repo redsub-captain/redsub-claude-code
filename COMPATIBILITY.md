@@ -18,6 +18,13 @@ redsub-claude-code와 Claude Code 버전 간 호환성.
 
 ## Breaking Changes
 
+### 2.8.0
+- superpowers 의존성 제거 (내재화)
+- 신규 스킬: `/redsub-brainstorm`, `/redsub-plan`, `/redsub-execute`
+- 신규 의존: `claude-code-setup`, `commit-commands`
+- "커밋해" 매핑 변경: `git add + git commit` → `/commit` (commit-commands)
+- `/brainstorming` → `/redsub-brainstorm`, `/writing-plans` → `/redsub-plan`
+
 ### 2.0.0
 - Skill prefix: `/rs-*` → `/redsub-*`
 - context7 → official plugin으로 이동
