@@ -154,4 +154,4 @@ Missing plugins ([N]):
   ...
 ```
 
-**Note**: Framework-specific plugins (SvelteKit, Firebase, Supabase, etc.) and design tools (Stitch) are installed per-project as needed, not globally.
+**Note**: Framework-specific plugins (SvelteKit, Firebase, Supabase, etc.) are installed per-project as needed, not globally.
