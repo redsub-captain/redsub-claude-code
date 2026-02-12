@@ -34,7 +34,8 @@ Task: [Full task text from plan, verbatim]
 Constraints:
 - Follow TDD: write failing test first, verify failure, then implement
 - Do NOT modify files outside this task's scope
-- Commit when done with descriptive message
+- Commit when done: `type: 한국어 설명` (커밋 컨벤션 따름)
+  - 예: `feat: 사용자 인증 API 추가`, `fix: null 포인터 예외 처리`
 
 Expected output:
 - What was implemented

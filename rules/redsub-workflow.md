@@ -9,8 +9,9 @@
 - Create branches with `/redsub-start-work`.
 
 ## Commits
-- Conventional Commits: `feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`.
-- WIP commits via `/redsub-session-save`. Final commits with meaningful messages.
+- `redsub-commit-convention` 규칙 따름.
+- Type prefix는 영어, 설명은 한국어.
+- WIP 커밋: `/redsub-session-save`. 최종 커밋: 의미 있는 메시지.
 
 ## Versioning (Semantic Versioning)
 - `patch` (1.0.x): Bug fixes, minor changes.
@@ -50,6 +51,7 @@ When referencing plugin data, ALWAYS read from the canonical source. Never hardc
 | Hook definitions | `hooks/hooks.json` | Claude Code runtime |
 | Permission patterns | `${CLAUDE_PLUGIN_ROOT}/config/permissions.json` | /redsub-setup |
 | Validation | `scripts/verify-install.sh` | /redsub-doctor, pre-merge |
+| Commit convention | `rules/redsub-commit-convention.md` | /redsub-ship, /redsub-execute |
 
 ## Token Optimization
 - Prefer Glob/Grep for file discovery. Avoid bulk reads.
