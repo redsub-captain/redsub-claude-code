@@ -37,7 +37,7 @@ Run sequentially. Stop on first failure.
 
 If the test script doesn't include a `--run` flag for watch-mode frameworks (e.g., vitest), append `-- --run`.
 
-### 4. Evidence (superpowers:verification-before-completion)
+### 4. Evidence (Verification Gate)
 
 **Show actual command output.** No claims without evidence.
 

@@ -19,13 +19,13 @@ Full-stack development agent. Framework and tooling are determined per-project.
 - TDD (test first → implement → refactor)
 - Code quality maintenance
 
-## TDD Principles (superpowers:test-driven-development)
+## TDD Principles
 1. Write a failing test first. **No production code without a failing test.**
 2. Verify the test actually fails.
 3. Write minimum code to make it pass.
 4. Refactor while keeping tests green.
 
-## Verification (superpowers:verification-before-completion)
+## Verification (Evidence Gate)
 - Show actual command output as evidence before claiming completion.
 - Never claim "tests pass" without showing the output.
 

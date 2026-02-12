@@ -1,16 +1,9 @@
 {
   "description": "Single Source of Truth for dependency plugin list. All other files reference this.",
   "marketplaces": [
-    "anthropics/claude-plugins-official",
-    "obra/superpowers-marketplace"
+    "anthropics/claude-plugins-official"
   ],
   "plugins": [
-    {
-      "name": "superpowers",
-      "marketplace": "obra/superpowers-marketplace",
-      "role_ko": "TDD, 설계, 계획, 서브에이전트, 코드 리뷰 위임",
-      "role_en": "TDD, design, planning, subagents, code review delegation"
-    },
     {
       "name": "code-review",
       "marketplace": "claude-plugins-official",
@@ -70,6 +63,18 @@
       "marketplace": "claude-plugins-official",
       "role_ko": "E2E 브라우저 테스트 자동화 (Microsoft Playwright MCP)",
       "role_en": "E2E browser test automation (Microsoft Playwright MCP)"
+    },
+    {
+      "name": "claude-code-setup",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "프로젝트 분석 → Claude Code 자동화 추천",
+      "role_en": "Analyze codebase → recommend Claude Code automations"
+    },
+    {
+      "name": "commit-commands",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "커밋/푸시/PR 자동화 (/commit, /commit-push-pr, /clean_gone)",
+      "role_en": "Commit/push/PR automation (/commit, /commit-push-pr, /clean_gone)"
     }
   ]
 }

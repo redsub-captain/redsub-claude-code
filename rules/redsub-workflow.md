@@ -25,7 +25,7 @@
 - `/redsub-ship` enforces: Save → Validate → Review → Version → Merge → Tag → Push.
 
 ## Planning
-- New features or large changes: use `/brainstorming` → `/writing-plans` (superpowers) before coding.
+- New features or large changes: use `/redsub-brainstorm` → `/redsub-plan` before coding.
 - No large-scale modifications without a plan.
 
 ## File Edit/Write Safety
@@ -62,7 +62,8 @@ When the user says these phrases, execute the corresponding process:
 
 | User says | Action | Scope |
 |-----------|--------|-------|
-| "커밋해" / "commit" | `git add` + `git commit` on feature branch | Local only, no version bump |
+| "커밋해" / "commit" | `/commit` (commit-commands) | Local only, no version bump |
+| "PR 올려" / "push and pr" | `/commit-push-pr` (commit-commands) | Local + Remote |
 | "릴리즈해" / "release" / "ship" | `/redsub-ship` (Save → Validate → Version → Merge → Tag → Push) | Local + Remote, version bump |
 | "배포해" / "deploy" | `/redsub-deploy [env]` | Remote deployment |
 | "저장해" / "save" | `/redsub-session-save` (CLAUDE.md update + WIP commit) | Local only |
@@ -76,8 +77,10 @@ When you detect these situations, suggest the appropriate commands:
 | Context | Suggested Commands |
 |---------|-------------------|
 | Session start, no branch | `/redsub-start-work [name]` |
-| New feature discussion | `/brainstorming` → `/writing-plans` |
-| Writing code | superpowers:test-driven-development principles |
+| New feature discussion | `/redsub-brainstorm` → `/redsub-plan` |
+| Planning phase | `/redsub-brainstorm` → `/redsub-plan` → `/redsub-execute` |
+| Executing plan | `/redsub-execute` |
+| Writing code | TDD 원칙 (redsub-testing 규칙) |
 | Tests failing | `/ralph-loop` for iteration, or run tests manually |
 | Code complete, ready to merge | `/redsub-ship [version]` |
 | Before merge, need review | `/review-pr` or `/code-review` |
@@ -90,6 +93,7 @@ When you detect these situations, suggest the appropriate commands:
 | CLAUDE.md outdated or session end | `/revise-claude-md` (claude-md-management plugin) |
 | Code quality after implementation | code-simplifier runs automatically |
 | UI/UX design (no Stitch) | frontend-design plugin auto-activates |
+| Project setup guidance | `/claude-automation-recommender` (claude-code-setup) |
 
 ## Hook Output Relay
 

@@ -4,7 +4,7 @@
 
 A **workflow orchestrator** plugin for Claude Code, designed for solo developers.
 
-Works in **combination** with 11 official plugins (superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
+Works in **combination** with 12 official plugins (code-review, pr-review-toolkit, commit-commands, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
 
 ## Prerequisites
 
@@ -59,7 +59,6 @@ This plugin works in combination with these official plugins:
 
 | Plugin | Marketplace | Role |
 |--------|-------------|------|
-| superpowers | obra/superpowers-marketplace | TDD, design, planning, subagents, code review delegation |
 | code-review | claude-plugins-official | Automated PR review (GitHub comment posting) |
 | pr-review-toolkit | claude-plugins-official | 6 specialized review agents (test/type/security/simplifier, etc.) |
 | ralph-loop | claude-plugins-official | Iterative task automation (TDD, bulk fixes) |
@@ -70,6 +69,8 @@ This plugin works in combination with these official plugins:
 | code-simplifier | claude-plugins-official | Autonomous code simplification review |
 | claude-md-management | claude-plugins-official | CLAUDE.md audit + session learning (`/revise-claude-md`) |
 | playwright | claude-plugins-official | E2E browser test automation (Microsoft Playwright MCP) |
+| claude-code-setup | claude-plugins-official | Analyze codebase → recommend Claude Code automations |
+| commit-commands | claude-plugins-official | Commit/push/PR automation (/commit, /commit-push-pr, /clean_gone) |
 
 ## Workflow
 
@@ -168,10 +169,10 @@ Manifest-based clean removal.
 ## Scenario → Command Mapping
 
 ### "I want to build a new feature"
-1. `/brainstorming` — Generate design document (superpowers)
-2. `/writing-plans` — Create 2-5 min implementation tasks
+1. `/redsub-brainstorm` — Generate design document
+2. `/redsub-plan` — Create 2-5 min implementation tasks
 3. `/redsub-start-work feature-name` — Create branch
-4. TDD implementation — Write failing test first, then implement (superpowers:test-driven-development)
+4. TDD implementation — Write failing test first, then implement (TDD, redsub-testing rule)
 5. `/redsub-validate` — Validation
 6. `/review-pr` — Review (6 specialized agents in parallel)
 7. `/redsub-ship minor "feature description"` — Ship it
@@ -189,7 +190,7 @@ Manifest-based clean removal.
 ### "Review my code"
 - If there's a PR → `/code-review` (auto-post GitHub comments)
 - Deep analysis → `/review-pr` (6 specialized agents in parallel)
-- Plan-vs-implementation → superpowers:requesting-code-review
+- Plan-vs-implementation → `/review-pr` (pr-review-toolkit)
 
 ### "I need to build a complex feature"
 1. `/feature-dev user-authentication` — Start structured feature development
@@ -214,17 +215,17 @@ Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
 |--------------|-------------|
 | /rs-review | /code-review or /review-pr |
 | /rs-save | /commit |
-| /rs-plan | /brainstorming → /writing-plans |
-| /rs-explore | /brainstorming |
+| /rs-plan | /redsub-brainstorm → /redsub-plan |
+| /rs-explore | /redsub-brainstorm |
 | /rs-status | git status |
 | /rs-update-check | /redsub-update |
-| /redsub-test | superpowers:test-driven-development + /redsub-validate |
+| /redsub-test | TDD (redsub-testing rule) + /redsub-validate |
 
 ## Components
 
 | Type | Count | Details |
 |------|-------|---------|
-| Skills | 11 | See command reference above |
+| Skills | 14 | See command reference above |
 | Agents | 4 | developer (Opus), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
 | Hooks | 9 | Workflow orchestrator, main commit/merge guard (version consistency check), main edit warning, auto-format + edit tracking, validate marker creation, version/plugin/CLAUDE.md freshness check, desktop notifications, context preservation + learning reminder, session end triple-check |
 | Rules | 4 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law), claude-code-practices |

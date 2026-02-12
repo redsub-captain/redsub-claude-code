@@ -8,9 +8,17 @@ description: "Claude Code best practices for development workflow"
 - 추측하지 않는다. 수정 전 반드시 Read/Grep으로 현재 상태 확인.
 - 파일이 존재하는지, 내용이 어떤지 직접 확인 후 작업.
 
-## Evidence Before Claims
-- "테스트 통과" 주장 전 실제 출력을 보여준다.
-- 커밋/PR 전 검증 커맨드 실행 후 결과 첨부.
+## Evidence Before Claims (Verification Gate)
+- **Iron Law: 완료 주장 전 반드시 검증 증거 제시.**
+- 5단계 게이트:
+  1. **IDENTIFY**: 이 주장을 증명할 커맨드는?
+  2. **RUN**: 전체 커맨드 실행 (fresh, complete).
+  3. **READ**: 출력 전체 확인, exit code, 실패 수 확인.
+  4. **VERIFY**: 출력이 주장을 뒷받침하는가?
+  5. **CLAIM**: 그때만 주장.
+- **금지**: 검증 전 "should", "probably", "seems to" 사용.
+- **금지**: 검증 전 만족 표현 ("Great!", "Done!", "Perfect!").
+- 서브에이전트 성공 보고도 독립 검증 필요.
 
 ## Active Tool Usage
 - 후크(hooks)로 자동화할 수 있는 것은 수동으로 하지 않는다.
@@ -34,3 +42,11 @@ description: "Claude Code best practices for development workflow"
 - 파일 읽기, 검색 등 독립적 조회는 병렬 호출.
 - 의존성 있는 작업만 순차 실행.
 - Agent Teams 사용 판단 기준: 작업 간 공유 상태나 순차 의존이 없으면 **항상** 병렬.
+
+### Agent Prompt Structure
+- **Focused**: 하나의 명확한 문제 도메인.
+- **Self-contained**: 필요한 모든 컨텍스트 포함.
+- **Constrained**: 범위 밖 코드 수정 금지 명시.
+- **Specific output**: 반환할 정보 형식 명시.
+- **Post-integration**: 에이전트 완료 후 요약 검토 → 충돌 확인 → 전체 테스트.
+- **Never**: 같은 파일을 여러 에이전트가 동시 수정.
