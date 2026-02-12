@@ -1,21 +1,4 @@
----
-paths:
-  - "src/**/*.ts"
-  - "src/**/*.svelte"
-  - "src/**/*.js"
----
-
 # Code Quality Rules
-
-## TypeScript
-- Strict mode required. No `any` type.
-- Omit explicit types when inference is sufficient.
-
-## SvelteKit 5
-- Use Runes API: `$state`, `$derived`, `$effect`, `$props`.
-- No legacy reactivity (`$:`, `export let`).
-- Server-only logic in `+server.ts` or `src/lib/server/` only.
-- Server data in `+page.ts` load functions must use `+page.server.ts`.
 
 ## Security
 → `security-guidance` plugin handles detailed rules. Key reminders: no hardcoded secrets, validate user input at boundaries.
@@ -23,7 +6,7 @@ paths:
 ## Environment Variables
 - When adding new env vars, update simultaneously:
   1. `.env` (local)
-  2. `apphosting.yaml` (deployment)
+  2. Deployment config (e.g., `apphosting.yaml`, Vercel env, etc.)
   3. Related documentation
 
 ## Single Source of Truth (SSOT)
@@ -40,14 +23,29 @@ paths:
 - No hardcoded strings. Use i18n keys or constants.
 - Includes error messages and UI text.
 
+## Bug Propagation
+- 오류/버그 발견 시 **동일/유사 패턴 전수 조사**. 한 건 수정으로 끝내지 않는다.
+- Grep으로 유사 패턴 검색 → 전체 수정 → 검증.
+- "하나 고치고 끝"은 버그. 전수 조사 후 리포트.
+
+## Feature Flow Integrity
+- 큰 기능을 여러 커밋에 걸쳐 개발할 때, **기능 전체 플로우를 정기적으로 점검**한다.
+- 커밋 단위 리뷰만으로는 전체 아키텍처 일관성을 보장할 수 없다.
+- 기능 완료 시 `git diff main...HEAD`로 **전체 변경사항** 리뷰.
+- 데이터 흐름, 에러 처리, 상태 관리가 기능 전체에서 일관되는지 확인.
+- 스파게티 코드 징후: 같은 로직이 여러 곳에 분산, 순환 의존, 일관성 없는 패턴 → 즉시 리팩토링.
+
+## Project Structure
+- 일관된 디렉토리 구조 유지.
+- 관심사 분리: 서버/클라이언트/공유 유틸리티.
+- 설정 파일은 프로젝트 루트. 디렉토리에 흩뿌리지 않는다.
+- 테스트 파일은 소스 옆 또는 전용 디렉토리에.
+
 ## Styling
-- Tailwind CSS 4 utility-first. Minimize custom CSS.
-- Use `clsx` or `cn` for conditional class props.
+- 프로젝트가 선택한 CSS 방법론을 일관되게 따른다.
+- 조건부 클래스 조합에는 유틸리티 함수 사용.
 
-## Database (merged from database rules)
-- Supabase: Always use RLS. Test policies in SQL editor first.
-- Firestore: Keep documents small. Use subcollections for large data.
-- Index frequently queried fields.
-
-## Tool Support
-SvelteKit/Firebase/Supabase 작업 시 해당 MCP 도구로 공식 문서 참조. 상세 → agents/developer.md
+## Public Plugin Quality
+- 보안: 사용자 자격증명, API 키가 로그/출력에 노출되지 않도록.
+- 성능: 불필요한 파일 읽기/검색 최소화. 토큰 비용 인식.
+- UX: 불필요한 확인 프롬프트 최소화. 자동화 가능한 것은 자동화.

@@ -25,9 +25,9 @@ COUNTER_FILE="$REDSUB_DIR/edit-count"
 COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
 echo $((COUNT + 1)) > "$COUNTER_FILE"
 
-# Track Svelte file edits
-if echo "$FILE_PATH" | grep -qE '\.svelte$'; then
-  SVELTE_FILE="$REDSUB_DIR/svelte-count"
-  SCOUNT=$(cat "$SVELTE_FILE" 2>/dev/null || echo 0)
-  echo $((SCOUNT + 1)) > "$SVELTE_FILE"
+# Track component file edits (framework-specific extensions)
+if echo "$FILE_PATH" | grep -qE '\.(svelte|vue|jsx|tsx)$'; then
+  COMP_FILE="$REDSUB_DIR/component-count"
+  CCOUNT=$(cat "$COMP_FILE" 2>/dev/null || echo 0)
+  echo $((CCOUNT + 1)) > "$COMP_FILE"
 fi

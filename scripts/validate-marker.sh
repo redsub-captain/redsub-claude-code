@@ -11,8 +11,8 @@ INPUT=$(cat)
 # Extract executed command
 COMMAND=$(json_input_val "$INPUT" "" input command)
 
-# Create marker if both lint and check were in the command
-if echo "$COMMAND" | grep -q "npm run lint" && echo "$COMMAND" | grep -q "npm run check"; then
+# Create marker if both lint and check were in the command (any package manager)
+if echo "$COMMAND" | grep -qE "(npm|pnpm|yarn) run lint" && echo "$COMMAND" | grep -qE "(npm|pnpm|yarn) run check"; then
   # Verify command succeeded
   EXIT_CODE=$(json_input_val "$INPUT" "1" output exitCode)
   if [ "$EXIT_CODE" = "0" ]; then

@@ -19,6 +19,14 @@ Default: `patch` if omitted.
 | minor | New feature (backward compatible) | 1.0.0 → 1.1.0 |
 | major | Breaking change | 1.0.0 → 2.0.0 |
 
+## Command Resolution
+
+Determine the project's commands:
+1. Check project CLAUDE.md for explicit commands (lint, check, test, version)
+2. If not found, read `package.json` scripts and infer
+3. Detect package manager: look for lock files (`pnpm-lock.yaml` → pnpm, `yarn.lock` → yarn, default → npm)
+4. If ambiguous, ask the user
+
 ## Procedure (enforced order)
 
 ### 1. Save
@@ -35,9 +43,7 @@ Skip if no changes.
 Run with superpowers:verification-before-completion principles.
 **Show actual command output as evidence.**
 
-```bash
-npm run lint && npm run check && npm run test:unit -- --run
-```
+Run resolved lint, check, and test commands sequentially.
 
 **Stop immediately on failure.**
 
@@ -55,7 +61,7 @@ User may skip.
 Update **all 3 version files** (package.json, plugin.json, marketplace.json):
 
 ```bash
-npm version [patch|minor|major] --no-git-tag-version
+<package-manager> version [patch|minor|major] --no-git-tag-version
 ```
 
 Read the new version from `package.json`, then update the other 2 files to match:

@@ -4,7 +4,7 @@
 
 1인 개발자를 위한 Claude Code **워크플로우 오케스트레이터** 플러그인.
 
-공식 플러그인 13개(superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
+공식 플러그인 11개(superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
 
 ## 전제 조건
 
@@ -33,7 +33,7 @@
 
 이 스킬이 하는 일:
 - 의존 공식 플러그인 확인 + 미설치 안내
-- Rules 3개를 `~/.claude/rules/`에 배포
+- Rules 4개를 `~/.claude/rules/`에 배포
 - CLAUDE.md 템플릿 생성 (기존 파일 시 마커 기반 추가/건너뛰기 선택)
 - 설치 매니페스트 생성 (`~/.claude-redsub/install-manifest.json`)
 
@@ -65,13 +65,10 @@ marketplace pull → cache 복사 → registry 업데이트까지 자동으로 �
 | ralph-loop | claude-plugins-official | 반복 작업 자동화 (TDD, 일괄 수정) |
 | security-guidance | claude-plugins-official | 보안 모범 사례 |
 | context7 | claude-plugins-official | 라이브러리 최신 문서 조회 |
-| typescript-lsp | claude-plugins-official | TypeScript 실시간 타입 진단 |
 | frontend-design | claude-plugins-official | UI/UX 구현 가이드 (Stitch 없이도 사용 가능) |
 | feature-dev | claude-plugins-official | 구조화된 기능 개발 (`/feature-dev`) |
 | code-simplifier | claude-plugins-official | 자율적 코드 간소화 리뷰 |
 | claude-md-management | claude-plugins-official | CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`) |
-| firebase | claude-plugins-official | Firebase MCP (Firestore, Auth, Functions) |
-| supabase | claude-plugins-official | Supabase MCP (PostgreSQL, Auth, Storage) |
 | playwright | claude-plugins-official | E2E 브라우저 테스트 자동화 (Microsoft Playwright MCP) |
 
 ## 워크플로우
@@ -89,21 +86,6 @@ Feature 브랜치를 생성하고 작업을 시작합니다.
 **사용 시점:** 새 작업 시작 시.
 ```
 /redsub-start-work user-authentication
-```
-
-### /redsub-test [target]
-
-TDD 자동화. Red-Green-Refactor 사이클을 실행합니다.
-
-**사용 시점:** 새 기능 구현 시 테스트 우선, 버그 수정 시 재현 테스트부터.
-```
-/redsub-test user-authentication
-/redsub-test --team user-authentication  # 모듈별 병렬 TDD (Agent Teams)
-```
-
-**ralph-loop 연동 (반복):**
-```
-/ralph-loop "TDD: user-authentication" --completion-promise "ALL TESTS PASSING" --max-iterations 20
 ```
 
 ### /redsub-validate
@@ -189,7 +171,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 1. `/brainstorming` — 설계 문서 생성 (superpowers)
 2. `/writing-plans` — 2-5분 단위 구현 계획
 3. `/redsub-start-work feature-name` — 브랜치 생성
-4. `/redsub-test target` — TDD 구현
+4. TDD 구현 — superpowers:test-driven-development 원칙 적용
 5. `/redsub-validate` — 검증
 6. `/review-pr` — 리뷰 (6개 전문 에이전트 병렬)
 7. `/redsub-ship minor "feature description"` — 출시
@@ -236,16 +218,17 @@ CLAUDE.md 품질 감사 + 세션 중 발견한 패턴/규칙 반영. 세션 종�
 | /rs-explore | /brainstorming |
 | /rs-status | git status |
 | /rs-update-check | /redsub-update |
+| /redsub-test | superpowers:test-driven-development + /redsub-validate |
 
 ## 구성 요소
 
 | 종류 | 수량 | 내용 |
 |------|------|------|
-| Skills | 12개 | 위 명령어 레퍼런스 참조 |
+| Skills | 11개 | 위 명령어 레퍼런스 참조 |
 | Agents | 4개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
 | Hooks | 9개 | 워크플로우 오케스트레이터, main 커밋/merge 차단 (버전 일치 검증 포함), main 편집 경고, 자동 포맷 + 편집 추적, validate 마커 생성, 버전/플러그인/CLAUDE.md 체크, 데스크톱 알림, 컨텍스트 보존 + 학습 리마인더, 세션 종료 3중 체크 |
-| Rules | 3개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law) |
-| MCP | 2개 | stitch (UI/UX 설계), sveltekit (공식 문서) |
+| Rules | 4개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law), Claude Code 실전 관례 |
+| MCP | 0개 | 프로젝트별 설치 (stitch, sveltekit 등) |
 
 ## 3단계 방어
 
@@ -255,36 +238,26 @@ CLAUDE.md 품질 감사 + 세션 중 발견한 패턴/규칙 반영. 세션 종�
 | 2. 차단 | **Hooks** | 위험 행동 물리적 차단 | main 직접 커밋 시 `exit 2`로 차단 |
 | 3. 절차 | **Skills** | 파이프라인 순서 강제 | `/redsub-ship`이 Save→Validate→Merge 순서 강제 |
 
-## 기술 스택
+## 프레임워크 독립
 
-SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS 4
-
-다른 스택에서 사용하려면 rules, agents, skills의 내용을 수정하세요.
+이 플러그인은 **워크플로우 엔진**입니다. 특정 프레임워크에 의존하지 않습니다.
+프레임워크별 도구(SvelteKit MCP, Firebase MCP 등)는 프로젝트 필요에 따라 개별 설치하세요.
+커맨드는 프로젝트의 CLAUDE.md 또는 package.json에서 자동 감지합니다 (Command Resolution).
 
 ## 환경 변수
 
 | 변수 | 용도 | 필수 여부 |
 |------|------|----------|
-| `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` 스킬) | 선택 |
-| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams 병렬 실행 (`/redsub-fix-all`, `/redsub-test`) | 선택 |
+| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams 병렬 실행 (`/redsub-fix-all`) | 선택 |
 
-### Stitch API Key 설정 (선택)
+### Stitch API Key (프로젝트별, 선택)
 
-`/redsub-design` 스킬로 UI/UX 화면을 설계하려면 Stitch API 키가 필요합니다. Stitch 없이도 **frontend-design** 플러그인으로 UI 구현 가이드를 받을 수 있으므로, 화면 디자인 생성이 필요하지 않다면 건너뛰어도 됩니다.
-
-`/redsub-setup`을 실행하면 API 키 입력과 저장을 자동으로 처리합니다.
-
-수동 설정이 필요한 경우:
+`/redsub-design` 스킬로 UI/UX 화면을 설계하려면 Stitch API 키가 필요합니다. 프로젝트별로 설정하세요:
 1. [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)에서 API 키 생성
-2. `~/.claude/settings.json`의 `env` 섹션에 추가:
-   ```json
-   {
-     "env": {
-       "STITCH_API_KEY": "your-api-key-here"
-     }
-   }
-   ```
+2. `~/.claude/settings.json`의 `env` 섹션에 추가
 3. Claude Code 새 세션 시작
+
+Stitch 없이도 **frontend-design** 플러그인으로 UI 구현이 가능합니다.
 
 ## 라이선스
 

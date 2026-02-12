@@ -51,19 +51,18 @@ echo "${STITCH_API_KEY:+configured}"
 - 첫 디자인이면 Brand Identity (색상/서체/간격) 결정 기록
 - 공통 컴포넌트 패턴 기록
 
-### 4. SvelteKit 구현 가이드
+### 4. Implementation Guide
 
-- Route structure (`src/routes/[path]/+page.svelte`)
+- Route/page structure (per project's framework)
 - Component decomposition
-- Tailwind CSS 4 styling
-- Runes: `$state`, `$derived`, `$effect`, `$props`
+- Styling approach (per project's CSS methodology)
 
 ### 5. Output
 
 ```
 Design: [screen description]
 - Stitch: Project [name], Screen [ID]
-- Route: src/routes/[path]/+page.svelte
+- Route: [project-specific route path]
 - Components: [breakdown]
 - Design Guide: docs/design-guide.md updated
 ```
@@ -81,7 +80,7 @@ Design: [screen description]
 - 컴포넌트/색상/서체 결정사항 기록
 - Stitch 없이도 디자인 가이드는 동일하게 관리
 
-### 3. SvelteKit 구현
+### 3. Implementation
 
 - frontend-design 플러그인이 직접 코드 생성
 - 디자인 가이드 준수 확인
@@ -91,7 +90,7 @@ Design: [screen description]
 ```
 Design: [screen description]
 - Method: frontend-design plugin
-- Route: src/routes/[path]/+page.svelte
+- Route: [project-specific route path]
 - Components: [breakdown]
 - Design Guide: docs/design-guide.md updated
 ```

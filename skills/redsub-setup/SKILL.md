@@ -40,7 +40,7 @@ Count installed vs total.
 
 ### 2. Deploy rules
 
-Copy the 3 rule files from the plugin to the Claude Code global rules directory.
+Copy the 4 rule files from the plugin to the Claude Code global rules directory.
 
 ```bash
 mkdir -p ~/.claude/rules
@@ -97,43 +97,7 @@ For "Append" or "Prepend", Read the existing file first. If markers `<!-- redsub
 <!-- redsub-claude-code:end -->
 ```
 
-### 5. Stitch API key (optional)
-
-The `/redsub-design` skill uses [Google Stitch](https://stitch.withgoogle.com) for UI/UX screen design. An API key is required only if the user plans to use this feature.
-
-Check if `STITCH_API_KEY` environment variable is set:
-
-```bash
-echo "${STITCH_API_KEY:+configured}"
-```
-
-**If not set**, use `AskUserQuestion` tool:
-- question: "Stitch API key가 설정되지 않았습니다. /redsub-design에 필요합니다. (UI 디자인이 필요 없다면 frontend-design 플러그인이 API key 없이 동작합니다.)"
-- header: "Stitch API"
-- options: ["Set up now" (proceed to API key configuration), "Skip" (continue without Stitch API)]
-
-**If user chooses "Set up now"**:
-
-1. Tell user: "Go to https://stitch.withgoogle.com/settings and create an API key."
-2. Use AskUserQuestion with two options: "Skip" and "Already configured". The user will use the auto-generated free-text input option to paste their API key. In the question text, clearly state: "API 키를 아래 텍스트 입력란에 붙여넣어 주세요."
-3. Read `~/.claude/settings.json`.
-4. Add the key to the `env` section (create `env` if it doesn't exist):
-   ```json
-   {
-     "env": {
-       "STITCH_API_KEY": "<user-provided-key>"
-     },
-     ...existing settings
-   }
-   ```
-5. Write the updated settings.json back.
-6. Tell user: "Saved. Start a new Claude Code session to activate."
-
-**Do NOT** suggest modifying shell profiles (~/.zshrc, ~/.bashrc) or running shell commands.
-
-**If user chooses "Skip"**, continue without it and note in the summary.
-
-### 6. Install manifest
+### 5. Install manifest
 
 Target: `~/.claude-redsub/install-manifest.json`
 
@@ -157,28 +121,28 @@ Schema:
   "rules_installed": [
     "~/.claude/rules/redsub-code-quality.md",
     "~/.claude/rules/redsub-workflow.md",
-    "~/.claude/rules/redsub-testing.md"
+    "~/.claude/rules/redsub-testing.md",
+    "~/.claude/rules/redsub-claude-code-practices.md"
   ]
 }
 ```
 
 Track any files created or modified during this setup run in the corresponding arrays.
 
-### 7. Completion marker
+### 6. Completion marker
 
 ```bash
 mkdir -p ~/.claude-redsub
 date > ~/.claude-redsub/.setup-done
 ```
 
-### 8. Summary
+### 7. Summary
 
 ```
 Setup complete:
-- Rules deployed: 3 (code-quality, workflow, testing)
+- Rules deployed: 4 (code-quality, workflow, testing, claude-code-practices)
 - Permissions: [N registered / skipped] in ~/.claude/settings.json
 - CLAUDE.md: [created at ~/.claude/CLAUDE.md / markers added / skipped]
-- Stitch API: [configured / skipped (optional)]
 - Dependencies: [N]/[total] installed
 ```
 
@@ -189,3 +153,5 @@ Missing plugins ([N]):
   claude plugin install <name>@<marketplace>
   ...
 ```
+
+**Note**: Framework-specific plugins (SvelteKit, Firebase, Supabase, etc.) and design tools (Stitch) are installed per-project as needed, not globally.

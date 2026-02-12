@@ -9,12 +9,16 @@
       ]
     },
     "build": {
-      "description_ko": "빌드, 테스트, 린트 (npm scripts)",
-      "description_en": "Build, test, lint (npm scripts)",
+      "description_ko": "빌드, 테스트, 린트 (패키지 매니저 scripts)",
+      "description_en": "Build, test, lint (package manager scripts)",
       "patterns": [
         "Bash(npm run *)",
         "Bash(npm version *)",
-        "Bash(npx *)"
+        "Bash(npx *)",
+        "Bash(pnpm run *)",
+        "Bash(pnpm *)",
+        "Bash(yarn run *)",
+        "Bash(yarn *)"
       ]
     },
     "github": {

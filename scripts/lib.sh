@@ -172,5 +172,5 @@ clean_session_markers() {
        "$REDSUB_DIR"/main-edit-warned \
        "$REDSUB_DIR"/claude-md-revised \
        "$REDSUB_DIR"/edit-count \
-       "$REDSUB_DIR"/svelte-count 2>/dev/null || true
+       "$REDSUB_DIR"/component-count 2>/dev/null || true
 }
