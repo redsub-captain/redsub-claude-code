@@ -8,8 +8,8 @@ Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
 (프로젝트에 맞게 기입. 예: SvelteKit 5 / Firebase / TypeScript / Tailwind CSS 4)
 
 ## Principles
-- **Plan first**: Use /brainstorming → /writing-plans (superpowers) before coding
-- **TDD**: Tests before code (superpowers:test-driven-development)
+- **Plan first**: Use /redsub-brainstorm → /redsub-plan before coding
+- **TDD**: Tests before code (TDD Iron Law)
 - **SSOT (Single Source of Truth)**: Every piece of data lives in exactly ONE canonical location. All other consumers read from that source — never duplicate, never hardcode.
   - Config values → one config file or env var
   - Business rules → one module, re-exported where needed
@@ -26,9 +26,12 @@ Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
 
 | Phase | Command | Notes |
 |-------|---------|-------|
-| Design | /brainstorming → /writing-plans | superpowers |
+| Design | /redsub-brainstorm → /redsub-plan | internal |
+| Execute | /redsub-execute | subagent dispatch |
 | Start | /redsub-start-work [name] | feature branch |
-| Code | TDD principles (superpowers) | test first |
+| Code | TDD principles | test first |
+| Commit | /commit | commit-commands plugin |
+| PR | /commit-push-pr | commit + push + PR |
 | Iterate | /ralph-loop "prompt" | for repetitive tasks |
 | Review | /review-pr or /code-review | pr-review-toolkit / code-review |
 | Validate | /redsub-validate | lint + check + test |
