@@ -57,4 +57,4 @@ Plugins from `config/plugins.json` provide additional tools/skills:
 - `security-guidance` → security best practices
 - `pr-review-toolkit` → code review agents (6 types)
 - `code-simplifier` → automatic code simplification
-- `frontend-design` → UI implementation guide (no Stitch needed)
+- `frontend-design` → UI implementation guide

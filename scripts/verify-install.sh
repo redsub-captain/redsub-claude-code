@@ -84,7 +84,7 @@ echo ""
 
 # 4. Verify deleted files don't exist
 echo "[Deleted Files (should not exist)]"
-for f in "agents/reviewer.md" "rules/security.md" "rules/database.md" ".lsp.json"; do
+for f in "agents/reviewer.md" "agents/designer.md" "rules/security.md" "rules/database.md" ".lsp.json" "skills/redsub-design/SKILL.md" "templates/design-guide.template.md"; do
   if [ -f "$PLUGIN_ROOT/$f" ]; then
     check "fail" "$f — should be deleted but still exists"
   else

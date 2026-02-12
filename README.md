@@ -64,7 +64,7 @@ marketplace pull → cache 복사 → registry 업데이트까지 자동으로 �
 | ralph-loop | claude-plugins-official | 반복 작업 자동화 (TDD, 일괄 수정) |
 | security-guidance | claude-plugins-official | 보안 모범 사례 |
 | context7 | claude-plugins-official | 라이브러리 최신 문서 조회 |
-| frontend-design | claude-plugins-official | UI/UX 구현 가이드 (Stitch 없이도 사용 가능) |
+| frontend-design | claude-plugins-official | UI/UX 구현 가이드 |
 | feature-dev | claude-plugins-official | 구조화된 기능 개발 (`/feature-dev`) |
 | code-simplifier | claude-plugins-official | 자율적 코드 간소화 리뷰 |
 | claude-md-management | claude-plugins-official | CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`) |
@@ -130,15 +130,6 @@ Save → Validate → Review → Version → Merge → Tag → Push 파이프라
 ```
 /redsub-deploy dev     # 개발계 먼저
 /redsub-deploy prod    # 운영계 (승인 필수)
-```
-
-### /redsub-design [screen]
-
-Stitch MCP를 사용한 UI/UX 화면 설계.
-
-**사용 시점:** 새 화면 설계 시.
-```
-/redsub-design 대시보드 페이지
 ```
 
 ### /redsub-session-save
@@ -220,16 +211,17 @@ CLAUDE.md 품질 감사 + 세션 중 발견한 패턴/규칙 반영. 세션 종�
 | /rs-status | git status |
 | /rs-update-check | /redsub-update |
 | /redsub-test | TDD (redsub-testing 규칙) + /redsub-validate |
+| /redsub-design | frontend-design (plugin) |
 
 ## 구성 요소
 
 | 종류 | 수량 | 내용 |
 |------|------|------|
-| Skills | 14개 | 위 명령어 레퍼런스 참조 |
-| Agents | 4개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus), designer (Opus, Stitch MCP) |
+| Skills | 13개 | 위 명령어 레퍼런스 참조 |
+| Agents | 3개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus) |
 | Hooks | 9개 | 워크플로우 오케스트레이터, main 커밋/merge 차단 (버전 일치 검증 포함), main 편집 경고, 자동 포맷 + 편집 추적, validate 마커 생성, 버전/플러그인/CLAUDE.md 체크, 데스크톱 알림, 컨텍스트 보존 + 학습 리마인더, 세션 종료 3중 체크 |
 | Rules | 4개 | 코드 품질 (보안/DB 통합), 워크플로우 (맥락 자동 감지), 테스트 (TDD Iron Law), Claude Code 실전 관례 |
-| MCP | 0개 | 프로젝트별 설치 (stitch, sveltekit 등) |
+| MCP | 0개 | 프로젝트별 설치 (sveltekit 등) |
 
 ## 3단계 방어
 
@@ -250,15 +242,6 @@ CLAUDE.md 품질 감사 + 세션 중 발견한 패턴/규칙 반영. 세션 종�
 | 변수 | 용도 | 필수 여부 |
 |------|------|----------|
 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams 병렬 실행 (`/redsub-fix-all`) | 선택 |
-
-### Stitch API Key (프로젝트별, 선택)
-
-`/redsub-design` 스킬로 UI/UX 화면을 설계하려면 Stitch API 키가 필요합니다. 프로젝트별로 설정하세요:
-1. [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)에서 API 키 생성
-2. `~/.claude/settings.json`의 `env` 섹션에 추가
-3. Claude Code 새 세션 시작
-
-Stitch 없이도 **frontend-design** 플러그인으로 UI 구현이 가능합니다.
 
 ## 라이선스
 

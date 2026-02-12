@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # [Stop] Check for uncommitted changes on session end + completion notification
 
-set -euo pipefail
+set -u
 source "$(dirname "$0")/lib.sh"
 
 # Check uncommitted changes
-CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ') || CHANGES=0
 
 if [ "$CHANGES" -gt 0 ]; then
   echo "WARNING: ${CHANGES} uncommitted changes. Consider /redsub-session-save."
@@ -17,9 +17,9 @@ if [ ! -f "$REDSUB_DIR/claude-md-revised" ]; then
 fi
 
 # --- Design documentation check ---
-SVELTE_EDITS=$(cat "$REDSUB_DIR/svelte-count" 2>/dev/null || echo 0)
-if [ "$SVELTE_EDITS" -ge 3 ]; then
-  echo "DESIGN: ${SVELTE_EDITS} Svelte files edited. Consider documenting UI decisions with /redsub-design or frontend-design."
+COMPONENT_EDITS=$(cat "$REDSUB_DIR/component-count" 2>/dev/null || echo 0)
+if [ "$COMPONENT_EDITS" -ge 3 ]; then
+  echo "DESIGN: ${COMPONENT_EDITS} component files edited. Consider documenting UI decisions with frontend-design."
 fi
 
 # --- Code quality check ---
@@ -31,7 +31,7 @@ fi
 # --- Cleanup session markers ---
 rm -f "$REDSUB_DIR"/claude-md-revised \
      "$REDSUB_DIR"/edit-count \
-     "$REDSUB_DIR"/svelte-count 2>/dev/null || true
+     "$REDSUB_DIR"/component-count 2>/dev/null || true
 
 # macOS completion notification (safe_osascript escapes special characters)
 if command -v osascript &>/dev/null; then

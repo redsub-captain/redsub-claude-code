@@ -88,11 +88,10 @@ When you detect these situations, suggest the appropriate commands:
 | Bulk fixes needed | `/redsub-fix-all [pattern]` |
 | Session ending | `/redsub-session-save` |
 | Plugin issues | `/redsub-doctor` |
-| UI/UX design needed | `/redsub-design [screen]` |
+| UI/UX design needed | frontend-design plugin auto-activates |
 | New feature (complex, multi-file) | `/feature-dev [description]` (feature-dev plugin) |
 | CLAUDE.md outdated or session end | `/revise-claude-md` (claude-md-management plugin) |
 | Code quality after implementation | code-simplifier runs automatically |
-| UI/UX design (no Stitch) | frontend-design plugin auto-activates |
 | Project setup guidance | `/claude-automation-recommender` (claude-code-setup) |
 
 ## Hook Output Relay

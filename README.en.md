@@ -64,7 +64,7 @@ This plugin works in combination with these official plugins:
 | ralph-loop | claude-plugins-official | Iterative task automation (TDD, bulk fixes) |
 | security-guidance | claude-plugins-official | Security best practices |
 | context7 | claude-plugins-official | Latest library documentation lookup |
-| frontend-design | claude-plugins-official | UI/UX implementation guide (works without Stitch) |
+| frontend-design | claude-plugins-official | UI/UX implementation guide |
 | feature-dev | claude-plugins-official | Structured feature development (`/feature-dev`) |
 | code-simplifier | claude-plugins-official | Autonomous code simplification review |
 | claude-md-management | claude-plugins-official | CLAUDE.md audit + session learning (`/revise-claude-md`) |
@@ -130,15 +130,6 @@ Deploy to dev/prod environments. Prod requires explicit user approval.
 ```
 /redsub-deploy dev     # Dev first
 /redsub-deploy prod    # Prod (approval required)
-```
-
-### /redsub-design [screen]
-
-UI/UX screen design via Stitch MCP.
-
-**When to use:** Designing new screens.
-```
-/redsub-design dashboard page
 ```
 
 ### /redsub-session-save
@@ -220,16 +211,17 @@ Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
 | /rs-status | git status |
 | /rs-update-check | /redsub-update |
 | /redsub-test | TDD (redsub-testing rule) + /redsub-validate |
+| /redsub-design | frontend-design (plugin) |
 
 ## Components
 
 | Type | Count | Details |
 |------|-------|---------|
-| Skills | 14 | See command reference above |
-| Agents | 4 | developer (Opus), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
+| Skills | 13 | See command reference above |
+| Agents | 3 | developer (Opus), planner (Sonnet, read-only), devops (Opus) |
 | Hooks | 9 | Workflow orchestrator, main commit/merge guard (version consistency check), main edit warning, auto-format + edit tracking, validate marker creation, version/plugin/CLAUDE.md freshness check, desktop notifications, context preservation + learning reminder, session end triple-check |
 | Rules | 4 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law), claude-code-practices |
-| MCP | 0 | Per-project install (stitch, sveltekit, etc.) |
+| MCP | 0 | Per-project install (sveltekit, etc.) |
 
 ## Three-Layer Defense
 
@@ -250,15 +242,6 @@ Commands are auto-detected from the project's CLAUDE.md or package.json (Command
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams parallel execution (`/redsub-fix-all`) | Optional |
-
-### Stitch API Key (Per-Project, Optional)
-
-The `/redsub-design` skill requires a Stitch API key for UI/UX screen design. Configure per-project:
-1. Create an API key at [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)
-2. Add to `~/.claude/settings.json` under the `env` section
-3. Start a new Claude Code session
-
-UI implementation is also available without Stitch via the **frontend-design** plugin.
 
 ## License
 

@@ -1,11 +1,8 @@
 <!-- redsub-template-version:2.8.0 -->
-# Project Guide
+# redsub-claude-code
 
 ## Identity
 Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
-
-## Tech Stack
-(프로젝트에 맞게 기입. 예: SvelteKit 5 / Firebase / TypeScript / Tailwind CSS 4)
 
 ## Principles
 - **Plan first**: Use /redsub-brainstorm → /redsub-plan before coding
@@ -17,7 +14,7 @@ Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
   - API URLs / endpoints → one constants file
   - Type definitions → one source, re-exported (no redeclaring the same shape)
 - **Security**: No API key exposure, server-side processing
-- **Cost**: Minimize unnecessary API calls and DB reads
+- **Cost**: Design for cloud cost efficiency — optimize compute, storage, network, and external API usage
 - **No hardcoding**: Use i18n keys or constants
 
 ## Workflow: Plan → Start → Code → Test → Review → Ship → Deploy
@@ -39,9 +36,8 @@ Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
 | Deploy | /redsub-deploy [dev\|prod] | devops agent |
 | Save | /redsub-session-save | context preservation |
 | Fix | /redsub-fix-all [pattern] | bulk fix |
-| UI | /redsub-design [screen] | Stitch MCP |
+| UI | frontend-design (auto) | UI/UX implementation guide |
 | Feature | /feature-dev [target] | feature-dev plugin (complex features) |
-| UI (alt) | frontend-design (auto) | No Stitch API key needed |
 | Maintain | /revise-claude-md | CLAUDE.md quality audit |
 
 ### Management Commands

@@ -37,8 +37,8 @@
     {
       "name": "frontend-design",
       "marketplace": "claude-plugins-official",
-      "role_ko": "UI/UX 구현 가이드 (Stitch 없이도 사용 가능)",
-      "role_en": "UI/UX implementation guide (works without Stitch)"
+      "role_ko": "UI/UX 구현 가이드",
+      "role_en": "UI/UX implementation guide"
     },
     {
       "name": "feature-dev",
