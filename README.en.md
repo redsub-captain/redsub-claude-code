@@ -4,7 +4,7 @@
 
 A **workflow orchestrator** plugin for Claude Code, designed for solo developers.
 
-Works in **combination** with 13 official plugins (superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
+Works in **combination** with 11 official plugins (superpowers, code-review, pr-review-toolkit, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ Works in **combination** with 13 official plugins (superpowers, code-review, pr-
 
 This skill will:
 - Check and suggest installing required official plugins
-- Deploy 3 rules to `~/.claude/rules/`
+- Deploy 4 rules to `~/.claude/rules/`
 - Generate a CLAUDE.md template (marker-based append/prepend/skip if file exists)
 - Create install manifest (`~/.claude-redsub/install-manifest.json`)
 
@@ -65,13 +65,10 @@ This plugin works in combination with these official plugins:
 | ralph-loop | claude-plugins-official | Iterative task automation (TDD, bulk fixes) |
 | security-guidance | claude-plugins-official | Security best practices |
 | context7 | claude-plugins-official | Latest library documentation lookup |
-| typescript-lsp | claude-plugins-official | Real-time TypeScript type diagnostics |
 | frontend-design | claude-plugins-official | UI/UX implementation guide (works without Stitch) |
 | feature-dev | claude-plugins-official | Structured feature development (`/feature-dev`) |
 | code-simplifier | claude-plugins-official | Autonomous code simplification review |
 | claude-md-management | claude-plugins-official | CLAUDE.md audit + session learning (`/revise-claude-md`) |
-| firebase | claude-plugins-official | Firebase MCP (Firestore, Auth, Functions) |
-| supabase | claude-plugins-official | Supabase MCP (PostgreSQL, Auth, Storage) |
 | playwright | claude-plugins-official | E2E browser test automation (Microsoft Playwright MCP) |
 
 ## Workflow
@@ -89,21 +86,6 @@ Create a feature branch and start working.
 **When to use:** Starting new work.
 ```
 /redsub-start-work user-authentication
-```
-
-### /redsub-test [target]
-
-TDD automation. Runs the Red-Green-Refactor cycle.
-
-**When to use:** Test-first for new features, reproduction test first for bug fixes.
-```
-/redsub-test user-authentication
-/redsub-test --team user-authentication  # Parallel TDD per module (Agent Teams)
-```
-
-**With ralph-loop (iterative):**
-```
-/ralph-loop "TDD: user-authentication" --completion-promise "ALL TESTS PASSING" --max-iterations 20
 ```
 
 ### /redsub-validate
@@ -189,7 +171,7 @@ Manifest-based clean removal.
 1. `/brainstorming` — Generate design document (superpowers)
 2. `/writing-plans` — Create 2-5 min implementation tasks
 3. `/redsub-start-work feature-name` — Create branch
-4. `/redsub-test target` — TDD implementation
+4. TDD implementation — Write failing test first, then implement (superpowers:test-driven-development)
 5. `/redsub-validate` — Validation
 6. `/review-pr` — Review (6 specialized agents in parallel)
 7. `/redsub-ship minor "feature description"` — Ship it
@@ -236,16 +218,17 @@ Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
 | /rs-explore | /brainstorming |
 | /rs-status | git status |
 | /rs-update-check | /redsub-update |
+| /redsub-test | superpowers:test-driven-development + /redsub-validate |
 
 ## Components
 
 | Type | Count | Details |
 |------|-------|---------|
-| Skills | 12 | See command reference above |
+| Skills | 11 | See command reference above |
 | Agents | 4 | developer (Opus), planner (Sonnet, read-only), devops (Opus), designer (Opus, Stitch MCP) |
 | Hooks | 9 | Workflow orchestrator, main commit/merge guard (version consistency check), main edit warning, auto-format + edit tracking, validate marker creation, version/plugin/CLAUDE.md freshness check, desktop notifications, context preservation + learning reminder, session end triple-check |
-| Rules | 3 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law) |
-| MCP | 2 | stitch (UI/UX design), sveltekit (official docs) |
+| Rules | 4 | Code quality (security/DB merged), workflow (context-aware mapping), testing (TDD Iron Law), claude-code-practices |
+| MCP | 0 | Per-project install (stitch, sveltekit, etc.) |
 
 ## Three-Layer Defense
 
@@ -255,36 +238,26 @@ Auto-diagnoses rules/hooks/manifest/dependency plugins + repairs.
 | 2. Blocking | **Hooks** | Physically block risky actions | `exit 2` blocks direct commits to main branch |
 | 3. Procedure | **Skills** | Enforce pipeline order | `/redsub-ship` enforces Save → Validate → Merge order |
 
-## Tech Stack
+## Framework Independent
 
-SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS 4
-
-To use with a different stack, modify the rules, agents, and skills.
+This plugin is a **workflow engine**. It does not depend on any specific framework.
+Framework-specific tools (SvelteKit MCP, Firebase MCP, etc.) are installed per-project as needed.
+Commands are auto-detected from the project's CLAUDE.md or package.json (Command Resolution).
 
 ## Environment Variables
 
 | Variable | Purpose | Required |
 |----------|---------|----------|
-| `STITCH_API_KEY` | Google Stitch MCP (`/redsub-design` skill) | Optional |
-| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams parallel execution (`/redsub-fix-all`, `/redsub-test`) | Optional |
+| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Agent Teams parallel execution (`/redsub-fix-all`) | Optional |
 
-### Setting Up Stitch API Key (Optional)
+### Stitch API Key (Per-Project, Optional)
 
-The `/redsub-design` skill requires a Stitch API key for UI/UX screen design. You can still get UI implementation guidance via the **frontend-design** plugin without Stitch, so skip this if you don't need screen design generation.
-
-Running `/redsub-setup` handles API key input and storage automatically.
-
-For manual setup:
+The `/redsub-design` skill requires a Stitch API key for UI/UX screen design. Configure per-project:
 1. Create an API key at [stitch.withgoogle.com/settings](https://stitch.withgoogle.com/settings)
-2. Add to `~/.claude/settings.json` under the `env` section:
-   ```json
-   {
-     "env": {
-       "STITCH_API_KEY": "your-api-key-here"
-     }
-   }
-   ```
+2. Add to `~/.claude/settings.json` under the `env` section
 3. Start a new Claude Code session
+
+UI implementation is also available without Stitch via the **frontend-design** plugin.
 
 ## License
 

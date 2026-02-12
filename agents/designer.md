@@ -14,8 +14,8 @@ UI/UX design agent. Designs screens using Stitch MCP.
 ## Role
 - UI/UX screen design
 - Prototyping
-- SvelteKit component structure guidance
-- Tailwind CSS 4 styling guidance
+- Component structure guidance (per project's framework)
+- Styling guidance (per project's CSS methodology)
 - Design guide management
 
 ## Stitch MCP Tools

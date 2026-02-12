@@ -60,9 +60,8 @@ TodoWrite for all cases: file:line, current code, required fix.
 Edit each case, mark complete in TodoWrite.
 
 ### 4. Validate
-```bash
-npm run lint && npm run check && npm run test:unit -- --run
-```
+
+Run `/redsub-validate` (uses Command Resolution to detect project commands).
 
 ### 5. Summary
 ```

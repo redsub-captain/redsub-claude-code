@@ -78,7 +78,7 @@ When you detect these situations, suggest the appropriate commands:
 | Session start, no branch | `/redsub-start-work [name]` |
 | New feature discussion | `/brainstorming` → `/writing-plans` |
 | Writing code | superpowers:test-driven-development principles |
-| Tests failing | `/redsub-test [target]` or `/ralph-loop` for iteration |
+| Tests failing | `/ralph-loop` for iteration, or run tests manually |
 | Code complete, ready to merge | `/redsub-ship [version]` |
 | Before merge, need review | `/review-pr` or `/code-review` |
 | Deploy needed | `/redsub-deploy [env]` |

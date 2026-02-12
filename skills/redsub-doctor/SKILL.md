@@ -15,6 +15,7 @@ Verify these files exist in `~/.claude/rules/`:
 - `redsub-code-quality.md`
 - `redsub-workflow.md`
 - `redsub-testing.md`
+- `redsub-claude-code-practices.md`
 
 **Auto-fix**: Re-copy from `${CLAUDE_PLUGIN_ROOT}/rules/`.
 

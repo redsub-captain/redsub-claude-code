@@ -1,12 +1,3 @@
----
-paths:
-  - "**/*.test.ts"
-  - "**/*.spec.ts"
-  - "tests/**"
-  - "e2e/**"
-  - "src/**/*.ts"
----
-
 # Testing Rules
 
 ## TDD Required (superpowers:test-driven-development)
@@ -20,23 +11,21 @@ paths:
 - Normal values (typical inputs).
 - Error cases (wrong types, network failures, unauthorized).
 
-## Unit Tests (vitest)
+## Unit Tests
 - Isolated per function/component.
 - Mock external dependencies.
 - Location: alongside source (`*.test.ts`) or `tests/` directory.
+- Use the project's configured test runner (detected via Command Resolution).
 
-## E2E Tests (Playwright)
+## E2E Tests
 - Cover critical user scenarios (login, purchase, data CRUD).
 - Location: `e2e/` directory.
-- Setup: `npm install -D @playwright/test && npx playwright install`
-- Run: `npm run test:e2e` (headless for CI).
 - TDD: Write failing E2E first → implement → verify pass.
 - Focus: critical user flows only. Unit/integration tests cover the rest.
-- Playwright MCP 도구로 브라우저 자동화, 스크린샷, 폼 입력 가능.
+- Playwright MCP tools available for browser automation, screenshots, form input.
 
 ## Coverage
 - No coverage regression. New code must maintain or exceed current level.
-- Coverage report: `npm run test:coverage`.
 
 ## SSOT Consistency Tests
 - **When a canonical source exists (config, constants, types), write a test that verifies consumers stay in sync.**

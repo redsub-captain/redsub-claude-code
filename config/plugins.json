@@ -42,12 +42,6 @@
       "role_en": "Latest library documentation lookup"
     },
     {
-      "name": "typescript-lsp",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "TypeScript 실시간 타입 진단",
-      "role_en": "Real-time TypeScript type diagnostics"
-    },
-    {
       "name": "frontend-design",
       "marketplace": "claude-plugins-official",
       "role_ko": "UI/UX 구현 가이드 (Stitch 없이도 사용 가능)",
@@ -70,18 +64,6 @@
       "marketplace": "claude-plugins-official",
       "role_ko": "CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`)",
       "role_en": "CLAUDE.md audit + session learning (`/revise-claude-md`)"
-    },
-    {
-      "name": "firebase",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "Firebase MCP (Firestore, Auth, Functions)",
-      "role_en": "Firebase MCP (Firestore, Auth, Functions)"
-    },
-    {
-      "name": "supabase",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "Supabase MCP (PostgreSQL, Auth, Storage)",
-      "role_en": "Supabase MCP (PostgreSQL, Auth, Storage)"
     },
     {
       "name": "playwright",

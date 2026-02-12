@@ -1,11 +1,11 @@
-<!-- redsub-template-version:2.6.0 -->
+<!-- redsub-template-version:2.7.0 -->
 # Project Guide
 
 ## Identity
 Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
 
 ## Tech Stack
-SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS 4
+(프로젝트에 맞게 기입. 예: SvelteKit 5 / Firebase / TypeScript / Tailwind CSS 4)
 
 ## Principles
 - **Plan first**: Use /brainstorming → /writing-plans (superpowers) before coding
@@ -29,7 +29,6 @@ SvelteKit 5 / Firebase / TypeScript / Supabase / Cloudflare Pages / Tailwind CSS
 | Design | /brainstorming → /writing-plans | superpowers |
 | Start | /redsub-start-work [name] | feature branch |
 | Code | TDD principles (superpowers) | test first |
-| Test | /redsub-test [target] | developer agent |
 | Iterate | /ralph-loop "prompt" | for repetitive tasks |
 | Review | /review-pr or /code-review | pr-review-toolkit / code-review |
 | Validate | /redsub-validate | lint + check + test |

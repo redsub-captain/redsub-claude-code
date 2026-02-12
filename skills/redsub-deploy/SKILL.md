@@ -9,10 +9,17 @@ description: Deployment workflow for dev/prod environments.
 
 `$ARGUMENTS`: `dev` or `prod`.
 
+## Command Resolution
+
+Determine the project's deploy commands:
+1. Check project CLAUDE.md for explicit deploy commands
+2. If not found, read `package.json` scripts for deploy-related scripts (e.g., `deploy`, `deploy:dev`, `deploy:prod`)
+3. If ambiguous, ask the user
+
 ## Dev deployment
 
 1. Deploy current branch to dev environment.
-2. Use deploy commands from CLAUDE.md or package.json scripts.
+2. Use resolved deploy commands.
 3. Guide user to verify functionality.
 
 ## Prod deployment (safety enforced)
@@ -34,9 +41,7 @@ Use `AskUserQuestion` tool:
 - options: ["Deploy to prod" (execute deployment), "Cancel" (stop pipeline)]
 
 ### 4. Execute
-Only after approval. Use project-specific deploy commands.
-- Cloudflare Pages: `npx wrangler pages deploy`
-- Firebase Hosting: `firebase deploy --only hosting`
+Only after approval. Use resolved deploy commands.
 
 ### 5. Verify deployment status.
 
