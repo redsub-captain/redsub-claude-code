@@ -11,147 +11,142 @@ If `~/.claude-redsub/.setup-done` exists and `--force` was NOT given in `$ARGUME
 
 ## Procedure
 
-### 1. Dependency plugins check
+### 1. Run setup-core.sh
 
-**Read the plugin registry from `${CLAUDE_PLUGIN_ROOT}/config/plugins.json`** — this is the Single Source of Truth (SSOT). Do NOT use a hardcoded list.
-
-For each plugin in the registry, check if it's installed in `~/.claude/plugins/installed_plugins.json`.
-
-Count installed vs total.
-
-**If there are missing plugins:**
-
-1. Check marketplaces from `config/plugins.json`. If any marketplace is not registered, register them automatically:
-   ```bash
-   claude plugin marketplace add <marketplace-name> <marketplace-url>
-   ```
-
-2. Show missing plugin count and ask user:
-   - AskUserQuestion: "누락된 플러그인 [N]개를 자동 설치하시겠습니까?"
-   - Options: "Install all (Recommended)" / "Skip for now"
-
-3. **If user chooses install**: install each missing plugin automatically via Bash:
-   ```bash
-   claude plugin install <name>@<marketplace>
-   ```
-   Run installs sequentially (one at a time). Show progress as each plugin installs. If any single install fails, log the error and continue with the remaining plugins.
-
-4. **If user chooses skip**: continue to the next step without blocking. Record the count for the summary.
-
-### 2. Deploy rules
-
-Copy the 4 rule files from the plugin to the Claude Code global rules directory.
+Execute the core setup script that handles dependency check (SSOT: `config/plugins.json`), rule deployment, permission check (`config/permissions.json`), manifest creation, and completion marker in a single call:
 
 ```bash
-mkdir -p ~/.claude/rules
-cp ${CLAUDE_PLUGIN_ROOT}/rules/redsub-*.md ~/.claude/rules/
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/setup-core.sh" "${CLAUDE_PLUGIN_ROOT}" [--force if given]
 ```
 
-### 3. Configure permissions
+Parse the JSON output. The result has this structure:
+```json
+{
+  "status": "completed | already_configured",
+  "dependencies": {"total": 12, "installed": 12, "missing": []},
+  "rules_deployed": 5,
+  "permissions": {"total": 16, "registered": 16, "missing": []},
+  "manifest_updated": true,
+  "version": "X.X.X",
+  "claude_md": {"status": "missing | no_markers | has_markers", "template_version": "X.X.X", "template_latest": "X.X.X"}
+}
+```
 
-Auto-register recommended permission patterns in `~/.claude/settings.json` to reduce repetitive "Allow" prompts during plugin usage.
+If `status` = `"already_configured"`: print the message and stop.
 
-**Read the permission registry from `${CLAUDE_PLUGIN_ROOT}/config/permissions.json`** — this is the Single Source of Truth (SSOT). Do NOT hardcode patterns.
+### 2. Install missing plugins (if any)
 
-Collect all `patterns` arrays from every category into a single flat list.
+If `dependencies.missing` is not empty:
 
-**Show the user what will be added** using `AskUserQuestion`:
+Use `AskUserQuestion`:
+- question: "누락된 플러그인 [N]개를 자동 설치하시겠습니까?"
+- header: "Plugins"
+- options: ["Install all (Recommended)", "Skip for now"]
+
+If user chooses install: run each missing plugin install sequentially via Bash:
+```bash
+claude plugin install <name>@<marketplace>
+```
+Show progress as each plugin installs. If any single install fails, log the error and continue.
+
+If user chooses skip: continue to the next step.
+
+### 3. Register missing permissions (if any)
+
+If `permissions.missing` is not empty:
+
+Use `AskUserQuestion`:
 - question: "플러그인 워크플로우에 필요한 권한 [N]개를 ~/.claude/settings.json에 등록하면, 이후 작업 시 반복적인 Allow 프롬프트가 줄어듭니다. 등록할까요?"
 - header: "Permissions"
 - options: ["Register all (Recommended)" (register all patterns), "Show details first" (list all patterns then ask again), "Skip" (do not modify permissions)]
 
-**If user chooses "Show details first"**: print all patterns grouped by category (use category `description_ko`), then ask again with just "Register all" / "Skip".
+If user chooses "Show details first": print all missing patterns, then re-ask with just "Register all" / "Skip".
 
-**If user chooses "Register all"**:
-
+If user chooses "Register all":
 1. Read `~/.claude/settings.json`. If file doesn't exist, start with `{}`.
 2. Ensure `permissions.allow` array exists (create if missing).
-3. Merge: add only patterns that are NOT already present in the existing `permissions.allow` array. Use exact string matching for deduplication.
-4. Write the updated `settings.json` back.
-5. Report: "권한 [N]개 등록 완료. (기존 중복 [M]개 스킵)"
-
-**If user chooses "Skip"**: continue without modifying permissions. Note in the summary.
+3. Add only the missing patterns from `permissions.missing` array.
+4. Write the updated `settings.json` back using Edit tool (if file was Read) or Write tool (if new).
+5. Report: "권한 [N]개 등록 완료."
 
 ### 4. CLAUDE.md handling
 
-Target path: `~/.claude/CLAUDE.md` (global — applies to all projects).
+Based on `claude_md.status` from the JSON result:
 
-**If `~/.claude/CLAUDE.md` does NOT exist:** create from the plugin's template, wrapped with markers.
-Read the template version from the first line of `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template` (format: `<!-- redsub-template-version:X.X.X -->`).
-Write `~/.claude/CLAUDE.md` with markers wrapping the template content:
-```
-<!-- redsub-claude-code:start -->
-(content of ${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template, including the version comment)
-<!-- redsub-claude-code:end -->
-```
-
-**If `~/.claude/CLAUDE.md` already EXISTS**, use `AskUserQuestion` tool:
-- question: "~/.claude/CLAUDE.md가 이미 존재합니다. 워크플로우 가이드를 어떻게 추가할까요?"
-- header: "CLAUDE.md"
-- options: ["Append at end (Recommended)" (append with markers at end of file), "Prepend at start" (prepend with markers at start of file), "Skip" (do not modify existing file)]
-
-For "Append" or "Prepend", Read the existing file first. If markers `<!-- redsub-claude-code:start -->` and `<!-- redsub-claude-code:end -->` already exist, **replace** the content between them with the new template. Otherwise, wrap the template content with markers and append/prepend:
+**If `"missing"`**: Create `~/.claude/CLAUDE.md` from template.
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`.
+2. Write `~/.claude/CLAUDE.md` with markers wrapping the template:
 ```
 <!-- redsub-claude-code:start -->
 (template content)
 <!-- redsub-claude-code:end -->
 ```
 
-### 5. Install manifest
+**If `"no_markers"`**: Existing file without plugin markers.
+Use `AskUserQuestion`:
+- question: "~/.claude/CLAUDE.md가 이미 존재합니다. 워크플로우 가이드를 어떻게 추가할까요?"
+- header: "CLAUDE.md"
+- options: ["Append at end (Recommended)", "Prepend at start", "Skip"]
 
-Target: `~/.claude-redsub/install-manifest.json`
+If not "Skip": Read the existing file, then append/prepend the template wrapped with markers.
 
-```bash
-mkdir -p ~/.claude-redsub
-```
+**If `"has_markers"`**: Existing file with markers.
+- If `template_version` = `template_latest`: report "CLAUDE.md 이미 최신 (vX.X.X)" and skip.
+- If versions differ: Use `AskUserQuestion`:
+  - question: "CLAUDE.md 템플릿을 업데이트할까요? (현재: [template_version or 'legacy'] → 최신: [template_latest]). 사용자 커스텀(Tech Stack, In progress)은 보존됩니다."
+  - header: "CLAUDE.md"
+  - options: ["Update (Recommended)", "Skip"]
+  - If "Update": apply **CLAUDE.md Smart Merge** (see below).
 
-**If the file already exists**, Read it first then update `version`, `installed_at`, and merge arrays using path-based deduplication (add new entries only if no existing entry has the same path).
-
-**If the file does NOT exist**, create it.
-
-Read the plugin version from `${CLAUDE_PLUGIN_ROOT}/package.json` (SSOT). Do NOT hardcode the version.
-
-Schema:
-```json
-{
-  "version": "<from package.json>",
-  "installed_at": "ISO-8601",
-  "files_created": [],
-  "files_modified": [],
-  "rules_installed": [
-    "~/.claude/rules/redsub-code-quality.md",
-    "~/.claude/rules/redsub-workflow.md",
-    "~/.claude/rules/redsub-testing.md",
-    "~/.claude/rules/redsub-claude-code-practices.md"
-  ]
-}
-```
-
-Track any files created or modified during this setup run in the corresponding arrays.
-
-### 6. Completion marker
-
-```bash
-mkdir -p ~/.claude-redsub
-date > ~/.claude-redsub/.setup-done
-```
-
-### 7. Summary
+### 5. Summary
 
 ```
 Setup complete:
-- Rules deployed: 4 (code-quality, workflow, testing, claude-code-practices)
-- Permissions: [N registered / skipped] in ~/.claude/settings.json
-- CLAUDE.md: [created at ~/.claude/CLAUDE.md / markers added / skipped]
-- Dependencies: [N]/[total] installed
+- Rules deployed: [rules_deployed] (code-quality, workflow, testing, claude-code-practices, commit-convention)
+- Permissions: [registered/total] in ~/.claude/settings.json
+- CLAUDE.md: [created / updated / skipped]
+- Dependencies: [installed]/[total] installed
+- Install manifest: updated
 ```
 
-**If there are still missing plugins** (user skipped or some failed), append:
-
+If there are still missing plugins (user skipped or some failed), append:
 ```
 Missing plugins ([N]):
   claude plugin install <name>@<marketplace>
   ...
 ```
 
-**Note**: Framework-specific plugins (SvelteKit, Firebase, Supabase, etc.) are installed per-project as needed, not globally.
+---
+
+## CLAUDE.md Smart Merge
+
+Read `~/.claude/CLAUDE.md` and the new template from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`.
+
+When replacing content between main markers (`<!-- redsub-claude-code:start -->` / `<!-- redsub-claude-code:end -->`):
+
+### Case A: Sub-markers exist (`<!-- redsub-user:start -->` / `<!-- redsub-user:end -->`)
+
+1. Extract content between `<!-- redsub-user:start -->` and `<!-- redsub-user:end -->` → save as USER_CONFIG.
+2. Replace everything between main markers with new template content.
+3. In the replaced content, find the sub-markers and replace the default content between them with USER_CONFIG.
+
+### Case B: No sub-markers (legacy migration)
+
+1. In the current content between main markers, look for these sections:
+   - `## Tech Stack` → extract heading + all lines until next `##` heading
+   - `## In progress` → extract heading + all lines until next `##` heading or end of markers
+2. Replace everything between main markers with new template content.
+3. Combine any found sections into USER_CONFIG (join with blank line). If only one section found, use just that one.
+4. If USER_CONFIG is non-empty: in the new template's sub-markers, replace the default content between them with USER_CONFIG.
+5. If no sections found: keep the template defaults.
+
+### Case C: No main markers (first install — same as "missing" case above)
+
+Write the template wrapped with main markers:
+```
+<!-- redsub-claude-code:start -->
+(template content)
+<!-- redsub-claude-code:end -->
+```
+
+Use the **Edit** tool (not Write) when the file was already Read.

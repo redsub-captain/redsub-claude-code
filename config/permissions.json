@@ -36,13 +36,21 @@
       ]
     },
     "file_ops": {
-      "description_ko": "파일 작업 (디렉토리 생성, 복사, 권한)",
-      "description_en": "File operations (mkdir, copy, permissions)",
+      "description_ko": "파일 작업 (디렉토리 생성, 복사, 동기화, 권한)",
+      "description_en": "File operations (mkdir, copy, sync, permissions)",
       "patterns": [
         "Bash(chmod +x *)",
         "Bash(mkdir -p *)",
         "Bash(cp *)",
+        "Bash(rsync *)",
         "Bash(date *)"
+      ]
+    },
+    "shell_scripts": {
+      "description_ko": "셸 스크립트 실행 (플러그인 내부 자동화)",
+      "description_en": "Shell script execution (plugin internal automation)",
+      "patterns": [
+        "Bash(bash *)"
       ]
     }
   }

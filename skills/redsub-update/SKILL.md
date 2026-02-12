@@ -5,116 +5,86 @@ description: Check plugin version updates and Claude Code compatibility.
 
 # Plugin Auto-Update
 
-> **IMPORTANT**: All bash commands in this skill MUST be executed sequentially (one at a time), NOT in parallel. Parallel execution causes "Sibling tool call errored" failures.
-
 ## Procedure
 
-### 1. Current version
+### 1. Run update-core.sh
 
-Read version from `${CLAUDE_PLUGIN_ROOT}/package.json`.
-
-### 2. Latest version (GitHub)
+Execute the core update script that handles all internal operations (version check, git pull, cache creation, installed_plugins.json update) in a single call:
 
 ```bash
-curl -s https://api.github.com/repos/redsub-captain/redsub-claude-code/releases/latest | grep '"tag_name"'
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/update-core.sh" "${CLAUDE_PLUGIN_ROOT}"
 ```
 
-If no releases found, fallback:
-```bash
-curl -s https://raw.githubusercontent.com/redsub-captain/redsub-claude-code/main/package.json | grep '"version"'
+Parse the JSON output. The result has this structure:
+```json
+{
+  "status": "up_to_date | updated | error",
+  "old_version": "X.X.X",
+  "new_version": "X.X.X",
+  "template_changed": true,
+  "template_old": "X.X.X",
+  "template_new": "X.X.X",
+  "message": ""
+}
 ```
 
-### 3. Compare versions
+### 2. Handle result
 
-- If current = latest → report "Up to date (vX.X.X)" and skip to step 6.
-- If current < latest → proceed to step 4.
+- If `status` = `"error"`: report the `message` and stop.
+- If `status` = `"up_to_date"`: report "Up to date (vX.X.X)" and stop.
+- If `status` = `"updated"`: proceed to step 3.
 
-### 4. Auto-update
+### 3. Template sync (if template_changed = true)
 
-Execute these commands **sequentially** (one at a time):
+If `template_changed` is `false`, skip to step 4.
 
-#### 4a. Pull latest from marketplace repo
+Use `AskUserQuestion`:
+- question: "CLAUDE.md 템플릿이 업데이트됐습니다 (현재: [template_old or 'legacy'] → 최신: [template_new]). 갱신할까요?"
+- header: "Template"
+- options:
+  - "Update (Recommended)" — 사용자 커스텀(Tech Stack, In progress)을 보존하면서 템플릿을 업데이트합니다
+  - "Skip" — 현재 CLAUDE.md를 유지합니다
 
-```bash
-git -C ~/.claude/plugins/marketplaces/redsub-plugins pull origin main
-```
+If user chooses "Update": apply **CLAUDE.md Smart Merge** (see below).
 
-If this fails (e.g. merge conflicts), reset and retry:
-```bash
-git -C ~/.claude/plugins/marketplaces/redsub-plugins fetch origin main && git -C ~/.claude/plugins/marketplaces/redsub-plugins reset --hard origin/main
-```
+### 4. Report result
 
-#### 4b. Read new version from pulled repo
-
-```bash
-cat ~/.claude/plugins/marketplaces/redsub-plugins/package.json
-```
-
-Extract the `version` field. Let this be `NEW_VERSION`.
-
-#### 4c. Create new cache directory and copy files
-
-```bash
-mkdir -p ~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION
-```
-
-```bash
-rsync -a --exclude='.git' ~/.claude/plugins/marketplaces/redsub-plugins/ ~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION/
-```
-
-#### 4d. Get git commit SHA
-
-```bash
-git -C ~/.claude/plugins/marketplaces/redsub-plugins rev-parse HEAD
-```
-
-Save this as `COMMIT_SHA`.
-
-#### 4e. Update installed_plugins.json
-
-Read `~/.claude/plugins/installed_plugins.json`.
-
-Find the `"redsub-claude-code@redsub-plugins"` entry and update:
-- `installPath` → `~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION` (use full absolute path with $HOME expanded)
-- `version` → `NEW_VERSION`
-- `lastUpdated` → current ISO timestamp
-- `gitCommitSha` → `COMMIT_SHA`
-
-Write the updated JSON back using the Edit tool. **Do NOT use Write** (the file was already Read).
-
-### 5. Verify update
-
-Read `~/.claude/plugins/cache/redsub-plugins/redsub-claude-code/NEW_VERSION/package.json` and confirm the version matches.
-
-### 5.5. Template sync check
-
-If update was performed (step 4 ran):
-
-1. Read `~/.claude/CLAUDE.md` and extract `redsub-template-version:` from between the markers.
-2. Read the template version from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template` first line.
-3. Compare versions:
-   - If match → skip.
-   - If mismatch or no version found (legacy) → use `AskUserQuestion`:
-     - question: "CLAUDE.md 템플릿이 업데이트됐습니다 (현재: [old or 'legacy'] → 최신: [new]). 갱신할까요?"
-     - header: "Template"
-     - options: ["Update (Recommended)" (replace content between markers with new template), "Skip" (keep current)]
-   - If user chooses "Update": Read `~/.claude/CLAUDE.md`, replace everything between `<!-- redsub-claude-code:start -->` and `<!-- redsub-claude-code:end -->` with the new template content, preserving content outside markers.
-
-### 6. Claude Code compatibility
-
-```bash
-claude --version 2>/dev/null || echo "unknown"
-```
-
-### 7. Report result
-
-If update was performed:
 ```
 Updated: vOLD → vNEW
 Restart the session to apply changes.
 ```
 
-If already up to date:
+---
+
+## CLAUDE.md Smart Merge
+
+Read `~/.claude/CLAUDE.md` and the new template from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`.
+
+When replacing content between main markers (`<!-- redsub-claude-code:start -->` / `<!-- redsub-claude-code:end -->`):
+
+### Case A: Sub-markers exist (`<!-- redsub-user:start -->` / `<!-- redsub-user:end -->`)
+
+1. Extract content between `<!-- redsub-user:start -->` and `<!-- redsub-user:end -->` → save as USER_CONFIG.
+2. Replace everything between main markers with new template content.
+3. In the replaced content, find the sub-markers and replace the default content between them with USER_CONFIG.
+
+### Case B: No sub-markers (legacy migration)
+
+1. In the current content between main markers, look for these sections:
+   - `## Tech Stack` → extract heading + all lines until next `##` heading
+   - `## In progress` → extract heading + all lines until next `##` heading or end of markers
+2. Replace everything between main markers with new template content.
+3. Combine any found sections into USER_CONFIG (join with blank line). If only one section found, use just that one.
+4. If USER_CONFIG is non-empty: in the new template's sub-markers, replace the default content between them with USER_CONFIG.
+5. If no sections found: keep the template defaults.
+
+### Case C: No main markers (first install)
+
+Write the template wrapped with main markers:
 ```
-Up to date: vX.X.X
+<!-- redsub-claude-code:start -->
+(template content)
+<!-- redsub-claude-code:end -->
 ```
+
+Use the **Edit** tool (not Write) since the file was already Read.

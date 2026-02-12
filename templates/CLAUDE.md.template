@@ -1,8 +1,16 @@
-<!-- redsub-template-version:2.10.0 -->
+<!-- redsub-template-version:2.11.0 -->
 # redsub-claude-code
 
 ## Identity
 Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
+
+<!-- redsub-user:start -->
+## Tech Stack
+(여기에 프로젝트 기술 스택을 입력하세요)
+
+## In progress
+(none)
+<!-- redsub-user:end -->
 
 ## Principles
 - **Plan first**: Use /redsub-brainstorm → /redsub-plan before coding
@@ -49,6 +57,3 @@ Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
 | /redsub-doctor | Diagnose and repair |
 | /redsub-uninstall | Clean removal |
 | /revise-claude-md | Audit CLAUDE.md quality |
-
-## In progress
-(none)
