@@ -45,7 +45,12 @@ Use `AskUserQuestion`:
   - "Update (Recommended)" — 사용자 커스텀(Tech Stack, In progress)을 보존하면서 템플릿을 업데이트합니다
   - "Skip" — 현재 CLAUDE.md를 유지합니다
 
-If user chooses "Update": apply **CLAUDE.md Smart Merge** (see below).
+If user chooses "Update", run the merge script:
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" merge
+```
+
+Parse the JSON output and report the result.
 
 ### 4. Report result
 
@@ -53,38 +58,3 @@ If user chooses "Update": apply **CLAUDE.md Smart Merge** (see below).
 Updated: vOLD → vNEW
 Restart the session to apply changes.
 ```
-
----
-
-## CLAUDE.md Smart Merge
-
-Read `~/.claude/CLAUDE.md` and the new template from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`.
-
-When replacing content between main markers (`<!-- redsub-claude-code:start -->` / `<!-- redsub-claude-code:end -->`):
-
-### Case A: Sub-markers exist (`<!-- redsub-user:start -->` / `<!-- redsub-user:end -->`)
-
-1. Extract content between `<!-- redsub-user:start -->` and `<!-- redsub-user:end -->` → save as USER_CONFIG.
-2. Replace everything between main markers with new template content.
-3. In the replaced content, find the sub-markers and replace the default content between them with USER_CONFIG.
-
-### Case B: No sub-markers (legacy migration)
-
-1. In the current content between main markers, look for these sections:
-   - `## Tech Stack` → extract heading + all lines until next `##` heading
-   - `## In progress` → extract heading + all lines until next `##` heading or end of markers
-2. Replace everything between main markers with new template content.
-3. Combine any found sections into USER_CONFIG (join with blank line). If only one section found, use just that one.
-4. If USER_CONFIG is non-empty: in the new template's sub-markers, replace the default content between them with USER_CONFIG.
-5. If no sections found: keep the template defaults.
-
-### Case C: No main markers (first install)
-
-Write the template wrapped with main markers:
-```
-<!-- redsub-claude-code:start -->
-(template content)
-<!-- redsub-claude-code:end -->
-```
-
-Use the **Edit** tool (not Write) since the file was already Read.

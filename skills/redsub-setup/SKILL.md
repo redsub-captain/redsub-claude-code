@@ -62,24 +62,19 @@ Use `AskUserQuestion`:
 
 If user chooses "Show details first": print all missing patterns, then re-ask with just "Register all" / "Skip".
 
-If user chooses "Register all":
-1. Read `~/.claude/settings.json`. If file doesn't exist, start with `{}`.
-2. Ensure `permissions.allow` array exists (create if missing).
-3. Add only the missing patterns from `permissions.missing` array.
-4. Write the updated `settings.json` back using Edit tool (if file was Read) or Write tool (if new).
-5. Report: "권한 [N]개 등록 완료."
+If user chooses "Register all", run the register script:
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/register-permissions.sh" "${CLAUDE_PLUGIN_ROOT}" [missing patterns...]
+```
+Parse the JSON output. Report: "권한 [N]개 등록 완료."
 
 ### 4. CLAUDE.md handling
 
 Based on `claude_md.status` from the JSON result:
 
-**If `"missing"`**: Create `~/.claude/CLAUDE.md` from template.
-1. Read `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`.
-2. Write `~/.claude/CLAUDE.md` with markers wrapping the template:
-```
-<!-- redsub-claude-code:start -->
-(template content)
-<!-- redsub-claude-code:end -->
+**If `"missing"`**: Create `~/.claude/CLAUDE.md` from template:
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" create
 ```
 
 **If `"no_markers"`**: Existing file without plugin markers.
@@ -88,7 +83,11 @@ Use `AskUserQuestion`:
 - header: "CLAUDE.md"
 - options: ["Append at end (Recommended)", "Prepend at start", "Skip"]
 
-If not "Skip": Read the existing file, then append/prepend the template wrapped with markers.
+If not "Skip", run the merge script with the chosen mode:
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" append
+# or: prepend
+```
 
 **If `"has_markers"`**: Existing file with markers.
 - If `template_version` = `template_latest`: report "CLAUDE.md 이미 최신 (vX.X.X)" and skip.
@@ -96,7 +95,10 @@ If not "Skip": Read the existing file, then append/prepend the template wrapped 
   - question: "CLAUDE.md 템플릿을 업데이트할까요? (현재: [template_version or 'legacy'] → 최신: [template_latest]). 사용자 커스텀(Tech Stack, In progress)은 보존됩니다."
   - header: "CLAUDE.md"
   - options: ["Update (Recommended)", "Skip"]
-  - If "Update": apply **CLAUDE.md Smart Merge** (see below).
+  - If "Update", run:
+    ```bash
+    bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" merge
+    ```
 
 ### 5. Summary
 
@@ -115,38 +117,3 @@ Missing plugins ([N]):
   claude plugin install <name>@<marketplace>
   ...
 ```
-
----
-
-## CLAUDE.md Smart Merge
-
-Read `~/.claude/CLAUDE.md` and the new template from `${CLAUDE_PLUGIN_ROOT}/templates/CLAUDE.md.template`.
-
-When replacing content between main markers (`<!-- redsub-claude-code:start -->` / `<!-- redsub-claude-code:end -->`):
-
-### Case A: Sub-markers exist (`<!-- redsub-user:start -->` / `<!-- redsub-user:end -->`)
-
-1. Extract content between `<!-- redsub-user:start -->` and `<!-- redsub-user:end -->` → save as USER_CONFIG.
-2. Replace everything between main markers with new template content.
-3. In the replaced content, find the sub-markers and replace the default content between them with USER_CONFIG.
-
-### Case B: No sub-markers (legacy migration)
-
-1. In the current content between main markers, look for these sections:
-   - `## Tech Stack` → extract heading + all lines until next `##` heading
-   - `## In progress` → extract heading + all lines until next `##` heading or end of markers
-2. Replace everything between main markers with new template content.
-3. Combine any found sections into USER_CONFIG (join with blank line). If only one section found, use just that one.
-4. If USER_CONFIG is non-empty: in the new template's sub-markers, replace the default content between them with USER_CONFIG.
-5. If no sections found: keep the template defaults.
-
-### Case C: No main markers (first install — same as "missing" case above)
-
-Write the template wrapped with main markers:
-```
-<!-- redsub-claude-code:start -->
-(template content)
-<!-- redsub-claude-code:end -->
-```
-
-Use the **Edit** tool (not Write) when the file was already Read.
