@@ -31,11 +31,14 @@ Determine the project's commands:
 
 ### 1. Save
 
-Commit pending changes:
+Commit pending changes (커밋 컨벤션 따름):
 ```bash
 git add -A
-git commit -m "feat: [description]"
+git commit -m "feat: 한국어 설명"
 ```
+- type은 변경 성격에 맞게: `feat`, `fix`, `refactor` 등.
+- 예: `feat: 커밋 컨벤션 가이드 추가`, `fix: 세션 저장 오류 수정`
+
 Skip if no changes.
 
 ### 2. Validate (with evidence)
@@ -120,14 +123,16 @@ Use `AskUserQuestion` tool to get approval:
 On "Merge":
 ```bash
 git checkout main
-git merge --no-ff [feature-branch] -m "release: v[new version] - [description]"
+git merge --no-ff [feature-branch] -m "release: v[new version] - [한국어 설명]"
 ```
 
 ### 6. Tag
 
 ```bash
-git tag -a v[new version] -m "v[new version] [description]"
+git tag -a v[new version] -m "v[new version] [한국어 설명 — type prefix 없이]"
 ```
+- 예: `v2.10.0 커밋 컨벤션 가이드 추가` (O)
+- 아닌 예: `v2.10.0 feat: 커밋 컨벤션 가이드 추가` (X — type prefix 중복)
 
 ### 7. Push + Release (user approval required)
 
