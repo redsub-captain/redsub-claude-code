@@ -1,6 +1,6 @@
 {
   "name": "redsub-claude-code",
-  "version": "2.11.1",
+  "version": "2.11.2",
   "description": "Solo developer workflow orchestrator for Claude Code",
   "author": {
     "name": "RED SUB Inc.",
