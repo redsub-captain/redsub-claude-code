@@ -40,7 +40,7 @@ Skip if no changes.
 
 ### 2. Validate (with evidence)
 
-Run with superpowers:verification-before-completion principles.
+Run with Verification Gate principles.
 **Show actual command output as evidence.**
 
 Run resolved lint, check, and test commands sequentially.
@@ -51,8 +51,7 @@ Run resolved lint, check, and test commands sequentially.
 
 Suggest code review before merge:
 - `/review-pr` — deep analysis (pr-review-toolkit, 6 agents)
-- `/code-review` — automated PR review
-- `superpowers:requesting-code-review` — plan-vs-implementation
+- `/code-review` — automated PR review (plan-vs-implementation)
 
 User may skip.
 

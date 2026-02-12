@@ -35,7 +35,7 @@ echo "${CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS:+enabled}"
 Fix all cases one by one in a single session.
 
 ### Team mode (`--team` or user choice)
-Uses superpowers:dispatching-parallel-agents.
+Uses parallel agent dispatch (redsub-claude-code-practices rule).
 > Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`.
 
 1. Search all cases, partition files by teammate count.
