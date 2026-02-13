@@ -81,7 +81,7 @@ Run resolved lint, check, and test commands sequentially.
 ### 3. Review (optional)
 
 Suggest code review before merge:
-- `/coderabbit:review` — automated code review (coderabbit)
+- `/superpowers:requesting-code-review` — code review
 
 User may skip.
 

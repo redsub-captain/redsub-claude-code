@@ -4,13 +4,12 @@
 
 1인 개발자를 위한 Claude Code **워크플로우 오케스트레이터** 플러그인.
 
-공식 플러그인 12개(superpowers, coderabbit, commit-commands, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
+공식 플러그인 11개(superpowers, commit-commands, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.
 
 ## v3.0 주요 변경
 
 - **Rules 전면 제거** — 세션 시작 토큰 ~96% 절감 (~11,800 → ~500)
 - **superpowers 하이브리드** — 핵심 방법론(TDD, 디버깅, 브레인스토밍)은 superpowers에 위임, redsub 스킬은 thin wrapper
-- **coderabbit 통합** — 40+ 정적 분석기 기반 AI 코드 리뷰
 - **원스텝 설치** — `/redsub-setup` 한 번 실행 = 모든 설정 완료 (사용자 입력 0회)
 
 ## 전제 조건
@@ -39,7 +38,7 @@
 ```
 
 **한 번의 실행으로 모든 것을 자동 처리:**
-- 의존 플러그인 12개 자동 등록
+- 의존 플러그인 11개 자동 등록
 - 권한 패턴 자동 등록
 - CLAUDE.md 최소 템플릿 생성/업데이트
 - 설치 매니페스트 생성
@@ -67,12 +66,11 @@
 
 ## 의존 공식 플러그인
 
-`/redsub-setup` 실행 시 아래 12개 플러그인이 자동 등록됩니다:
+`/redsub-setup` 실행 시 아래 11개 플러그인이 자동 등록됩니다:
 
 | 플러그인 | 역할 |
 |---------|------|
 | superpowers | TDD/브레인스토밍/디버깅/검증 (v4.3.0+) |
-| coderabbit | AI 코드 리뷰 (40+ 정적분석기) |
 | commit-commands | 커밋/푸시/PR 자동화 (/commit, /commit-push-pr) |
 | ralph-loop | 반복 작업 자동화 (TDD, 일괄 수정) |
 | frontend-design | UI/UX 구현 가이드 |
@@ -188,7 +186,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 6. `/redsub-ship minor "feature description"` — 출시
 
 ### "코드 리뷰 해줘"
-- coderabbit이 자동으로 40+ 정적분석기 기반 리뷰 수행
+- `/superpowers:requesting-code-review` — 내장 코드 리뷰어 사용
 
 ### "복잡한 기능을 개발해야 해"
 1. `/feature-dev user-authentication` — 구조화된 기능 개발
@@ -203,13 +201,13 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 
 | 삭제된 스킬 | 대체 |
 |------------|------|
-| /rs-review | coderabbit (자동) |
+| /rs-review | superpowers:code-reviewer (자동) |
 | /rs-save | /commit |
 | /rs-plan | /redsub-brainstorm → /redsub-plan |
 | /redsub-test | /redsub-validate |
 | /redsub-design | frontend-design (자동) |
-| /review-pr | coderabbit (자동) |
-| /code-review | coderabbit (자동) |
+| /review-pr | superpowers:code-reviewer (자동) |
+| /code-review | superpowers:code-reviewer (자동) |
 
 ## 구성 요소
 
@@ -228,7 +226,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 | 차단 | **Hooks** | main 직접 커밋 차단 (`exit 2`) |
 | 절차 | **Skills** | 파이프라인 순서 강제 (`/redsub-ship`) |
 | 방법론 | **superpowers** | TDD, 디버깅, 브레인스토밍 (온디맨드) |
-| 품질 | **coderabbit** | 정적분석 기반 코드 리뷰 |
+| 품질 | **superpowers** | 내장 코드 리뷰어 |
 
 ## 프레임워크 독립
 

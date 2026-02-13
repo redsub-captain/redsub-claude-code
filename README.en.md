@@ -4,13 +4,12 @@
 
 A **workflow orchestrator** plugin for Claude Code, designed for solo developers.
 
-Works in **combination** with 12 official plugins (superpowers, coderabbit, commit-commands, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
+Works in **combination** with 11 official plugins (superpowers, commit-commands, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
 
 ## What's New in v3.0
 
 - **Zero Rules** — ~96% reduction in session start tokens (~11,800 → ~500)
 - **superpowers hybrid** — Core methodology (TDD, debugging, brainstorming) delegated to superpowers; redsub skills are thin wrappers
-- **coderabbit integration** — AI code review with 40+ static analyzers
 - **One-step setup** — Single `/redsub-setup` run = everything configured (zero user input)
 
 ## Prerequisites
@@ -39,7 +38,7 @@ Works in **combination** with 12 official plugins (superpowers, coderabbit, comm
 ```
 
 **One command does everything automatically:**
-- Auto-registers 12 dependency plugins
+- Auto-registers 11 dependency plugins
 - Auto-registers permission patterns
 - Creates/updates minimal CLAUDE.md template
 - Creates install manifest
@@ -67,12 +66,11 @@ If dependency plugins are missing after update:
 
 ## Required Official Plugins
 
-All 12 plugins are auto-registered when you run `/redsub-setup`:
+All 11 plugins are auto-registered when you run `/redsub-setup`:
 
 | Plugin | Role |
 |--------|------|
 | superpowers | TDD/brainstorming/debugging/verification (v4.3.0+) |
-| coderabbit | AI code review (40+ static analyzers) |
 | commit-commands | Commit/push/PR automation (/commit, /commit-push-pr) |
 | ralph-loop | Iterative task automation (TDD, bulk fixes) |
 | frontend-design | UI/UX implementation guide |
@@ -188,7 +186,7 @@ Manifest-based clean removal.
 6. `/redsub-ship minor "feature description"` — Ship it
 
 ### "Review my code"
-- coderabbit automatically reviews with 40+ static analyzers
+- `/superpowers:requesting-code-review` — built-in code reviewer
 
 ### "I need to build a complex feature"
 1. `/feature-dev user-authentication` — Structured feature development
@@ -203,13 +201,13 @@ Manifest-based clean removal.
 
 | Removed Skill | Replacement |
 |--------------|-------------|
-| /rs-review | coderabbit (automatic) |
+| /rs-review | superpowers:code-reviewer (automatic) |
 | /rs-save | /commit |
 | /rs-plan | /redsub-brainstorm → /redsub-plan |
 | /redsub-test | /redsub-validate |
 | /redsub-design | frontend-design (automatic) |
-| /review-pr | coderabbit (automatic) |
-| /code-review | coderabbit (automatic) |
+| /review-pr | superpowers:code-reviewer (automatic) |
+| /code-review | superpowers:code-reviewer (automatic) |
 
 ## Components
 
@@ -228,7 +226,7 @@ Manifest-based clean removal.
 | Blocking | **Hooks** | Block direct commits to main (`exit 2`) |
 | Procedure | **Skills** | Enforce pipeline order (`/redsub-ship`) |
 | Methodology | **superpowers** | TDD, debugging, brainstorming (on-demand) |
-| Quality | **coderabbit** | Static analysis-based code review |
+| Quality | **superpowers** | Built-in code reviewer |
 
 ## Framework Independent
 

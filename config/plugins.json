@@ -69,12 +69,6 @@
       "marketplace": "claude-plugins-official",
       "role_ko": "프로젝트 분석 → Claude Code 자동화 추천",
       "role_en": "Analyze codebase → recommend Claude Code automations"
-    },
-    {
-      "name": "coderabbit",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "AI 코드 리뷰 (40+ 정적분석기)",
-      "role_en": "AI code review (40+ static analyzers)"
     }
   ]
 }
