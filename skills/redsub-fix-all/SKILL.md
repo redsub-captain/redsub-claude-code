@@ -7,10 +7,10 @@ description: Search and bulk-fix a pattern across the entire codebase.
 
 ## Bug Propagation Protocol
 
-버그/오류 발견 시 **동일/유사 패턴 전수 조사**. 한 건 수정으로 끝내지 않는다.
-- Grep으로 유사 패턴 검색 → 전체 수정 → 검증
-- "하나 고치고 끝"은 버그. 전수 조사 후 리포트
-- 동일 코드베이스에서 작동하는 유사 사례 찾기, 차이점 비교
+On any bug/error, **exhaustively search for identical/similar patterns**. Never fix just one.
+- Grep for similar patterns → fix all → verify
+- "Fix one and done" is a bug. Exhaustive search then report
+- Find similar cases in the same codebase, compare differences
 
 ## Input
 
@@ -32,9 +32,9 @@ echo "${CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS:+enabled}"
 ```
 
 **If enabled** → use `AskUserQuestion` tool:
-- question: "실행 모드를 선택하세요."
+- question: "Select execution mode."
 - header: "Mode"
-- options: ["Sequential (Recommended)" (순차 수정 — 안전, 예측 가능), "Agent Teams" (병렬 teammate — 빠르지만 토큰 더 소비), "Loop" (ralph-loop 반복 — lint 스타일 수정에 적합)]
+- options: ["Sequential (Recommended)" (safe, predictable), "Agent Teams" (parallel teammates — faster but uses more tokens), "Loop" (ralph-loop iteration — suited for lint-style fixes)]
 
 **If not enabled** → use Sequential mode without asking.
 

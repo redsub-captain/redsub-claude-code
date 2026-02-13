@@ -34,7 +34,7 @@ Every task MUST follow this exact structure:
 2. **Verify failure** — exact command + expected failure output
 3. **Implement** — complete implementation code, not "add the logic"
 4. **Verify pass** — exact command + expected pass output
-5. **Commit** — `type: Korean description` (redsub commit convention)
+5. **Commit** — `type: description` (redsub commit convention)
 
 ### Plan Document Header
 
@@ -62,7 +62,7 @@ Another engineer (or subagent) should be able to execute this plan with zero cod
 
 - **DRY**: No code duplication across tasks.
 - **YAGNI**: Only what's needed now.
-- **Frequent commits**: One commit per task, following redsub commit convention (`type: Korean description`).
+- **Frequent commits**: One commit per task, following redsub commit convention (`type: description`).
 
 ### Output
 

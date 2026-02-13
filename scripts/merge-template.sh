@@ -134,8 +134,18 @@ try:
 
                 # Build new content
                 new_main = template
-                if user_config is not None and USER_START in new_main and USER_END in new_main:
-                    new_main = replace_between(new_main, USER_START, USER_END, "\n" + user_config.strip() + "\n")
+                if user_config is not None:
+                    user_config_stripped = user_config.strip()
+                    # Discard default placeholder content
+                    if user_config_stripped in ("(none)", "## In progress\n(none)"):
+                        user_config_stripped = ""
+                    if user_config_stripped:
+                        if USER_START in new_main and USER_END in new_main:
+                            # Template still has user markers — inject there
+                            new_main = replace_between(new_main, USER_START, USER_END, "\n" + user_config_stripped + "\n")
+                        else:
+                            # Template no longer has user markers — append after template content
+                            new_main = new_main.rstrip() + "\n\n" + user_config_stripped + "\n"
 
                 # Replace main markers content in existing file
                 new_full = replace_between(existing, MAIN_START, MAIN_END, "\n" + new_main + "\n")

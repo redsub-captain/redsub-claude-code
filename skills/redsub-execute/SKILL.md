@@ -29,8 +29,8 @@ Task: [Full task text from plan, verbatim]
 Constraints:
 - Follow TDD: write failing test first, verify failure, then implement
 - Do NOT modify files outside this task's scope
-- Commit when done: `type: Korean description` (redsub commit convention)
-  - e.g., `feat: 사용자 인증 API 추가`, `fix: null 포인터 예외 처리`
+- Commit when done: `type: description` (redsub commit convention)
+  - e.g., `feat: add user authentication API`, `fix: handle null pointer exception`
 
 Expected output:
 - What was implemented
