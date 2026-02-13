@@ -19,6 +19,10 @@ redsub-claude-code와 Claude Code 버전 간 호환성.
 
 ## Breaking Changes
 
+### 3.2.0
+- **coderabbit 의존성 제거**: 코드 리뷰를 `superpowers:requesting-code-review`로 대체 (12개 → 11개)
+- **플러그인 업데이트 알림**: 세션 시작 시 claude-plugins-official 업데이트 자동 확인
+
 ### 3.0.0
 - **Rules 전면 제거**: 5개 Rules 파일 삭제 → 고유 콘텐츠를 관련 스킬 내부로 이동
   - `redsub-testing.md` → `/redsub-validate` SKILL.md
@@ -30,7 +34,7 @@ redsub-claude-code와 Claude Code 버전 간 호환성.
   - `/redsub-brainstorm` → superpowers:brainstorming 기반 thin wrapper
   - `/redsub-plan` → superpowers:writing-plans 기반 thin wrapper
   - `/redsub-execute` → superpowers:executing-plans 기반 thin wrapper
-- **의존 플러그인 변경**: code-review, pr-review-toolkit 제거 → superpowers 추가 (11개)
+- **의존 플러그인 변경**: code-review, pr-review-toolkit 제거 → superpowers 추가 (12개)
 - **Hooks 축소**: 9개 → 5개 (warn-main-edit, validate-marker, notify-attention, pre-compact-context 제거)
 - **CLAUDE.md 최소화**: ~60줄 → ~15줄 템플릿 (세션 시작 토큰 ~96% 절감)
 - **원스텝 설치**: `/redsub-setup` 실행 시 사용자 입력 0회 (플러그인/권한 자동 등록)
