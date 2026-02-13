@@ -30,7 +30,7 @@ redsub-claude-code와 Claude Code 버전 간 호환성.
   - `/redsub-brainstorm` → superpowers:brainstorming 기반 thin wrapper
   - `/redsub-plan` → superpowers:writing-plans 기반 thin wrapper
   - `/redsub-execute` → superpowers:executing-plans 기반 thin wrapper
-- **의존 플러그인 변경**: code-review, pr-review-toolkit 제거 → coderabbit, superpowers 추가 (12개)
+- **의존 플러그인 변경**: code-review, pr-review-toolkit 제거 → superpowers 추가 (11개)
 - **Hooks 축소**: 9개 → 5개 (warn-main-edit, validate-marker, notify-attention, pre-compact-context 제거)
 - **CLAUDE.md 최소화**: ~60줄 → ~15줄 템플릿 (세션 시작 토큰 ~96% 절감)
 - **원스텝 설치**: `/redsub-setup` 실행 시 사용자 입력 0회 (플러그인/권한 자동 등록)

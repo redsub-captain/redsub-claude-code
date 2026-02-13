@@ -103,7 +103,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" a
 
 ```
 Setup complete:
-- Plugins: [installed]/[total] registered (12 plugins with superpowers + coderabbit)
+- Plugins: [installed]/[total] registered (11 plugins with superpowers)
 - Permissions: [registered/total] in ~/.claude/settings.json
 - CLAUDE.md: [created / updated / skipped]
 - Legacy rules: cleaned up
