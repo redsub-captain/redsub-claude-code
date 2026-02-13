@@ -53,6 +53,12 @@
 /redsub-update
 ```
 
+업데이트 후 의존 플러그인이 누락되었다면:
+```
+/redsub-doctor        # 진단 + 자동 설치
+/redsub-setup --force # 또는 전체 재설정
+```
+
 ### 삭제
 
 ```

@@ -35,12 +35,26 @@ Read `~/.claude-redsub/install-manifest.json`:
 
 **Read the plugin registry from `${CLAUDE_PLUGIN_ROOT}/config/plugins.json`** — this is the Single Source of Truth (SSOT). Do NOT use a hardcoded list.
 
-For each plugin in the registry, check if it's installed in `~/.claude/plugins/installed_plugins.json`.
+For each plugin in the registry, check `~/.claude/plugins/installed_plugins.json`:
+- A plugin is **missing** if its key (`<name>@<marketplace>`) does not exist
+- A plugin is **not installed** if its key exists but `installPath` is empty (placeholder entry from registration)
 
-**Report**: List missing plugins with install commands constructed from `name` and `marketplace` fields:
+Both cases should be reported and offered for auto-install.
+
+**Report**: List missing/uninstalled plugins with install commands constructed from `name` and `marketplace` fields:
 ```
-Missing: <name>
+Missing: <name> (not registered)
 Install: /plugin install <name>@<marketplace>
+```
+or:
+```
+Missing: <name> (registered but not installed)
+Install: /plugin install <name>@<marketplace>
+```
+
+**Auto-fix**: Use `AskUserQuestion` to ask user whether to auto-install missing plugins. If yes, run each sequentially:
+```bash
+claude plugin install <name>@<marketplace>
 ```
 
 ### 4. CLAUDE.md marker integrity
