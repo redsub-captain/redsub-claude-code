@@ -38,7 +38,7 @@ If `status` = `"already_configured"`: print the message and stop.
 If `dependencies.missing` is not empty:
 
 Use `AskUserQuestion`:
-- question: "누락된 플러그인 [N]개를 자동 설치하시겠습니까?"
+- question: "[N] missing plugin(s) found. Auto-install?"
 - header: "Plugins"
 - options: ["Install all (Recommended)", "Skip for now"]
 
@@ -55,7 +55,7 @@ If user chooses skip: continue to the next step.
 If `permissions.missing` is not empty:
 
 Use `AskUserQuestion`:
-- question: "플러그인 워크플로우에 필요한 권한 [N]개를 ~/.claude/settings.json에 등록하면, 이후 작업 시 반복적인 Allow 프롬프트가 줄어듭니다. 등록할까요?"
+- question: "[N] permission(s) needed for plugin workflows. Registering in ~/.claude/settings.json reduces repeated Allow prompts. Register?"
 - header: "Permissions"
 - options: ["Register all (Recommended)" (register all patterns), "Show details first" (list all patterns then ask again), "Skip" (do not modify permissions)]
 
@@ -65,7 +65,7 @@ If user chooses "Register all", run the register script:
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/register-permissions.sh" "${CLAUDE_PLUGIN_ROOT}" [missing patterns...]
 ```
-Parse the JSON output. Report: "권한 [N]개 등록 완료."
+Parse the JSON output. Report: "[N] permission(s) registered."
 
 ### 4. CLAUDE.md handling
 
@@ -78,7 +78,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" c
 
 **If `"no_markers"`**: Existing file without plugin markers.
 Use `AskUserQuestion`:
-- question: "~/.claude/CLAUDE.md가 이미 존재합니다. 워크플로우 가이드를 어떻게 추가할까요?"
+- question: "~/.claude/CLAUDE.md already exists. How should the workflow guide be added?"
 - header: "CLAUDE.md"
 - options: ["Append at end (Recommended)", "Prepend at start", "Skip"]
 
@@ -89,9 +89,9 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" a
 ```
 
 **If `"has_markers"`**: Existing file with markers.
-- If `template_version` = `template_latest`: report "CLAUDE.md 이미 최신 (vX.X.X)" and skip.
+- If `template_version` = `template_latest`: report "CLAUDE.md already up to date (vX.X.X)" and skip.
 - If versions differ: Use `AskUserQuestion`:
-  - question: "CLAUDE.md 템플릿을 업데이트할까요? (현재: [template_version or 'legacy'] → 최신: [template_latest]). 사용자 커스텀(Tech Stack, In progress)은 보존됩니다."
+  - question: "Update CLAUDE.md template? (current: [template_version or 'legacy'] → latest: [template_latest]). User customizations are preserved."
   - header: "CLAUDE.md"
   - options: ["Update (Recommended)", "Skip"]
   - If "Update", run:

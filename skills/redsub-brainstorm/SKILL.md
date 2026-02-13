@@ -15,7 +15,6 @@ Announce: "Using /redsub-brainstorm to explore the design."
 
 - **Socratic dialogue**: One question at a time, never multiple questions in one message.
 - **AskUserQuestion preferred**: Use multiple-choice (AskUserQuestion tool) over open-ended questions whenever possible. Reduce decision fatigue.
-- **Korean language output**: All design documents and dialogue in Korean (technical terms in English as-is).
 
 ### YAGNI Enforcement
 

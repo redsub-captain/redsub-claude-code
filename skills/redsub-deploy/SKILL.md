@@ -30,13 +30,13 @@ Determine the project's deploy commands:
 
 ### 2. Dev confirmation
 Use `AskUserQuestion` tool:
-- question: "Dev 환경에서 테스트를 완료했나요?"
+- question: "Have you finished testing in the dev environment?"
 - header: "Dev test"
 - options: ["Yes, tested" (proceed to next step), "No, skip" (warn and continue)]
 
 ### 3. User approval
 Use `AskUserQuestion` tool:
-- question: "PRODUCTION에 배포하시겠습니까?"
+- question: "Deploy to PRODUCTION?"
 - header: "Deploy"
 - options: ["Deploy to prod" (execute deployment), "Cancel" (stop pipeline)]
 

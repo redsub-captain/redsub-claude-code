@@ -23,29 +23,29 @@ Default: `patch` if omitted.
 
 ### Format
 ```
-type: 한국어 설명
+type: description
 ```
-- **type**: 영어 고정 (Conventional Commits)
-- **설명**: 한국어, 서술형 종결 (~추가, ~수정, ~개선, ~제거), 50자 이내
+- **type**: Conventional Commits keyword (English)
+- **description**: concise summary, imperative mood, max 50 chars
 
 ### Types
 
-| Type | 의미 | 예시 |
-|------|------|------|
-| `feat` | 새 기능 | `feat: 사용자 인증 API 추가` |
-| `fix` | 버그 수정 | `fix: null 포인터 예외 처리` |
-| `refactor` | 리팩토링 (동작 변경 없음) | `refactor: 인증 모듈 구조 개선` |
-| `chore` | 빌드, 설정, 버전 등 잡일 | `chore: 의존성 업데이트` |
-| `docs` | 문서 | `docs: README 설치 가이드 보완` |
-| `test` | 테스트 | `test: 로그인 실패 케이스 추가` |
+| Type | Meaning | Example |
+|------|---------|---------|
+| `feat` | New feature | `feat: add user authentication API` |
+| `fix` | Bug fix | `fix: handle null pointer exception` |
+| `refactor` | Refactoring (no behavior change) | `refactor: restructure auth module` |
+| `chore` | Build, config, version, etc. | `chore: update dependencies` |
+| `docs` | Documentation | `docs: improve README install guide` |
+| `test` | Tests | `test: add login failure test cases` |
 
 ### Release Formats
 
 | Step | Format | Example |
 |------|--------|---------|
 | Version bump | `chore: bump version to X.Y.Z` | `chore: bump version to 2.12.0` |
-| Merge | `release: vX.Y.Z - 한국어 설명` | `release: v2.12.0 - 인증 모듈 추가` |
-| Tag | `vX.Y.Z 한국어 설명` (type prefix 없이) | `v2.12.0 인증 모듈 추가` |
+| Merge | `release: vX.Y.Z - description` | `release: v2.12.0 - add auth module` |
+| Tag | `vX.Y.Z description` (no type prefix) | `v2.12.0 add auth module` |
 
 ## Command Resolution
 
@@ -59,13 +59,13 @@ Determine the project's commands:
 
 ### 1. Save
 
-Commit pending changes (커밋 컨벤션 따름):
+Commit pending changes (following commit convention):
 ```bash
 git add -A
-git commit -m "feat: 한국어 설명"
+git commit -m "feat: description"
 ```
-- type은 변경 성격에 맞게: `feat`, `fix`, `refactor` 등.
-- 예: `feat: 커밋 컨벤션 가이드 추가`, `fix: 세션 저장 오류 수정`
+- Choose type based on change nature: `feat`, `fix`, `refactor`, etc.
+- e.g., `feat: add commit convention guide`, `fix: fix session save error`
 
 Skip if no changes.
 
@@ -150,16 +150,16 @@ Use `AskUserQuestion` tool to get approval:
 On "Merge":
 ```bash
 git checkout main
-git merge --no-ff [feature-branch] -m "release: v[new version] - [한국어 설명]"
+git merge --no-ff [feature-branch] -m "release: v[new version] - [description]"
 ```
 
 ### 6. Tag
 
 ```bash
-git tag -a v[new version] -m "v[new version] [한국어 설명 — type prefix 없이]"
+git tag -a v[new version] -m "v[new version] [description — no type prefix]"
 ```
-- 예: `v2.10.0 커밋 컨벤션 가이드 추가` (O)
-- 아닌 예: `v2.10.0 feat: 커밋 컨벤션 가이드 추가` (X — type prefix 중복)
+- e.g., `v2.10.0 add commit convention guide` (OK)
+- NOT: `v2.10.0 feat: add commit convention guide` (redundant type prefix)
 
 ### 7. Push + Release (user approval required)
 

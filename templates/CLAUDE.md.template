@@ -1,13 +1,8 @@
-<!-- redsub-template-version:3.0.0 -->
+<!-- redsub-template-version:3.1.0 -->
 # redsub-claude-code
 
 ## Identity
-Solo developer. Korean commits. TDD required.
-
-<!-- redsub-user:start -->
-## In progress
-(none)
-<!-- redsub-user:end -->
+Solo developer. TDD required.
 
 ## Principles
 - Plan first: /redsub-brainstorm → /redsub-plan
@@ -15,3 +10,11 @@ Solo developer. Korean commits. TDD required.
 - SSOT: one canonical source per data, no duplication
 - No hardcoding: i18n keys or constants
 - Evidence before claims: verify with command output
+
+## Config placement (required when adding new rules/knowledge)
+- Bash-checkable + severe violation → **Hook** (exit 2)
+- Bash-checkable + minor violation → **Hook** (exit 0, warning)
+- Tied to specific file paths → **Rule** (.claude/rules/)
+- 20+ lines domain knowledge → **Skill** (.claude/skills/) + 1-line routing in CLAUDE.md
+- Required every session → **CLAUDE.md** (keep minimal)
+- Needs isolation/specialization → **Agent**

@@ -39,11 +39,11 @@ Parse the JSON output. The result has this structure:
 If `template_changed` is `false`, skip to step 4.
 
 Use `AskUserQuestion`:
-- question: "CLAUDE.md 템플릿이 업데이트됐습니다 (현재: [template_old or 'legacy'] → 최신: [template_new]). 갱신할까요?"
+- question: "CLAUDE.md template has been updated (current: [template_old or 'legacy'] → latest: [template_new]). Update?"
 - header: "Template"
 - options:
-  - "Update (Recommended)" — 사용자 커스텀(Tech Stack, In progress)을 보존하면서 템플릿을 업데이트합니다
-  - "Skip" — 현재 CLAUDE.md를 유지합니다
+  - "Update (Recommended)" — Updates the template while preserving user customizations
+  - "Skip" — Keeps your current CLAUDE.md as-is
 
 If user chooses "Update", run the merge script:
 ```bash
