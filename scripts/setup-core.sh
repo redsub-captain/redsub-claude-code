@@ -40,13 +40,17 @@ MISSING_PLUGINS_JSON="[]"
 if [ -f "$PLUGINS_JSON" ]; then
   TOTAL_PLUGINS=$(json_count "$PLUGINS_JSON" plugins)
 
+  # A plugin is truly installed only when gitCommitSha is non-empty.
+  # register-plugins.sh creates placeholder entries that Claude Code auto-resolves
+  # (fills installPath/version from marketplace cache), but without gitCommitSha
+  # Claude Code does NOT recognize them as installed (/plugin Installed tab).
   if command -v jq &>/dev/null; then
     MISSING_PLUGINS_JSON=$(jq -r --slurpfile installed <([ -f "$INSTALLED_PLUGINS" ] && cat "$INSTALLED_PLUGINS" || echo '{"plugins":{}}') '
       [.plugins[] |
         "\(.name)@\(.marketplace)" as $key |
         select(
           $installed[0].plugins[$key] == null or
-          ($installed[0].plugins[$key][0].installPath | length) == 0
+          ($installed[0].plugins[$key][0].gitCommitSha | length) == 0
         ) |
         $key
       ]' "$PLUGINS_JSON" 2>/dev/null || echo "[]")
@@ -63,7 +67,7 @@ missing = []
 for p in plugins.get("plugins", []):
     key = f"{p['name']}@{p['marketplace']}"
     entry = installed.get(key)
-    if not entry or not entry[0].get("installPath"):
+    if not entry or not entry[0].get("gitCommitSha"):
         missing.append(key)
 print(json.dumps(missing))
 PYEOF

@@ -37,7 +37,7 @@ Read `~/.claude-redsub/install-manifest.json`:
 
 For each plugin in the registry, check `~/.claude/plugins/installed_plugins.json`:
 - A plugin is **missing** if its key (`<name>@<marketplace>`) does not exist
-- A plugin is **not installed** if its key exists but `installPath` is empty (placeholder entry from registration)
+- A plugin is **not installed** if its key exists but `gitCommitSha` is empty — `register-plugins.sh` creates placeholder entries that Claude Code auto-resolves (`installPath`/`version` get filled from marketplace cache), but without `gitCommitSha` they are NOT recognized as installed in `/plugin` Installed tab
 
 Both cases should be reported and offered for auto-install.
 
@@ -48,7 +48,7 @@ Install: /plugin install <name>@<marketplace>
 ```
 or:
 ```
-Missing: <name> (registered but not installed)
+Missing: <name> (registered but not installed — empty gitCommitSha)
 Install: /plugin install <name>@<marketplace>
 ```
 
