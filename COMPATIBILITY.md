@@ -6,7 +6,7 @@ redsub-claude-code와 Claude Code 버전 간 호환성.
 
 | Component | Version |
 |-----------|---------|
-| Plugin | 3.1.2 |
+| Plugin | 3.1.3 |
 | Min Claude Code | 1.0.33 |
 
 ## History
