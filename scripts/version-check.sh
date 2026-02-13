@@ -35,15 +35,41 @@ if [ -n "$CURRENT_VERSION" ]; then
   fi
 fi
 
-# Check plugin updates (non-blocking, best-effort)
+# --- Network checks (parallel, non-blocking, best-effort) ---
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+NET_TMP=$(mktemp -d)
+trap 'rm -rf "$NET_TMP"' EXIT
+
+# Background job 1: redsub version check
+(
+  if [ -f "$PLUGIN_ROOT/package.json" ]; then
+    curl -s --connect-timeout 2 --max-time 5 \
+      "https://raw.githubusercontent.com/redsub-captain/redsub-claude-code/main/package.json" \
+      > "$NET_TMP/redsub-remote.json" 2>/dev/null || true
+  fi
+) &
+PID_REDSUB=$!
+
+# Background job 2: marketplace plugin update check
+MARKETPLACE_OFFICIAL="$HOME/.claude/plugins/marketplaces/claude-plugins-official"
+(
+  if [ -d "$MARKETPLACE_OFFICIAL/.git" ]; then
+    git -C "$MARKETPLACE_OFFICIAL" ls-remote origin HEAD 2>/dev/null \
+      | cut -f1 > "$NET_TMP/marketplace-sha.txt" || true
+  fi
+) &
+PID_MARKETPLACE=$!
+
+wait "$PID_REDSUB" 2>/dev/null || true
+wait "$PID_MARKETPLACE" 2>/dev/null || true
+
+# Process redsub version result
 if [ -f "$PLUGIN_ROOT/package.json" ]; then
   LOCAL_VER=$(json_val "$PLUGIN_ROOT/package.json" version)
   if [ -n "$LOCAL_VER" ]; then
     REMOTE_VER=""
-    REMOTE_JSON=$(curl -s --connect-timeout 2 --max-time 5 "https://raw.githubusercontent.com/redsub-captain/redsub-claude-code/main/package.json" 2>/dev/null || echo "")
-    if [ -n "$REMOTE_JSON" ]; then
-      REMOTE_VER=$(json_input_val "$REMOTE_JSON" "" version)
+    if [ -s "$NET_TMP/redsub-remote.json" ]; then
+      REMOTE_VER=$(json_input_val "$(cat "$NET_TMP/redsub-remote.json")" "" version)
     fi
     if [ -n "$REMOTE_VER" ] && [ "$LOCAL_VER" != "$REMOTE_VER" ]; then
       MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/redsub-plugins"
@@ -61,6 +87,15 @@ if [ -f "$PLUGIN_ROOT/package.json" ]; then
     if [ -n "$MANIFEST_VER" ] && [ "$MANIFEST_VER" != "$LOCAL_VER" ]; then
       json_set_version "$MANIFEST" "$LOCAL_VER" && echo "install-manifest.json synced: v$MANIFEST_VER -> v$LOCAL_VER"
     fi
+  fi
+fi
+
+# Process marketplace update result
+if [ -d "$MARKETPLACE_OFFICIAL/.git" ] && [ -s "$NET_TMP/marketplace-sha.txt" ]; then
+  LOCAL_SHA=$(git -C "$MARKETPLACE_OFFICIAL" rev-parse HEAD 2>/dev/null || echo "")
+  REMOTE_SHA=$(cat "$NET_TMP/marketplace-sha.txt")
+  if [ -n "$LOCAL_SHA" ] && [ -n "$REMOTE_SHA" ] && [ "$LOCAL_SHA" != "$REMOTE_SHA" ]; then
+    echo "PLUGINS: claude-plugins-official updates available. Run 'claude plugin update <name>' to update."
   fi
 fi
 
