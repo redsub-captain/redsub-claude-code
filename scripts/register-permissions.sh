@@ -6,7 +6,7 @@
 #   If no patterns provided, register all from config/permissions.json.
 # Output: JSON result on stdout (last line)
 
-set -o pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/lib.sh"
 

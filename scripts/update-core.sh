@@ -4,7 +4,7 @@
 # Usage: bash update-core.sh <CLAUDE_PLUGIN_ROOT>
 # Output: JSON result on stdout (last line)
 
-set -o pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/lib.sh"
 
