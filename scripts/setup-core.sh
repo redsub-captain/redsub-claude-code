@@ -73,9 +73,8 @@ MISSING_COUNT=$(echo "$MISSING_PLUGINS_JSON" | python3 -c "import json,sys; prin
 REGISTER_PLUGINS_SCRIPT="$(dirname "$0")/register-plugins.sh"
 if [ -x "$REGISTER_PLUGINS_SCRIPT" ] && [ "$MISSING_COUNT" -gt 0 ]; then
   bash "$REGISTER_PLUGINS_SCRIPT" "$PLUGIN_ROOT" 2>/dev/null || true
-  # Re-check after registration
-  MISSING_COUNT=0
-  MISSING_PLUGINS_JSON="[]"
+  # Registration only creates metadata entries — actual install still needed
+  # Keep MISSING_COUNT and MISSING_PLUGINS_JSON intact for the skill to handle
 fi
 
 INSTALLED_COUNT=$((TOTAL_PLUGINS - MISSING_COUNT))
