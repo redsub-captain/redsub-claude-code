@@ -84,7 +84,9 @@ echo ""
 
 # 4. Verify deleted files don't exist
 echo "[Deleted Files (should not exist)]"
-for f in "agents/reviewer.md" "agents/designer.md" "rules/security.md" "rules/database.md" ".lsp.json" "skills/redsub-design/SKILL.md" "templates/design-guide.template.md"; do
+for f in "agents/reviewer.md" "agents/designer.md" "rules/security.md" "rules/database.md" ".lsp.json" "skills/redsub-design/SKILL.md" "templates/design-guide.template.md" \
+  "rules/redsub-testing.md" "rules/redsub-commit-convention.md" "rules/redsub-code-quality.md" "rules/redsub-workflow.md" "rules/redsub-claude-code-practices.md" \
+  "scripts/warn-main-edit.sh" "scripts/validate-marker.sh" "scripts/notify-attention.sh" "scripts/pre-compact-context.sh"; do
   if [ -f "$PLUGIN_ROOT/$f" ]; then
     check "fail" "$f — should be deleted but still exists"
   else
@@ -94,18 +96,10 @@ done
 
 echo ""
 
-# 5. Rules (auto-discovered from filesystem)
-RULES=$(ls "$PLUGIN_ROOT"/rules/redsub-*.md 2>/dev/null | while read -r f; do basename "$f" .md; done)
-RULE_COUNT=$(echo "$RULES" | wc -w | tr -d ' ')
+# 5. Rules (v3.0: all rules removed, handled by CLAUDE.md template + plugins)
+RULE_COUNT=0
 echo "[Rules ($RULE_COUNT)]"
-for rule in $RULES; do
-  f="rules/$rule.md"
-  if [ -f "$PLUGIN_ROOT/$f" ]; then
-    check "ok" "$f"
-  else
-    check "fail" "$f — file not found"
-  fi
-done
+check "ok" "No bundled rules (v3.0+ — rules consolidated into CLAUDE.md template)"
 
 echo ""
 
@@ -130,12 +124,12 @@ echo ""
 
 # 7. Legacy prefix check
 echo "[Legacy Prefix Check]"
-LEGACY_COUNT=$(set +o pipefail; grep -r --include='*.md' '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" "$PLUGIN_ROOT/rules/" 2>/dev/null | grep -v "redsub-doctor" | wc -l | tr -d ' ')
+LEGACY_COUNT=$(set +o pipefail; grep -r --include='*.md' '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" 2>/dev/null | grep -v "redsub-doctor" | wc -l | tr -d ' ')
 if [ "$LEGACY_COUNT" = "0" ]; then
   check "ok" "No legacy /rs- references found (excluding redsub-doctor diagnostics)"
 else
   check "fail" "$LEGACY_COUNT legacy /rs- references found"
-  grep -r --include='*.md' '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" "$PLUGIN_ROOT/rules/" 2>/dev/null | grep -v "redsub-doctor" | head -5
+  grep -r --include='*.md' '/rs-' "$PLUGIN_ROOT/skills/" "$PLUGIN_ROOT/agents/" 2>/dev/null | grep -v "redsub-doctor" | head -5
 fi
 
 echo ""

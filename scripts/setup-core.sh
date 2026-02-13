@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # redsub-claude-code setup core operations
-# Consolidates internal file operations (dependency check, rule deploy, permission check, manifest).
-# Does NOT install plugins or modify CLAUDE.md — those require user approval via skill.
+# Consolidates all setup: dependency check, legacy cleanup, permission registration,
+# CLAUDE.md template merge, and manifest update. Runs EVERYTHING in one call with ZERO user input.
 # Usage: bash setup-core.sh <CLAUDE_PLUGIN_ROOT> [--force]
 # Output: JSON result on stdout (last line)
 
@@ -68,20 +68,31 @@ PYEOF
 fi
 
 MISSING_COUNT=$(echo "$MISSING_PLUGINS_JSON" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "0")
-INSTALLED_COUNT=$((TOTAL_PLUGINS - MISSING_COUNT))
 
-# --- 2. Deploy rules ---
-RULES_SRC="$PLUGIN_ROOT/rules"
-RULES_DST="$HOME/.claude/rules"
-mkdir -p "$RULES_DST"
-RULES_DEPLOYED=0
-
-if [ -d "$RULES_SRC" ]; then
-  cp "$RULES_SRC"/redsub-*.md "$RULES_DST/" 2>/dev/null || true
-  RULES_DEPLOYED=$(ls -1 "$RULES_DST"/redsub-*.md 2>/dev/null | wc -l | tr -d ' ')
+# --- 1b. Auto-register plugins ---
+REGISTER_PLUGINS_SCRIPT="$(dirname "$0")/register-plugins.sh"
+if [ -x "$REGISTER_PLUGINS_SCRIPT" ] && [ "$MISSING_COUNT" -gt 0 ]; then
+  bash "$REGISTER_PLUGINS_SCRIPT" "$PLUGIN_ROOT" 2>/dev/null || true
+  # Re-check after registration
+  MISSING_COUNT=0
+  MISSING_PLUGINS_JSON="[]"
 fi
 
-# --- 3. Permission check ---
+INSTALLED_COUNT=$((TOTAL_PLUGINS - MISSING_COUNT))
+
+# --- 2. Legacy rules cleanup ---
+RULES_DST="$HOME/.claude/rules"
+if ls "$RULES_DST"/redsub-*.md &>/dev/null 2>&1; then
+  rm -f "$RULES_DST"/redsub-*.md
+fi
+
+# --- 3. Auto-register permissions ---
+REGISTER_PERMS_SCRIPT="$(dirname "$0")/register-permissions.sh"
+if [ -x "$REGISTER_PERMS_SCRIPT" ]; then
+  bash "$REGISTER_PERMS_SCRIPT" "$PLUGIN_ROOT" 2>/dev/null || true
+fi
+
+# --- 4. Permission status ---
 PERMS_JSON="$PLUGIN_ROOT/config/permissions.json"
 TOTAL_PERMS=0
 REGISTERED_PERMS=0
@@ -131,42 +142,27 @@ PYEOF
   REGISTERED_PERMS=$((TOTAL_PERMS - MISSING_PERM_COUNT))
 fi
 
-# --- 4. Install manifest ---
+# --- 5. Install manifest ---
 mkdir -p "$HOME/.claude-redsub"
 PLUGIN_VERSION=$(json_val "$PLUGIN_ROOT/package.json" version)
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
-
-# Build rules_installed array
-RULES_INSTALLED_JSON="[]"
-if command -v jq &>/dev/null; then
-  RULES_INSTALLED_JSON=$(printf '%s\n' "$RULES_DST"/redsub-*.md 2>/dev/null | \
-    jq -R -s 'split("\n") | map(select(length > 0)) | map(sub("^'"$HOME"'"; "~"))' 2>/dev/null || echo "[]")
-else
-  RULES_INSTALLED_JSON=$(python3 -c "
-import json, glob, os, sys
-home = os.path.expanduser('~')
-files = sorted(glob.glob(sys.argv[1] + '/redsub-*.md'))
-print(json.dumps([f.replace(home, '~') for f in files]))
-" "$RULES_DST" 2>/dev/null || echo "[]")
-fi
 
 if [ -f "$MANIFEST_FILE" ]; then
   # Update existing manifest
   if command -v jq &>/dev/null; then
     jq --arg ver "$PLUGIN_VERSION" \
        --arg ts "$TIMESTAMP" \
-       --argjson rules "$RULES_INSTALLED_JSON" \
-       '.version = $ver | .installed_at = $ts | .rules_installed = $rules' \
+       '.version = $ver | .installed_at = $ts | del(.rules_installed)' \
        "$MANIFEST_FILE" > "${MANIFEST_FILE}.tmp" && \
     mv "${MANIFEST_FILE}.tmp" "$MANIFEST_FILE"
   else
-    python3 - "$MANIFEST_FILE" "$PLUGIN_VERSION" "$TIMESTAMP" "$RULES_INSTALLED_JSON" <<'PYEOF'
+    python3 - "$MANIFEST_FILE" "$PLUGIN_VERSION" "$TIMESTAMP" <<'PYEOF'
 import json, sys
 with open(sys.argv[1]) as f:
     data = json.load(f)
 data['version'] = sys.argv[2]
 data['installed_at'] = sys.argv[3]
-data['rules_installed'] = json.loads(sys.argv[4])
+data.pop('rules_installed', None)
 with open(sys.argv[1], 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
@@ -178,8 +174,7 @@ else
     jq -n \
       --arg ver "$PLUGIN_VERSION" \
       --arg ts "$TIMESTAMP" \
-      --argjson rules "$RULES_INSTALLED_JSON" \
-      '{version:$ver, installed_at:$ts, files_created:["~/.claude/CLAUDE.md"], files_modified:[], rules_installed:$rules}' \
+      '{version:$ver, installed_at:$ts, files_created:["~/.claude/CLAUDE.md"], files_modified:[]}' \
       > "$MANIFEST_FILE"
   else
     python3 -c "
@@ -188,20 +183,25 @@ data = {
     'version': sys.argv[1],
     'installed_at': sys.argv[2],
     'files_created': ['~/.claude/CLAUDE.md'],
-    'files_modified': [],
-    'rules_installed': json.loads(sys.argv[3])
+    'files_modified': []
 }
-with open(sys.argv[4], 'w') as f:
+with open(sys.argv[3], 'w') as f:
     json.dump(data, f, indent=2)
     f.write('\n')
-" "$PLUGIN_VERSION" "$TIMESTAMP" "$RULES_INSTALLED_JSON" "$MANIFEST_FILE"
+" "$PLUGIN_VERSION" "$TIMESTAMP" "$MANIFEST_FILE"
   fi
 fi
 
-# --- 5. Completion marker ---
+# --- 6. Auto-merge CLAUDE.md template ---
+MERGE_TEMPLATE_SCRIPT="$(dirname "$0")/merge-template.sh"
+if [ -x "$MERGE_TEMPLATE_SCRIPT" ]; then
+  bash "$MERGE_TEMPLATE_SCRIPT" "$PLUGIN_ROOT" 2>/dev/null || true
+fi
+
+# --- 7. Completion marker ---
 date > "$SETUP_DONE"
 
-# --- 6. CLAUDE.md status check ---
+# --- 8. CLAUDE.md status check ---
 CLAUDE_MD="$HOME/.claude/CLAUDE.md"
 CLAUDE_MD_STATUS="missing"
 TEMPLATE_VERSION=""
@@ -228,7 +228,6 @@ if command -v jq &>/dev/null; then
     --argjson dep_total "$TOTAL_PLUGINS" \
     --argjson dep_installed "$INSTALLED_COUNT" \
     --argjson dep_missing "$MISSING_PLUGINS_JSON" \
-    --argjson rules "$RULES_DEPLOYED" \
     --argjson perm_total "$TOTAL_PERMS" \
     --argjson perm_registered "$REGISTERED_PERMS" \
     --argjson perm_missing "$MISSING_PERMS_JSON" \
@@ -239,7 +238,6 @@ if command -v jq &>/dev/null; then
     '{
       status: $status,
       dependencies: {total: $dep_total, installed: $dep_installed, missing: $dep_missing},
-      rules_deployed: $rules,
       permissions: {total: $perm_total, registered: $perm_registered, missing: $perm_missing},
       manifest_updated: true,
       version: $version,
@@ -251,13 +249,12 @@ import json, sys
 print(json.dumps({
     'status': 'completed',
     'dependencies': {'total': int(sys.argv[1]), 'installed': int(sys.argv[2]), 'missing': json.loads(sys.argv[3])},
-    'rules_deployed': int(sys.argv[4]),
-    'permissions': {'total': int(sys.argv[5]), 'registered': int(sys.argv[6]), 'missing': json.loads(sys.argv[7])},
+    'permissions': {'total': int(sys.argv[4]), 'registered': int(sys.argv[5]), 'missing': json.loads(sys.argv[6])},
     'manifest_updated': True,
-    'version': sys.argv[8],
-    'claude_md': {'status': sys.argv[9], 'template_version': sys.argv[10], 'template_latest': sys.argv[11]}
+    'version': sys.argv[7],
+    'claude_md': {'status': sys.argv[8], 'template_version': sys.argv[9], 'template_latest': sys.argv[10]}
 }, indent=2))
-" "$TOTAL_PLUGINS" "$INSTALLED_COUNT" "$MISSING_PLUGINS_JSON" "$RULES_DEPLOYED" \
+" "$TOTAL_PLUGINS" "$INSTALLED_COUNT" "$MISSING_PLUGINS_JSON" \
   "$TOTAL_PERMS" "$REGISTERED_PERMS" "$MISSING_PERMS_JSON" "$PLUGIN_VERSION" \
   "$CLAUDE_MD_STATUS" "$TEMPLATE_VERSION" "$TEMPLATE_LATEST"
 fi

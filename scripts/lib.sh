@@ -168,9 +168,7 @@ safe_osascript() {
 
 # Clean all session markers (call on SessionStart)
 clean_session_markers() {
-  rm -f "$REDSUB_DIR"/validated \
-       "$REDSUB_DIR"/main-edit-warned \
-       "$REDSUB_DIR"/claude-md-revised \
+  rm -f "$REDSUB_DIR"/claude-md-revised \
        "$REDSUB_DIR"/edit-count \
        "$REDSUB_DIR"/component-count 2>/dev/null || true
 }

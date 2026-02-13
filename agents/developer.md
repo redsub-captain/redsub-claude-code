@@ -54,7 +54,8 @@ Use any MCP server tools available in the current session:
 
 ## Dependency Plugin Reference
 Plugins from `config/plugins.json` provide additional tools/skills:
+- `superpowers` → TDD, brainstorming, debugging, verification (v4.3.0+)
+- `coderabbit` → AI code review (40+ static analyzers)
 - `security-guidance` → security best practices
-- `pr-review-toolkit` → code review agents (6 types)
 - `code-simplifier` → automatic code simplification
 - `frontend-design` → UI implementation guide

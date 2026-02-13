@@ -7,22 +7,17 @@ description: Execute implementation plan task-by-task with subagent dispatch and
 
 Announce: "Using /redsub-execute to implement the plan."
 
+**Invoke superpowers:executing-plans skill first, then apply these additional conventions:**
+
 ## Input
 
 `$ARGUMENTS`: path to plan document (e.g., `docs/plans/2025-01-15-auth-plan.md`).
 
-## Process
+## redsub Conventions
 
-### 1. Load and Review Plan
+### Subagent Dispatch Model
 
-1. Read the plan file.
-2. Review critically — identify concerns, missing context, unclear steps.
-3. If concerns: raise with user **before** starting.
-4. Create TodoWrite with all tasks from the plan.
-
-### 2. Execute Tasks
-
-For each task:
+Instead of superpowers' batch execution model, use subagent dispatch per task:
 
 #### a. Dispatch Implementer (Task tool)
 
@@ -34,8 +29,8 @@ Task: [Full task text from plan, verbatim]
 Constraints:
 - Follow TDD: write failing test first, verify failure, then implement
 - Do NOT modify files outside this task's scope
-- Commit when done: `type: 한국어 설명` (커밋 컨벤션 따름)
-  - 예: `feat: 사용자 인증 API 추가`, `fix: null 포인터 예외 처리`
+- Commit when done: `type: Korean description` (redsub commit convention)
+  - e.g., `feat: 사용자 인증 API 추가`, `fix: null 포인터 예외 처리`
 
 Expected output:
 - What was implemented
@@ -44,56 +39,45 @@ Expected output:
 - Commit SHA
 ```
 
-#### b. Spec Compliance Review (Task tool)
+#### b. 2-Stage Review
 
-```
-Prompt structure for spec reviewer subagent:
+After each implementer completes:
 
-Plan task (original spec):
-[Full task text from plan]
+**Stage 1: Spec Compliance Review (Task tool)**
+- Does implementation match plan spec exactly?
+- Are all required files created/modified?
+- Do tests cover the spec requirements?
+- Any over-building or under-building?
+- Output: PASS or FAIL with specific issues.
+- FAIL → implementer fixes → re-review.
 
-Implementation (what was done):
-[Implementer's output summary]
+**Stage 2: Code Quality Review (Task tool)**
+- Code clarity and readability
+- Error handling and edge cases
+- No security vulnerabilities
+- Follows project conventions (CLAUDE.md)
+- Output: APPROVED or issues list with severity.
+- Issues found → implementer fixes → re-review.
 
-Check:
-1. Does implementation match spec exactly?
-2. Are all required files created/modified?
-3. Do tests cover the spec requirements?
-4. Any over-building or under-building?
+### TodoWrite Integration
 
-Output: PASS or FAIL with specific issues.
-```
-
-- FAIL → implementer fixes → re-review
-- PASS → proceed to code quality review
-
-#### c. Code Quality Review (Task tool)
-
-```
-Prompt structure for code quality reviewer subagent:
-
-Review the implementation between commits [base_sha] and [head_sha].
-
-Check:
-1. Code clarity and readability
-2. Error handling
-3. Edge cases covered
-4. No security vulnerabilities
-5. Follows project conventions (CLAUDE.md)
-
-Output: APPROVED or issues list with severity.
-```
-
-- Issues found → implementer fixes → re-review
-- APPROVED → mark task complete in TodoWrite
-
-### 3. Between Tasks
-
-- Mark completed task in TodoWrite.
-- Start next task immediately (no batch waiting needed).
+- Create TodoWrite with all tasks from the plan at start.
+- Mark each task in_progress before dispatching implementer.
+- Mark completed only after both review stages pass.
+- Start next task immediately (no batch waiting).
 - If blocked: stop and ask user.
 
-### 4. After All Tasks
+### Red Flags
+
+- Never skip spec review (ensures we build what was planned).
+- Never start quality review before spec passes (wrong order).
+- Never dispatch multiple implementers in parallel (file conflicts).
+- Never proceed with unfixed review issues.
+- Stop if 3+ fix attempts fail on same issue → question the plan.
+
+### Post-Execution
+
+After all tasks complete:
 
 1. Run `/redsub-validate` (lint + check + test).
 2. Show full diff: `git diff main...HEAD`
@@ -104,19 +88,6 @@ Output: APPROVED or issues list with severity.
    - Tests: [actual output]
    - Files changed: [count]
    ```
-4. Suggest `/redsub-ship` for release.
+4. Recommend `/redsub-ship` for release.
 
-## Red Flags
-
-- Never skip spec review (ensures we build what was planned).
-- Never start quality review before spec passes (wrong order).
-- Never dispatch multiple implementers in parallel (file conflicts).
-- Never proceed with unfixed review issues.
-- Stop if 3+ fix attempts fail on same issue → question the plan.
-
-## When to Stop
-
-- Blocker: missing dependency, unclear instruction, environment issue.
-- Plan has critical gaps.
-- Repeated failures on same task (3+).
-- Always ask user before abandoning a task.
+Do NOT use superpowers:finishing-a-development-branch. The redsub workflow uses `/redsub-ship` for the release pipeline.

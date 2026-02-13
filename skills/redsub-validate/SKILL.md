@@ -37,9 +37,25 @@ Run sequentially. Stop on first failure.
 
 If the test script doesn't include a `--run` flag for watch-mode frameworks (e.g., vitest), append `-- --run`.
 
-### 4. Evidence (Verification Gate)
+### 4. SSOT Consistency Checks
 
-**Show actual command output.** No claims without evidence.
+When a canonical source exists (config, constants, types), verify consumers stay in sync:
+- Config-driven values: verify runtime reads match the canonical source (e.g., routes file exports match router config)
+- Shared types: verify API response shapes match the declared type (snapshot or schema validation)
+- i18n: verify all keys used in components exist in translation files
+- If a test duplicates a magic number or string, extract to shared fixture or import from source module
+
+### 5. Evidence (5-Step Verification Gate)
+
+**No claims without evidence.** Follow this exact sequence:
+
+1. **IDENTIFY**: What command proves this claim?
+2. **RUN**: Execute the full command (fresh, complete)
+3. **READ**: Check entire output, exit code, failure count
+4. **VERIFY**: Does the output support the claim?
+5. **CLAIM**: Only then make the claim
+
+Forbidden before verification: "should", "probably", "seems to", or satisfaction expressions ("Great!", "Done!", "Perfect!").
 
 **On success:**
 ```
@@ -48,9 +64,6 @@ Validation passed (with evidence):
 - type check: pass (0 errors)
 - unit test: pass (N tests, 0 failures)
 ```
-
-Marker file auto-created by PostToolUse hook (`/tmp/.claude-redsub-validated`).
-Referenced by `/redsub-ship` before merge.
 
 **On failure:**
 ```

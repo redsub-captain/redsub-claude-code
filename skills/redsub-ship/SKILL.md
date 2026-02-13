@@ -19,6 +19,34 @@ Default: `patch` if omitted.
 | minor | New feature (backward compatible) | 1.0.0 → 1.1.0 |
 | major | Breaking change | 1.0.0 → 2.0.0 |
 
+## Commit Convention
+
+### Format
+```
+type: 한국어 설명
+```
+- **type**: 영어 고정 (Conventional Commits)
+- **설명**: 한국어, 서술형 종결 (~추가, ~수정, ~개선, ~제거), 50자 이내
+
+### Types
+
+| Type | 의미 | 예시 |
+|------|------|------|
+| `feat` | 새 기능 | `feat: 사용자 인증 API 추가` |
+| `fix` | 버그 수정 | `fix: null 포인터 예외 처리` |
+| `refactor` | 리팩토링 (동작 변경 없음) | `refactor: 인증 모듈 구조 개선` |
+| `chore` | 빌드, 설정, 버전 등 잡일 | `chore: 의존성 업데이트` |
+| `docs` | 문서 | `docs: README 설치 가이드 보완` |
+| `test` | 테스트 | `test: 로그인 실패 케이스 추가` |
+
+### Release Formats
+
+| Step | Format | Example |
+|------|--------|---------|
+| Version bump | `chore: bump version to X.Y.Z` | `chore: bump version to 2.12.0` |
+| Merge | `release: vX.Y.Z - 한국어 설명` | `release: v2.12.0 - 인증 모듈 추가` |
+| Tag | `vX.Y.Z 한국어 설명` (type prefix 없이) | `v2.12.0 인증 모듈 추가` |
+
 ## Command Resolution
 
 Determine the project's commands:
@@ -53,8 +81,7 @@ Run resolved lint, check, and test commands sequentially.
 ### 3. Review (optional)
 
 Suggest code review before merge:
-- `/review-pr` — deep analysis (pr-review-toolkit, 6 agents)
-- `/code-review` — automated PR review (plan-vs-implementation)
+- `/coderabbit:review` — automated code review (coderabbit)
 
 User may skip.
 
