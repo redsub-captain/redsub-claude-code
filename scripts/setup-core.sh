@@ -205,7 +205,7 @@ fi
 # --- 6. Auto-merge CLAUDE.md template ---
 MERGE_TEMPLATE_SCRIPT="$(dirname "$0")/merge-template.sh"
 if [ -x "$MERGE_TEMPLATE_SCRIPT" ]; then
-  MERGE_ERR=$( { bash "$MERGE_TEMPLATE_SCRIPT" "$PLUGIN_ROOT" > /dev/null; } 2>&1 ) || \
+  MERGE_ERR=$( { bash "$MERGE_TEMPLATE_SCRIPT" "$PLUGIN_ROOT" merge > /dev/null; } 2>&1 ) || \
     echo "WARNING: merge-template.sh: $MERGE_ERR" >&2
 fi
 
