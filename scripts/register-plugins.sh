@@ -94,11 +94,12 @@ if [ "$PYTHON_OK" = false ]; then
       EXISTS=$(jq --arg k "$KEY" 'if .plugins | has($k) then "yes" else "no" end' "$INSTALLED_FILE" 2>/dev/null)
       if [ "$EXISTS" = '"no"' ]; then
         # Add placeholder entry
+        _tmp=$(mktemp)
         jq --arg k "$KEY" \
            --arg ts "$TIMESTAMP" \
            '.plugins[$k] = [{"scope":"user","installPath":"","version":"","installedAt":$ts,"lastUpdated":$ts,"gitCommitSha":""}]' \
-           "$INSTALLED_FILE" > "${INSTALLED_FILE}.tmp" && \
-        mv "${INSTALLED_FILE}.tmp" "$INSTALLED_FILE"
+           "$INSTALLED_FILE" > "$_tmp" && \
+        mv "$_tmp" "$INSTALLED_FILE" || rm -f "$_tmp"
         ADDED=$((ADDED + 1))
       fi
     done <<< "$REQUIRED_KEYS"

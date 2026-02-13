@@ -159,11 +159,12 @@ TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
 if [ -f "$MANIFEST_FILE" ]; then
   # Update existing manifest
   if command -v jq &>/dev/null; then
+    _tmp=$(mktemp)
     jq --arg ver "$PLUGIN_VERSION" \
        --arg ts "$TIMESTAMP" \
        '.version = $ver | .installed_at = $ts | del(.rules_installed)' \
-       "$MANIFEST_FILE" > "${MANIFEST_FILE}.tmp" && \
-    mv "${MANIFEST_FILE}.tmp" "$MANIFEST_FILE"
+       "$MANIFEST_FILE" > "$_tmp" && \
+    mv "$_tmp" "$MANIFEST_FILE" || rm -f "$_tmp"
   else
     python3 - "$MANIFEST_FILE" "$PLUGIN_VERSION" "$TIMESTAMP" <<'PYEOF'
 import json, sys
