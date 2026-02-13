@@ -4,7 +4,7 @@
 # Usage: bash update-core.sh <CLAUDE_PLUGIN_ROOT>
 # Output: JSON result on stdout (last line)
 
-set -o pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/lib.sh"
 
@@ -125,6 +125,7 @@ TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
 
 if [ -f "$INSTALLED_PLUGINS" ]; then
   if command -v jq &>/dev/null; then
+    _tmp=$(mktemp)
     jq --arg path "$CACHE_DIR" \
        --arg ver "$NEW_VERSION" \
        --arg ts "$TIMESTAMP" \
@@ -136,8 +137,8 @@ if [ -f "$INSTALLED_PLUGINS" ]; then
           .plugins[$key][0].lastUpdated = $ts |
           .plugins[$key][0].gitCommitSha = $sha
         else . end' \
-       "$INSTALLED_PLUGINS" > "${INSTALLED_PLUGINS}.tmp" && \
-    mv "${INSTALLED_PLUGINS}.tmp" "$INSTALLED_PLUGINS"
+       "$INSTALLED_PLUGINS" > "$_tmp" && \
+    mv "$_tmp" "$INSTALLED_PLUGINS" || rm -f "$_tmp"
   else
     python3 - "$INSTALLED_PLUGINS" "$CACHE_DIR" "$NEW_VERSION" "$TIMESTAMP" "$COMMIT_SHA" "$PLUGIN_KEY" <<'PYEOF'
 import json, sys

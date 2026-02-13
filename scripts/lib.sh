@@ -34,7 +34,7 @@ for key in sys.argv[2:]:
     try: data = data[key]
     except (KeyError, TypeError):
         try: data = data[int(key)]
-        except: print(""); sys.exit(0)
+        except (ValueError, IndexError, TypeError): print(""); sys.exit(0)
 print(data)
 PYEOF
   fi

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # [Stop] Check for uncommitted changes on session end + completion notification
 
-set -u
+set -uo pipefail
 source "$(dirname "$0")/lib.sh"
 
 # Check uncommitted changes

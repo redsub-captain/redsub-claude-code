@@ -6,7 +6,7 @@
 #   {"status": "success", "added": N, "total": N}
 #   {"status": "error", "message": "..."}
 
-set -o pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/lib.sh"
 
@@ -31,7 +31,8 @@ if [ ! -f "$INSTALLED_FILE" ]; then
 fi
 
 # Use python3 (primary) or jq (fallback) to check and add missing plugins
-python3 - "$REGISTRY" "$INSTALLED_FILE" <<'PYEOF'
+PYTHON_OK=true
+python3 - "$REGISTRY" "$INSTALLED_FILE" <<'PYEOF' || PYTHON_OK=false
 import json, sys, os
 from datetime import datetime, timezone
 
@@ -49,11 +50,6 @@ with open(installed_path) as f:
 plugins_map = installed.get("plugins", {})
 added = 0
 timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
-
-# Map marketplace short names to full names
-marketplace_map = {
-    "claude-plugins-official": "claude-plugins-official"
-}
 
 for plugin in registry.get("plugins", []):
     name = plugin["name"]
@@ -84,7 +80,7 @@ print(json.dumps({"status": "success", "added": added, "total": total}))
 PYEOF
 
 # Fallback: if python3 failed, try jq-based approach
-if [ $? -ne 0 ]; then
+if [ "$PYTHON_OK" = false ]; then
   if command -v jq &>/dev/null; then
     TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
     ADDED=0
@@ -92,19 +88,21 @@ if [ $? -ne 0 ]; then
     # Get list of required plugin keys from registry
     REQUIRED_KEYS=$(jq -r '.plugins[] | "\(.name)@\(.marketplace)"' "$REGISTRY" 2>/dev/null)
 
-    for KEY in $REQUIRED_KEYS; do
+    while IFS= read -r KEY; do
+      [ -z "$KEY" ] && continue
       # Check if key exists in installed_plugins.json
       EXISTS=$(jq --arg k "$KEY" 'if .plugins | has($k) then "yes" else "no" end' "$INSTALLED_FILE" 2>/dev/null)
       if [ "$EXISTS" = '"no"' ]; then
         # Add placeholder entry
+        _tmp=$(mktemp)
         jq --arg k "$KEY" \
            --arg ts "$TIMESTAMP" \
            '.plugins[$k] = [{"scope":"user","installPath":"","version":"","installedAt":$ts,"lastUpdated":$ts,"gitCommitSha":""}]' \
-           "$INSTALLED_FILE" > "${INSTALLED_FILE}.tmp" && \
-        mv "${INSTALLED_FILE}.tmp" "$INSTALLED_FILE"
+           "$INSTALLED_FILE" > "$_tmp" && \
+        mv "$_tmp" "$INSTALLED_FILE" || rm -f "$_tmp"
         ADDED=$((ADDED + 1))
       fi
-    done
+    done <<< "$REQUIRED_KEYS"
 
     TOTAL=$(jq '.plugins | length' "$INSTALLED_FILE" 2>/dev/null)
     jq -n --argjson added "$ADDED" --argjson total "$TOTAL" '{"status":"success","added":$added,"total":$total}'

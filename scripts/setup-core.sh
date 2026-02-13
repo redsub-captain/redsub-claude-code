@@ -5,7 +5,7 @@
 # Usage: bash setup-core.sh <CLAUDE_PLUGIN_ROOT> [--force]
 # Output: JSON result on stdout (last line)
 
-set -o pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/lib.sh"
 
@@ -80,7 +80,8 @@ MISSING_COUNT=$(echo "$MISSING_PLUGINS_JSON" | python3 -c "import json,sys; prin
 # --- 1b. Auto-register plugins ---
 REGISTER_PLUGINS_SCRIPT="$(dirname "$0")/register-plugins.sh"
 if [ -x "$REGISTER_PLUGINS_SCRIPT" ] && [ "$MISSING_COUNT" -gt 0 ]; then
-  bash "$REGISTER_PLUGINS_SCRIPT" "$PLUGIN_ROOT" 2>/dev/null || true
+  REG_ERR=$( { bash "$REGISTER_PLUGINS_SCRIPT" "$PLUGIN_ROOT" > /dev/null; } 2>&1 ) || \
+    echo "WARNING: register-plugins.sh: $REG_ERR" >&2
   # Registration only creates metadata entries — actual install still needed
   # Keep MISSING_COUNT and MISSING_PLUGINS_JSON intact for the skill to handle
 fi
@@ -96,7 +97,8 @@ fi
 # --- 3. Auto-register permissions ---
 REGISTER_PERMS_SCRIPT="$(dirname "$0")/register-permissions.sh"
 if [ -x "$REGISTER_PERMS_SCRIPT" ]; then
-  bash "$REGISTER_PERMS_SCRIPT" "$PLUGIN_ROOT" 2>/dev/null || true
+  PERMS_ERR=$( { bash "$REGISTER_PERMS_SCRIPT" "$PLUGIN_ROOT" > /dev/null; } 2>&1 ) || \
+    echo "WARNING: register-permissions.sh: $PERMS_ERR" >&2
 fi
 
 # --- 4. Permission status ---
@@ -157,11 +159,12 @@ TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
 if [ -f "$MANIFEST_FILE" ]; then
   # Update existing manifest
   if command -v jq &>/dev/null; then
+    _tmp=$(mktemp)
     jq --arg ver "$PLUGIN_VERSION" \
        --arg ts "$TIMESTAMP" \
        '.version = $ver | .installed_at = $ts | del(.rules_installed)' \
-       "$MANIFEST_FILE" > "${MANIFEST_FILE}.tmp" && \
-    mv "${MANIFEST_FILE}.tmp" "$MANIFEST_FILE"
+       "$MANIFEST_FILE" > "$_tmp" && \
+    mv "$_tmp" "$MANIFEST_FILE" || rm -f "$_tmp"
   else
     python3 - "$MANIFEST_FILE" "$PLUGIN_VERSION" "$TIMESTAMP" <<'PYEOF'
 import json, sys
@@ -202,7 +205,8 @@ fi
 # --- 6. Auto-merge CLAUDE.md template ---
 MERGE_TEMPLATE_SCRIPT="$(dirname "$0")/merge-template.sh"
 if [ -x "$MERGE_TEMPLATE_SCRIPT" ]; then
-  bash "$MERGE_TEMPLATE_SCRIPT" "$PLUGIN_ROOT" 2>/dev/null || true
+  MERGE_ERR=$( { bash "$MERGE_TEMPLATE_SCRIPT" "$PLUGIN_ROOT" merge > /dev/null; } 2>&1 ) || \
+    echo "WARNING: merge-template.sh: $MERGE_ERR" >&2
 fi
 
 # --- 7. Completion marker ---

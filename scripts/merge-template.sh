@@ -8,7 +8,7 @@
 #         prepend  — Prepend template to existing file
 # Output: JSON result on stdout (last line)
 
-set -o pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/lib.sh"
 
