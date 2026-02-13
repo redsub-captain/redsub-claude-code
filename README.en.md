@@ -53,6 +53,12 @@ A notification is shown at session start when a new version is available.
 /redsub-update
 ```
 
+If dependency plugins are missing after update:
+```
+/redsub-doctor        # Diagnose + auto-install
+/redsub-setup --force # Or full re-setup
+```
+
 ### Uninstall
 
 ```

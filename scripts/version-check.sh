@@ -76,7 +76,16 @@ if [ "$EXPECTED_PLUGINS" -eq 0 ]; then
   exit 0  # SSOT registry를 읽을 수 없으면 체크 skip
 fi
 if [ -f "$INSTALLED_FILE" ]; then
-  INSTALLED_COUNT=$(json_count "$INSTALLED_FILE" plugins)
+  # Count only plugins with non-empty installPath (exclude placeholders)
+  if command -v jq &>/dev/null; then
+    INSTALLED_COUNT=$(jq '[.plugins | to_entries[] | select(.value[0].installPath | length > 0)] | length' "$INSTALLED_FILE" 2>/dev/null || echo "0")
+  else
+    INSTALLED_COUNT=$(python3 -c "
+import json, sys
+with open(sys.argv[1]) as f: data = json.load(f)
+print(sum(1 for v in data.get('plugins',{}).values() if v and v[0].get('installPath')))
+" "$INSTALLED_FILE" 2>/dev/null || echo "0")
+  fi
 fi
 if [ "$INSTALLED_COUNT" -lt "$EXPECTED_PLUGINS" ]; then
   echo "SETUP: Some dependency plugins may be missing ($INSTALLED_COUNT/$EXPECTED_PLUGINS). Run /redsub-doctor to check."

@@ -44,7 +44,10 @@ if [ -f "$PLUGINS_JSON" ]; then
     MISSING_PLUGINS_JSON=$(jq -r --slurpfile installed <([ -f "$INSTALLED_PLUGINS" ] && cat "$INSTALLED_PLUGINS" || echo '{"plugins":{}}') '
       [.plugins[] |
         "\(.name)@\(.marketplace)" as $key |
-        select($installed[0].plugins[$key] == null) |
+        select(
+          $installed[0].plugins[$key] == null or
+          ($installed[0].plugins[$key][0].installPath | length) == 0
+        ) |
         $key
       ]' "$PLUGINS_JSON" 2>/dev/null || echo "[]")
   else
@@ -59,7 +62,8 @@ if os.path.exists(sys.argv[2]):
 missing = []
 for p in plugins.get("plugins", []):
     key = f"{p['name']}@{p['marketplace']}"
-    if key not in installed:
+    entry = installed.get(key)
+    if not entry or not entry[0].get("installPath"):
         missing.append(key)
 print(json.dumps(missing))
 PYEOF
