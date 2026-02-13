@@ -33,14 +33,15 @@ else
   if command -v jq &>/dev/null; then
     PATTERNS_JSON=$(jq '[.categories | to_entries[].value.patterns[]]' "$PERMS_JSON")
   else
-    PATTERNS_JSON=$(python3 -c "
-import json
-with open('$PERMS_JSON') as f: d = json.load(f)
+    PATTERNS_JSON=$(python3 - "$PERMS_JSON" <<'PYEOF'
+import json, sys
+with open(sys.argv[1]) as f: d = json.load(f)
 patterns = []
 for cat in d.get('categories', {}).values():
     patterns.extend(cat.get('patterns', []))
 print(json.dumps(patterns))
-")
+PYEOF
+    )
   fi
 fi
 
