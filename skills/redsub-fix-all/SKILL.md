@@ -5,6 +5,13 @@ description: Search and bulk-fix a pattern across the entire codebase.
 
 # Bulk Pattern Fix
 
+## Bug Propagation Protocol
+
+버그/오류 발견 시 **동일/유사 패턴 전수 조사**. 한 건 수정으로 끝내지 않는다.
+- Grep으로 유사 패턴 검색 → 전체 수정 → 검증
+- "하나 고치고 끝"은 버그. 전수 조사 후 리포트
+- 동일 코드베이스에서 작동하는 유사 사례 찾기, 차이점 비교
+
 ## Input
 
 `$ARGUMENTS`: pattern description + optional flags (`--team`, `--loop`).

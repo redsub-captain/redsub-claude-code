@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# [PreToolUse:Bash] Block direct commits on main/master + block merge without validate marker
+# [PreToolUse:Bash] Block direct commits on main/master + version consistency on merge
 # exit 2 = block tool execution in Claude Code
 
 set -euo pipefail
@@ -11,13 +11,8 @@ INPUT=$(cat)
 # Extract command
 COMMAND=$(json_input_val "$INPUT" "" input command)
 
-# Check if git merge command — require validate marker + version consistency
+# Check if git merge command — version consistency check
 if echo "$COMMAND" | grep -q "git merge"; then
-  if [ ! -f "$REDSUB_DIR/validated" ]; then
-    echo "BLOCKED: Cannot merge without validation. Run /redsub-validate first."
-    exit 2
-  fi
-
   # Version consistency check across 3 files
   PKG_VER=$(json_val "package.json" version)
   PLUGIN_VER=$(json_val ".claude-plugin/plugin.json" version)

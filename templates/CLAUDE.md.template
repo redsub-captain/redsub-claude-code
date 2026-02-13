@@ -1,59 +1,17 @@
-<!-- redsub-template-version:2.12.0 -->
+<!-- redsub-template-version:3.0.0 -->
 # redsub-claude-code
 
 ## Identity
-Solo developer. Planning/Design/Dev/Test/Ops/Marketing.
+Solo developer. Korean commits. TDD required.
 
 <!-- redsub-user:start -->
-## Tech Stack
-(여기에 프로젝트 기술 스택을 입력하세요)
-
 ## In progress
 (none)
 <!-- redsub-user:end -->
 
 ## Principles
-- **Plan first**: Use /redsub-brainstorm → /redsub-plan before coding
-- **TDD**: Tests before code (TDD Iron Law)
-- **SSOT (Single Source of Truth)**: Every piece of data lives in exactly ONE canonical location. All other consumers read from that source — never duplicate, never hardcode.
-  - Config values → one config file or env var
-  - Business rules → one module, re-exported where needed
-  - UI strings → i18n files only
-  - API URLs / endpoints → one constants file
-  - Type definitions → one source, re-exported (no redeclaring the same shape)
-- **Security**: No API key exposure, server-side processing
-- **Cost**: Design for cloud cost efficiency — optimize compute, storage, network, and external API usage
-- **No hardcoding**: Use i18n keys or constants
-
-## Workflow: Plan → Start → Code → Test → Review → Ship → Deploy
-
-### Phase Commands
-
-| Phase | Command | Notes |
-|-------|---------|-------|
-| Design | /redsub-brainstorm → /redsub-plan | internal |
-| Execute | /redsub-execute | subagent dispatch |
-| Start | /redsub-start-work [name] | feature branch |
-| Code | TDD principles | test first |
-| Commit | /commit | commit-commands plugin |
-| PR | /commit-push-pr | commit + push + PR |
-| Iterate | /ralph-loop "prompt" | for repetitive tasks |
-| Review | /review-pr or /code-review | pr-review-toolkit / code-review |
-| Validate | /redsub-validate | lint + check + test |
-| Ship | /redsub-ship [version] [desc] | enforced pipeline |
-| Deploy | /redsub-deploy [dev\|prod] | devops agent |
-| Save | /redsub-session-save | context preservation |
-| Fix | /redsub-fix-all [pattern] | bulk fix |
-| UI | frontend-design (auto) | UI/UX implementation guide |
-| Feature | /feature-dev [target] | feature-dev plugin (complex features) |
-| Maintain | /revise-claude-md | CLAUDE.md quality audit |
-
-### Management Commands
-
-| Command | Notes |
-|---------|-------|
-| /redsub-setup | Initial plugin setup |
-| /redsub-update | Check for updates |
-| /redsub-doctor | Diagnose and repair |
-| /redsub-uninstall | Clean removal |
-| /revise-claude-md | Audit CLAUDE.md quality |
+- Plan first: /redsub-brainstorm → /redsub-plan
+- Test first: TDD Iron Law (no code without failing test)
+- SSOT: one canonical source per data, no duplication
+- No hardcoding: i18n keys or constants
+- Evidence before claims: verify with command output

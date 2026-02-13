@@ -82,12 +82,8 @@ if [ "$INSTALLED_COUNT" -lt "$EXPECTED_PLUGINS" ]; then
   echo "SETUP: Some dependency plugins may be missing ($INSTALLED_COUNT/$EXPECTED_PLUGINS). Run /redsub-doctor to check."
 fi
 
-# --- CLAUDE.md freshness check ---
-if [ -f "CLAUDE.md" ]; then
-  LAST_MOD=$(file_mtime "CLAUDE.md")
-  NOW=$(date +%s)
-  DAYS=$(( (NOW - LAST_MOD) / 86400 ))
-  if [ "$DAYS" -ge 7 ]; then
-    echo "MAINTENANCE: CLAUDE.md hasn't been updated in ${DAYS} days. Run /revise-claude-md."
-  fi
+# --- Legacy rules cleanup detection (v3.0+) ---
+if ls "$HOME/.claude/rules/redsub-"*.md &>/dev/null 2>&1; then
+  LEGACY_COUNT=$(ls -1 "$HOME/.claude/rules/redsub-"*.md 2>/dev/null | wc -l | tr -d ' ')
+  echo "CLEANUP: Legacy rules files ($LEGACY_COUNT) found in ~/.claude/rules/. Run /redsub-doctor to clean up."
 fi

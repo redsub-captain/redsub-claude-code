@@ -34,16 +34,6 @@
             "timeout": 3
           }
         ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/warn-main-edit.sh",
-            "timeout": 3
-          }
-        ]
       }
     ],
     "PostToolUse": [
@@ -54,39 +44,6 @@
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/scripts/auto-format.sh",
             "timeout": 30
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-marker.sh",
-            "timeout": 3
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "permission_prompt|idle_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/notify-attention.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/pre-compact-context.sh",
-            "timeout": 5
           }
         ]
       }

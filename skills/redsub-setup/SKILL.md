@@ -1,6 +1,6 @@
 ---
 name: redsub-setup
-description: Initial plugin setup. Deploy rules, create CLAUDE.md, check dependencies.
+description: Initial plugin setup. Register plugins, permissions, create CLAUDE.md.
 ---
 
 # Initial Setup
@@ -13,7 +13,7 @@ If `~/.claude-redsub/.setup-done` exists and `--force` was NOT given in `$ARGUME
 
 ### 1. Run setup-core.sh
 
-Execute the core setup script that handles dependency check (SSOT: `config/plugins.json`), rule deployment, permission check (`config/permissions.json`), manifest creation, and completion marker in a single call:
+Execute the core setup script that handles everything automatically with zero user input -- dependency check (SSOT: `config/plugins.json`), plugin registration (`register-plugins.sh`), permission registration (`register-permissions.sh`), CLAUDE.md creation/update (`merge-template.sh`), manifest creation, and completion marker in a single call:
 
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/setup-core.sh" "${CLAUDE_PLUGIN_ROOT}" [--force if given]
@@ -24,7 +24,6 @@ Parse the JSON output. The result has this structure:
 {
   "status": "completed | already_configured",
   "dependencies": {"total": 12, "installed": 12, "missing": []},
-  "rules_deployed": 5,
   "permissions": {"total": 16, "registered": 16, "missing": []},
   "manifest_updated": true,
   "version": "X.X.X",
@@ -104,10 +103,10 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/merge-template.sh" "${CLAUDE_PLUGIN_ROOT}" a
 
 ```
 Setup complete:
-- Rules deployed: [rules_deployed] (code-quality, workflow, testing, claude-code-practices, commit-convention)
+- Plugins: [installed]/[total] registered (12 plugins with superpowers + coderabbit)
 - Permissions: [registered/total] in ~/.claude/settings.json
 - CLAUDE.md: [created / updated / skipped]
-- Dependencies: [installed]/[total] installed
+- Legacy rules: cleaned up
 - Install manifest: updated
 ```
 

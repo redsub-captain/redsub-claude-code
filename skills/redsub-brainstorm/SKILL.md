@@ -7,39 +7,32 @@ description: Collaborative design through Socratic dialogue. Turn rough ideas in
 
 Announce: "Using /redsub-brainstorm to explore the design."
 
-## Process
+**Invoke superpowers:brainstorming skill first, then apply these additional conventions:**
 
-### 1. Understand the Idea
+## redsub Conventions
 
-- Check current project state (CLAUDE.md, package.json, existing code).
-- Ask clarifying questions **one at a time** (never multiple questions in one message).
-- Prefer multiple-choice (AskUserQuestion) over open-ended questions.
-- Understand: purpose, constraints, success criteria, target users.
+### Interaction Style
 
-### 2. Explore Approaches
+- **Socratic dialogue**: One question at a time, never multiple questions in one message.
+- **AskUserQuestion preferred**: Use multiple-choice (AskUserQuestion tool) over open-ended questions whenever possible. Reduce decision fatigue.
+- **Korean language output**: All design documents and dialogue in Korean (technical terms in English as-is).
 
-- Present **2-3 approaches** with trade-offs.
-- Recommend a lead option with rationale.
-- Apply YAGNI ruthlessly — cut anything not essential.
-- Consider: complexity, performance, maintainability, cost.
+### YAGNI Enforcement
 
-### 3. Present the Design
+- Apply YAGNI ruthlessly at every decision point.
+- Consider: complexity, performance, maintainability, **cloud cost**.
+- When user proposes something non-essential, push back with rationale before accepting.
 
-- Break into small sections (**200-300 words** each).
-- After each section, ask for validation before continuing.
-- Cover: architecture, components, data flow, error handling, testing strategy.
-- Use diagrams (ASCII/mermaid) when helpful.
+### Design Document Output
 
-### 4. Document
-
-Save validated design:
+Save validated design to:
 
 ```bash
 mkdir -p docs/plans
 # File: docs/plans/YYYY-MM-DD-<topic>-design.md
 ```
 
-Structure:
+Document structure:
 ```markdown
 # [Feature] Design
 ## Goal
@@ -53,17 +46,12 @@ Structure:
 
 Commit the design document.
 
-### 5. Implementation Handoff
+### Implementation Handoff
+
+Instead of superpowers' default handoff, use the redsub workflow:
 
 Ask: "Ready for implementation planning?"
 - Yes → suggest `/redsub-plan`
 - Not yet → continue refining
 
-## Principles
-
-- **One question at a time** — don't overwhelm.
-- **Multiple choice preferred** — reduce decision fatigue.
-- **YAGNI** — cut everything non-essential.
-- **Explore alternatives** — never jump to the first idea.
-- **Incremental validation** — validate each section before moving on.
-- **Be flexible** — adapt when user steers differently.
+Do NOT suggest git worktrees or superpowers:writing-plans directly. The redsub workflow uses `/redsub-plan` as the next step.

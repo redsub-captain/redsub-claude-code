@@ -5,40 +5,16 @@
   ],
   "plugins": [
     {
-      "name": "code-review",
+      "name": "frontend-design",
       "marketplace": "claude-plugins-official",
-      "role_ko": "PR 자동 리뷰 (GitHub 코멘트 게시)",
-      "role_en": "Automated PR review (GitHub comment posting)"
-    },
-    {
-      "name": "pr-review-toolkit",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "6개 전문 리뷰 에이전트 (테스트/타입/보안/간소화 등)",
-      "role_en": "6 specialized review agents (test/type/security/simplifier, etc.)"
-    },
-    {
-      "name": "ralph-loop",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "반복 작업 자동화 (TDD, 일괄 수정)",
-      "role_en": "Iterative task automation (TDD, bulk fixes)"
-    },
-    {
-      "name": "security-guidance",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "보안 모범 사례",
-      "role_en": "Security best practices"
+      "role_ko": "UI/UX 구현 가이드",
+      "role_en": "UI/UX implementation guide"
     },
     {
       "name": "context7",
       "marketplace": "claude-plugins-official",
       "role_ko": "라이브러리 최신 문서 조회",
       "role_en": "Latest library documentation lookup"
-    },
-    {
-      "name": "frontend-design",
-      "marketplace": "claude-plugins-official",
-      "role_ko": "UI/UX 구현 가이드",
-      "role_en": "UI/UX implementation guide"
     },
     {
       "name": "feature-dev",
@@ -53,10 +29,16 @@
       "role_en": "Autonomous code simplification review"
     },
     {
-      "name": "claude-md-management",
+      "name": "ralph-loop",
       "marketplace": "claude-plugins-official",
-      "role_ko": "CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`)",
-      "role_en": "CLAUDE.md audit + session learning (`/revise-claude-md`)"
+      "role_ko": "반복 작업 자동화 (TDD, 일괄 수정)",
+      "role_en": "Iterative task automation (TDD, bulk fixes)"
+    },
+    {
+      "name": "superpowers",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "TDD/브레인스토밍/디버깅/검증 (v4.3.0+)",
+      "role_en": "TDD/brainstorming/debugging/verification (v4.3.0+)"
     },
     {
       "name": "playwright",
@@ -65,16 +47,34 @@
       "role_en": "E2E browser test automation (Microsoft Playwright MCP)"
     },
     {
+      "name": "commit-commands",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "커밋/푸시/PR 자동화 (/commit, /commit-push-pr, /clean_gone)",
+      "role_en": "Commit/push/PR automation (/commit, /commit-push-pr, /clean_gone)"
+    },
+    {
+      "name": "security-guidance",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "보안 모범 사례",
+      "role_en": "Security best practices"
+    },
+    {
+      "name": "claude-md-management",
+      "marketplace": "claude-plugins-official",
+      "role_ko": "CLAUDE.md 감사 + 세션 학습 (`/revise-claude-md`)",
+      "role_en": "CLAUDE.md audit + session learning (`/revise-claude-md`)"
+    },
+    {
       "name": "claude-code-setup",
       "marketplace": "claude-plugins-official",
       "role_ko": "프로젝트 분석 → Claude Code 자동화 추천",
       "role_en": "Analyze codebase → recommend Claude Code automations"
     },
     {
-      "name": "commit-commands",
+      "name": "coderabbit",
       "marketplace": "claude-plugins-official",
-      "role_ko": "커밋/푸시/PR 자동화 (/commit, /commit-push-pr, /clean_gone)",
-      "role_en": "Commit/push/PR automation (/commit, /commit-push-pr, /clean_gone)"
+      "role_ko": "AI 코드 리뷰 (40+ 정적분석기)",
+      "role_en": "AI code review (40+ static analyzers)"
     }
   ]
 }

@@ -9,20 +9,23 @@ Diagnose plugin health and auto-repair issues.
 
 ## Checks
 
-### 1. Rules integrity
+### 1. Legacy rules cleanup
 
-Verify these files exist in `~/.claude/rules/`:
-- `redsub-code-quality.md`
-- `redsub-workflow.md`
-- `redsub-testing.md`
-- `redsub-claude-code-practices.md`
+Check for orphaned rules files from previous versions in `~/.claude/rules/`:
+```bash
+ls ~/.claude/rules/redsub-*.md 2>/dev/null
+```
 
-**Auto-fix**: Re-copy from `${CLAUDE_PLUGIN_ROOT}/rules/`.
+If any `redsub-*.md` files are found, they are leftovers from v2.x (v3.0 no longer deploys rules files).
+
+**Auto-fix**: Remove orphaned files:
+```bash
+rm -f ~/.claude/rules/redsub-*.md
+```
 
 ### 2. Manifest consistency
 
 Read `~/.claude-redsub/install-manifest.json`:
-- Verify all `rules_installed` files exist
 - Verify all `files_created` are tracked
 - Verify version matches plugin version
 
@@ -62,7 +65,7 @@ Verify all referenced scripts exist and are executable.
 
 Search all plugin files for legacy `/rs-` references:
 ```bash
-grep -r '/rs-' ${CLAUDE_PLUGIN_ROOT}/skills/ ${CLAUDE_PLUGIN_ROOT}/agents/ ${CLAUDE_PLUGIN_ROOT}/rules/ 2>/dev/null
+grep -r '/rs-' ${CLAUDE_PLUGIN_ROOT}/skills/ ${CLAUDE_PLUGIN_ROOT}/agents/ 2>/dev/null
 ```
 
 **Report**: List any legacy references found.
@@ -71,9 +74,9 @@ grep -r '/rs-' ${CLAUDE_PLUGIN_ROOT}/skills/ ${CLAUDE_PLUGIN_ROOT}/agents/ ${CLA
 
 ```
 Plugin health check:
-- Rules: [OK/FIXED/MISSING]
+- Legacy rules: [CLEAN/REMOVED N files]
 - Manifest: [OK/FIXED/MISSING]
-- Dependencies: [OK/N missing]
+- Dependencies: [OK/N missing] (12 plugins)
 - CLAUDE.md markers: [OK/FIXED/N/A]
 - Template version: [current/outdated/legacy]
 - Hooks: [OK/FIXED]

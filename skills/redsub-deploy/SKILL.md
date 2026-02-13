@@ -26,7 +26,7 @@ Determine the project's deploy commands:
 
 ### 1. Pre-checks
 - Verify on `main` branch
-- Verify validate marker exists
+- Run `/redsub-validate` if not already validated in this session
 
 ### 2. Dev confirmation
 Use `AskUserQuestion` tool:
