@@ -1,0 +1,5 @@
+[
+  {"name": "build", "state": "COMPLETED", "conclusion": "SUCCESS"},
+  {"name": "test", "state": "COMPLETED", "conclusion": "FAILURE"},
+  {"name": "lint", "state": "COMPLETED", "conclusion": "SUCCESS"}
+]
