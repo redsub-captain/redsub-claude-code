@@ -71,7 +71,7 @@ All 11 plugins are auto-registered when you run `/redsub-setup`:
 | Plugin | Role |
 |--------|------|
 | superpowers | TDD/brainstorming/debugging/verification (v4.3.0+) |
-| commit-commands | Commit/push/PR automation (/commit, /commit-push-pr) |
+| commit-commands | Commit automation (/commit, /clean_gone) |
 | ralph-loop | Iterative task automation (TDD, bulk fixes) |
 | frontend-design | UI/UX implementation guide |
 | feature-dev | Structured feature development (/feature-dev) |
@@ -215,7 +215,7 @@ Manifest-based clean removal.
 |------|-------|---------|
 | Skills | 13 | See command reference above |
 | Agents | 3 | developer (Opus), planner (Sonnet, read-only), devops (Opus) |
-| Hooks | 5 | Workflow orchestrator, main commit guard, auto-format, version check, session end check |
+| Hooks | 5 | Workflow orchestrator, main commit guard, feature push guard, auto-format, version check, session end check |
 | Rules | 0 | All content moved into skills (on-demand loading) |
 | MCP | 0 | Per-project install |
 
@@ -223,7 +223,7 @@ Manifest-based clean removal.
 
 | Layer | Mechanism | Role |
 |-------|-----------|------|
-| Blocking | **Hooks** | Block direct commits to main (`exit 2`) |
+| Blocking | **Hooks** | Block direct commits to main + feature branch remote push (`exit 2`) |
 | Procedure | **Skills** | Enforce pipeline order (`/redsub-ship`) |
 | Methodology | **superpowers** | TDD, debugging, brainstorming (on-demand) |
 | Quality | **superpowers** | Built-in code reviewer |
