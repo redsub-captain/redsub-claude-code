@@ -71,7 +71,7 @@
 | 플러그인 | 역할 |
 |---------|------|
 | superpowers | TDD/브레인스토밍/디버깅/검증 (v4.3.0+) |
-| commit-commands | 커밋/푸시/PR 자동화 (/commit, /commit-push-pr) |
+| commit-commands | 커밋 자동화 (/commit, /clean_gone) |
 | ralph-loop | 반복 작업 자동화 (TDD, 일괄 수정) |
 | frontend-design | UI/UX 구현 가이드 |
 | feature-dev | 구조화된 기능 개발 (/feature-dev) |
@@ -215,7 +215,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 |------|------|------|
 | Skills | 13개 | 위 명령어 레퍼런스 참조 |
 | Agents | 3개 | developer (Opus), planner (Sonnet, 읽기 전용), devops (Opus) |
-| Hooks | 5개 | 워크플로우 오케스트레이터, main 커밋 차단, 자동 포맷, 버전 체크, 세션 종료 체크 |
+| Hooks | 5개 | 워크플로우 오케스트레이터, main 커밋 차단, feature push 차단, 자동 포맷, 버전 체크, 세션 종료 체크 |
 | Rules | 0개 | 모든 콘텐츠를 스킬 내부로 이동 (온디맨드 로드) |
 | MCP | 0개 | 프로젝트별 설치 |
 
@@ -223,7 +223,7 @@ CLAUDE.md에 진행 상황 저장 + WIP 커밋.
 
 | 계층 | 수단 | 역할 |
 |------|------|------|
-| 차단 | **Hooks** | main 직접 커밋 차단 (`exit 2`) |
+| 차단 | **Hooks** | main 직접 커밋 차단 + feature 브랜치 원격 push 차단 (`exit 2`) |
 | 절차 | **Skills** | 파이프라인 순서 강제 (`/redsub-ship`) |
 | 방법론 | **superpowers** | TDD, 디버깅, 브레인스토밍 (온디맨드) |
 | 품질 | **superpowers** | 내장 코드 리뷰어 |

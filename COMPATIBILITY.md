@@ -6,7 +6,7 @@ redsub-claude-code와 Claude Code 버전 간 호환성.
 
 | Component | Version |
 |-----------|---------|
-| Plugin | 3.3.0 |
+| Plugin | 3.4.0 |
 | Min Claude Code | 1.0.33 |
 
 ## History
@@ -18,6 +18,11 @@ redsub-claude-code와 Claude Code 버전 간 호환성.
 | 1.x | 1.0.0 | Legacy |
 
 ## Breaking Changes
+
+### 3.4.0
+- **솔로 워크플로우 강제**: feature 브랜치 원격 push + `gh pr create` 차단 hook 추가 (`guard-push.sh`)
+- **guard-merge.sh 제거**: PR 기반 워크플로우가 불필요하므로 CI 체크 hook 제거
+- 로컬 머지 → main만 push 패턴을 hook으로 강제 (자연어 명령에도 동일 적용)
 
 ### 3.2.0
 - **coderabbit 의존성 제거**: 코드 리뷰를 `superpowers:requesting-code-review`로 대체 (12개 → 11개)
