@@ -116,6 +116,11 @@ with open('.claude-plugin/marketplace.json','w') as f: json.dump(d,f,indent=2,en
 "
 
 git add package.json .claude-plugin/plugin.json .claude-plugin/marketplace.json
+
+# Lock file is also updated by version bump — stage it
+for f in package-lock.json pnpm-lock.yaml yarn.lock; do
+  [ -f "$f" ] && git add "$f"
+done
 ```
 
 #### Sync COMPATIBILITY.md
