@@ -37,6 +37,16 @@
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/scripts/guard-push.sh",
             "timeout": 3
+          },
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/quality-commit.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/quality-push.sh",
+            "timeout": 120
           }
         ]
       }
