@@ -2,6 +2,17 @@
 
 # redsub-claude-code
 
+> **⚠️ DEPRECATED — 이 프로젝트는 더 이상 유지보수하지 않으며, 아카이브 처리되었습니다.**
+>
+> **종료 사유:** 이 플러그인은 원래 개발 작업 전용으로 설계되었으나, Claude Code를 개발 외 용도(아이디어 정리, 문서 작업 등)에도 사용하게 되면서 글로벌 사용자 레벨에 설치된 플러그인이 불필요한 컨텍스트를 소비하는 문제가 발생했습니다. 또한 [Claude Cowork](https://claude.com)이 출시되어 일반 사용자에게는 보다 나은 대안이 되었습니다.
+>
+> **대안:**
+> - 일반 작업: [Claude Cowork](https://claude.com) 사용 권장
+> - 개발 워크플로우: [superpowers](https://github.com/anthropics/claude-code-plugins) 등 공식 플러그인을 프로젝트 단위로 직접 조합하여 사용
+> - CLI 기반 AI 도구: [Gemini CLI](https://github.com/google-gemini/gemini-cli) 등도 고려 가능
+
+---
+
 1인 개발자를 위한 Claude Code **워크플로우 오케스트레이터** 플러그인.
 
 공식 플러그인 11개(superpowers, commit-commands, ralph-loop, frontend-design, feature-dev 등)와 **조합**하여 기획부터 배포까지 전체 개발 사이클을 자동화합니다.

@@ -2,6 +2,17 @@
 
 # redsub-claude-code
 
+> **⚠️ DEPRECATED — This project is no longer maintained and has been archived.**
+>
+> **Reason:** This plugin was originally designed exclusively for development workflows. However, as Claude Code became useful for non-development tasks (idea development, document writing, etc.), having this plugin installed at the global user level started consuming unnecessary context. Additionally, [Claude Cowork](https://claude.com) has been released and serves as a better alternative for general users.
+>
+> **Alternatives:**
+> - General tasks: [Claude Cowork](https://claude.com) recommended
+> - Development workflows: Combine official plugins like [superpowers](https://github.com/anthropics/claude-code-plugins) directly at the project level
+> - CLI-based AI tools: [Gemini CLI](https://github.com/google-gemini/gemini-cli) is also an option
+
+---
+
 A **workflow orchestrator** plugin for Claude Code, designed for solo developers.
 
 Works in **combination** with 11 official plugins (superpowers, commit-commands, ralph-loop, frontend-design, feature-dev, etc.) to automate the entire development cycle from planning to deployment.
